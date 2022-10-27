@@ -1,7 +1,7 @@
 package com.atoz.user;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
+import com.atoz.login.mapper.LoginMapper;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,16 +14,20 @@ class UserMapperTest {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private LoginMapper loginMapper;
+
     @Test
-    @DisplayName("회원가입 SQL Mapper 테스트")
-    void addUser() {
+    void 회원_데이터_저장_성공() {
         User user = new User();
-        user.setUserId("userId");
-        user.setEmail("email");
-        user.setNickname("nickname");
-        user.setPassword("password");
+        user.setUserId("testUserId");
+        user.setEmail("testEmail");
+        user.setNickname("testNickname");
+        user.setPassword("testPassword");
 
         userMapper.addUser(user);
-    }
 
+        Assertions.assertThat(loginMapper.findById("testUserId").getPassword())
+                .isEqualTo("testPassword");
+    }
 }
