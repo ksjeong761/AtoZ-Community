@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     @Autowired
-    private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     public void register (User user) {
         log.info("UserService register");
 
-        userRepository.addUser(user);
+        userMapper.addUser(user);
     }
 }
