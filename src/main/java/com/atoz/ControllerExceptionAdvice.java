@@ -1,7 +1,7 @@
 package com.atoz;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,14 +14,14 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @Slf4j
-public class ControllerExceptionHandler {
+public class ControllerExceptionAdvice {
 
-    // Controller에서 검증에 실패했을 때 400 응답
+    // 데이터 검증에 실패했을 때 400 응답
     @ExceptionHandler({
         MethodArgumentNotValidException.class
     })
-    public ResponseEntity<Object> validationFailed(MethodArgumentNotValidException ex) throws JsonProcessingException {
-        log.info("ControllerExceptionHandler validationFailed");
+    public ResponseEntity<Object> handleValidation(MethodArgumentNotValidException ex) {
+        log.info("ControllerExceptionAdvice validationFailed");
 
         List<String> errorMessages = ex.getBindingResult()
                 .getAllErrors()
@@ -33,5 +33,20 @@ public class ControllerExceptionHandler {
         responseBodyMap.put("errorMessages", errorMessages);
 
         return ResponseEntity.badRequest().body(responseBodyMap);
+    }
+
+    // 요청은 정상적이지만 데이터베이스 관련 예외가 발생했을 때 500 응답
+    @ExceptionHandler({
+        DataAccessException.class
+    })
+    public ResponseEntity<Object> handleDataAccess(DataAccessException ex) {
+        log.info("ControllerExceptionAdvice databaseAccessFailed");
+
+        String errorMessage = ex.getRootCause().getMessage();
+
+        Map<String, String> responseBodyMap = new LinkedHashMap<>();
+        responseBodyMap.put("errorMessage", errorMessage);
+
+        return ResponseEntity.internalServerError().body(responseBodyMap);
     }
 }
