@@ -7,7 +7,7 @@ import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.TestPropertySource;
 
-@TestPropertySource(locations = "/application-test.properties")
+@TestPropertySource(locations = "/application-test.yaml")
 @MybatisTest
 class UserMapperTest {
 
