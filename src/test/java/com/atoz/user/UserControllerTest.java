@@ -1,6 +1,6 @@
 package com.atoz.user;
 
-import com.atoz.ControllerExceptionHandler;
+import com.atoz.ControllerExceptionAdvice;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ class UserControllerTest {
     @BeforeEach
     public void setup() {
         this.mockMvc = MockMvcBuilders.standaloneSetup(new UserController(userService))
-                .setControllerAdvice(new ControllerExceptionHandler())
+                .setControllerAdvice(new ControllerExceptionAdvice())
                 .build();
     }
 
@@ -91,6 +91,5 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(jsonPath("$.errorMessages.length()").value(4));
     }
-
 
 }
