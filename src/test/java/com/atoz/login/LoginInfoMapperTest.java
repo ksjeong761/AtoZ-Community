@@ -14,7 +14,7 @@ import org.springframework.test.context.TestPropertySource;
 import static org.assertj.core.api.Assertions.*;
 
 @Slf4j
-@TestPropertySource(locations = "/application-test.properties")
+@TestPropertySource(locations = "/application-test.yaml")
 @MybatisTest
 public class LoginInfoMapperTest {
 
