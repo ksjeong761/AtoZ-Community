@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 class LoginServiceImplTest {
 
     @Mock
-    LoginRepository loginRepository;
+    LoginMapper loginMapper;
 
     @InjectMocks
     LoginServiceImpl loginServiceImpl;
@@ -41,51 +41,26 @@ class LoginServiceImplTest {
 
     @Test
     void 올바른_아이디_비밀번호_쌍_로그인_성공() {
-        //given
-        when(loginRepository.findByUserId(testLoginInfo.getUserId())).thenReturn(encryptedTestLoginInfo);
+        when(loginMapper.findById(testLoginInfo.getUserId())).thenReturn(encryptedTestLoginInfo);
 
-        //when
         LoginInfo loginInfo = loginServiceImpl.getLoginInfo(testLoginInfo);
 
-        //then
-        log.info("loginInfo userId={}, password={}", loginInfo.getUserId(), loginInfo.getPassword());
-        verify(loginRepository).findByUserId("testId");
+        verify(loginMapper).findById("testId");
         assertThat(loginInfo).isEqualTo(encryptedTestLoginInfo);
     }
 
     @Test
     void 틀린_아이디_비밀번호_쌍_로그인_실패() {
-        //given
         LoginInfo otherLoginInfo = LoginInfo.builder()
                 .userId("testId")
                 .password("testPassword2")
                 .build();
 
-        when(loginRepository.findByUserId(otherLoginInfo.getUserId())).thenReturn(encryptedTestLoginInfo);
+        when(loginMapper.findById(otherLoginInfo.getUserId())).thenReturn(encryptedTestLoginInfo);
 
-        //when
         LoginInfo loginInfo = loginServiceImpl.getLoginInfo(otherLoginInfo);
 
-        //then
-        verify(loginRepository).findByUserId("testId");
-        assertThat(loginInfo).isNotEqualTo(otherLoginInfo);
-    }
-
-    @Test
-    void 로그아웃() {
-        //given
-        LoginInfo otherLoginInfo = LoginInfo.builder()
-                .userId("testId")
-                .password("testPassword2")
-                .build();
-
-        when(loginRepository.findByUserId(otherLoginInfo.getUserId())).thenReturn(encryptedTestLoginInfo);
-
-        //when
-        LoginInfo loginInfo = loginServiceImpl.getLoginInfo(otherLoginInfo);
-
-        //then
-        verify(loginRepository).findByUserId("testId");
+        verify(loginMapper).findById("testId");
         assertThat(loginInfo).isNotEqualTo(otherLoginInfo);
     }
 }

@@ -13,14 +13,14 @@ import javax.servlet.http.HttpSession;
 @RequiredArgsConstructor
 public class LoginServiceImpl implements LoginService {
 
-    private final LoginRepository loginRepository;
-    private final UserMapper userMapper;
-    private final HttpSession httpSession;
+    private final LoginMapper loginMapper;
 
     @Transactional
     @Override
     public LoginInfo getLoginInfo(LoginInfo loginInfo) {
-        LoginInfo storedLoginInfo = loginRepository.findByUserId(loginInfo.getUserId());
+        log.info("LoginServiceImpl.getLoginInfo");
+
+        LoginInfo storedLoginInfo = loginMapper.findById(loginInfo.getUserId());
 
         if (storedLoginInfo == null) {
             log.info("아이디 또는 패스워드 값이 존재하지 않습니다.");
