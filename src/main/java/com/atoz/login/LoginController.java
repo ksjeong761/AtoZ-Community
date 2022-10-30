@@ -1,9 +1,5 @@
-package com.atoz.login.controller;
+package com.atoz.login;
 
-import com.atoz.login.annotation.checkLogin;
-import com.atoz.login.entity.LoginInfo;
-import com.atoz.login.service.LoginService;
-import com.atoz.login.SessionConst;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;

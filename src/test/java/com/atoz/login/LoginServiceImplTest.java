@@ -1,11 +1,6 @@
 package com.atoz.login;
 
-import com.atoz.login.entity.LoginInfo;
-import com.atoz.login.mapper.LoginMapper;
-import com.atoz.login.repository.LoginRepository;
-import com.atoz.login.service.LoginServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

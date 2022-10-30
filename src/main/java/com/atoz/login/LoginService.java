@@ -1,6 +1,6 @@
-package com.atoz.login.service;
+package com.atoz.login;
 
-import com.atoz.login.entity.LoginInfo;
+import com.atoz.login.LoginInfo;
 
 public interface LoginService {
     LoginInfo getLoginInfo(LoginInfo loginInfo);

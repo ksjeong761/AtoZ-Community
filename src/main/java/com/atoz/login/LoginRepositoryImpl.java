@@ -1,7 +1,5 @@
-package com.atoz.login.repository;
+package com.atoz.login;
 
-import com.atoz.login.mapper.LoginMapper;
-import com.atoz.login.entity.LoginInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;

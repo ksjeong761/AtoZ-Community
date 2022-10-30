@@ -1,8 +1,5 @@
-package com.atoz.login.service;
+package com.atoz.login;
 
-import com.atoz.login.SessionConst;
-import com.atoz.login.entity.LoginInfo;
-import com.atoz.login.repository.LoginRepository;
 import com.atoz.user.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

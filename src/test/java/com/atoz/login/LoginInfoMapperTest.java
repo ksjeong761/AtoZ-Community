@@ -1,7 +1,5 @@
 package com.atoz.login;
 
-import com.atoz.login.entity.LoginInfo;
-import com.atoz.login.mapper.LoginMapper;
 import com.atoz.user.User;
 import com.atoz.user.UserMapper;
 import lombok.extern.slf4j.Slf4j;

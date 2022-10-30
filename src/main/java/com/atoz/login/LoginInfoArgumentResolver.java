@@ -1,7 +1,5 @@
 package com.atoz.login;
 
-import com.atoz.login.annotation.checkLogin;
-import com.atoz.login.entity.LoginInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;

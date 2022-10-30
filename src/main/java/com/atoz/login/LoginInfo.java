@@ -1,4 +1,4 @@
-package com.atoz.login.entity;
+package com.atoz.login;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.atoz.login.config;
+package com.atoz.login;
 
 import com.atoz.login.LoginCheckInterceptor;
 import com.atoz.login.LoginInfoArgumentResolver;
