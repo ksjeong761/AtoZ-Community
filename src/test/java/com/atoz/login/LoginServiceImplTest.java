@@ -1,6 +1,7 @@
 package com.atoz.login;
 
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -58,9 +59,8 @@ class LoginServiceImplTest {
 
         when(loginMapper.findById(otherLoginInfo.getUserId())).thenReturn(encryptedTestLoginInfo);
 
-        LoginInfo loginInfo = loginServiceImpl.getLoginInfo(otherLoginInfo);
-
+        Assertions.assertThatThrownBy(() -> loginServiceImpl.getLoginInfo(otherLoginInfo))
+                .isInstanceOf(LoginValidationException.class);
         verify(loginMapper).findById("testId");
-        assertThat(loginInfo).isNotEqualTo(otherLoginInfo);
     }
 }

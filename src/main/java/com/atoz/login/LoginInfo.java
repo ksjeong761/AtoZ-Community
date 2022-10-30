@@ -2,17 +2,22 @@ package com.atoz.login;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
+@Getter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class LoginInfo {
 
-    @NotBlank(message = "유저 아이디가 공백일 수 없습니다.")
+    @NotNull(message = "공백없이 아이디를 입력해주세요")
     private String userId;
 
-    @NotBlank(message = "유저 패스워드가 공백일 수 없습니다.")
+    @NotNull(message = "공백없이 패스워드를 입력해주세요")
     private String password;
 
     public String getUserId() {

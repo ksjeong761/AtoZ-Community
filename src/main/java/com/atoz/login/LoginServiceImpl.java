@@ -1,12 +1,9 @@
 package com.atoz.login;
 
-import com.atoz.user.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.servlet.http.HttpSession;
 
 @Slf4j
 @Service
@@ -23,13 +20,11 @@ public class LoginServiceImpl implements LoginService {
         LoginInfo storedLoginInfo = loginMapper.findById(loginInfo.getUserId());
 
         if (storedLoginInfo == null) {
-            log.info("아이디 또는 패스워드 값이 존재하지 않습니다.");
-            return null;
+            throw new LoginValidationException("해당 유저가 존재하지 않습니다.");
         }
 
         if (!isValidPassword(loginInfo, storedLoginInfo)) {
-            log.info("패스워드 값이 일치하지 않습니다.");
-            return null;
+            throw new LoginValidationException("패스워드 값이 일치하지 않습니다.");
         }
 
         return storedLoginInfo;

@@ -80,9 +80,7 @@ public class LoginControllerTest {
 
 
         //then
-        actions.andExpect(status().isOk())
-                .andExpect(content().string("fail"));
-
+        actions.andExpect(status().isUnauthorized());
         verify(loginService).getLoginInfo(any(LoginInfo.class));
     }
 }

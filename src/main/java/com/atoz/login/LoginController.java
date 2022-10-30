@@ -2,14 +2,15 @@ package com.atoz.login;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -20,50 +21,32 @@ public class LoginController {
     private final LoginService loginService;
 
     @PostMapping("/login")
-    public String login(@Valid @ModelAttribute LoginInfo loginInfo,
-                        BindingResult bindingResult,
-                        HttpServletRequest request,
-                        HttpServletResponse response) {
+    public ResponseEntity<Object> login(@Validated @RequestBody LoginInfo loginInfo,
+                                        HttpServletRequest request) {
         log.info("LoginController.login");
 
-        if (bindingResult.hasErrors()) {
-            log.info("errors={}", bindingResult);
-            return "fail";
-        }
-
         LoginInfo userLoginInfo = loginService.getLoginInfo(loginInfo);
-
-        if (userLoginInfo == null) {
-            bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다.");
-            log.info("errors={}", bindingResult);
-            return "fail";
-        }
 
         HttpSession session = request.getSession();
         session.setAttribute(SessionConst.LOGIN_MEMBER, userLoginInfo);
 
-        return "login success";
+        Map<String, Object> responseBodyMap = new HashMap<>();
+        responseBodyMap.put("message", "login success");
+
+        return ResponseEntity.ok().body(responseBodyMap);
     }
 
     @PostMapping("/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<Object> logout(HttpServletRequest request, HttpServletResponse response) {
 
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
-        return "logout success";
-    }
 
-    @GetMapping("/")
-    public String loginHome(@checkLogin LoginInfo loginInfo, Model model) {
+        Map<String, String> responseBodyMap = new HashMap<>();
+        responseBodyMap.put("message", "logout success");
 
-        if (loginInfo == null) {
-            return "go home";
-        }
-
-        model.addAttribute("loginInfo", loginInfo);
-
-        return "go login home";
+        return ResponseEntity.ok().build();
     }
 }
