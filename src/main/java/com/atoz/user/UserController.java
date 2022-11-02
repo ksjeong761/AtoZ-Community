@@ -3,7 +3,6 @@ package com.atoz.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,11 +16,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<User> register(@Validated @RequestBody User user) {
-        log.info("UserController register");
-
-        userService.register(user);
-
-        return ResponseEntity.ok(user);
+    public UserResponseDTO register(@Validated @RequestBody UserRequestDTO userRequestDTO) {
+        return userService.register(userRequestDTO);
     }
 }
