@@ -15,8 +15,6 @@ public class LoginServiceImpl implements LoginService {
     @Transactional
     @Override
     public LoginInfo getLoginInfo(LoginInfo loginInfo) {
-        log.info("LoginServiceImpl.getLoginInfo");
-
         LoginInfo storedLoginInfo = loginMapper.findById(loginInfo.getUserId());
 
         if (storedLoginInfo == null) {

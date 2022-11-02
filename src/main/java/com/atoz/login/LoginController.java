@@ -23,7 +23,6 @@ public class LoginController {
     @PostMapping("/login")
     public ResponseEntity<Object> login(@Validated @RequestBody LoginInfo loginInfo,
                                         HttpServletRequest request) {
-        log.info("LoginController.login");
 
         LoginInfo userLoginInfo = loginService.getLoginInfo(loginInfo);
 
