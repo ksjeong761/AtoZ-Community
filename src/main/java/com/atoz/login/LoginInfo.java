@@ -14,10 +14,10 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class LoginInfo {
 
-    @NotNull(message = "공백없이 아이디를 입력해주세요")
+    @NotNull(message = "아이디를 반드시 입력해주세요")
     private String userId;
 
-    @NotNull(message = "공백없이 패스워드를 입력해주세요")
+    @NotNull(message = "패스워드를 반드시 입력해주세요")
     private String password;
 
     public String getUserId() {
