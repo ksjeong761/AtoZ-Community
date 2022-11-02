@@ -13,21 +13,19 @@ import org.springframework.test.context.TestPropertySource;
 @MybatisTest
 class UserMapperTest {
 
-    @Autowired
     private UserMapper userMapper;
 
-    @Autowired
     private LoginMapper loginMapper;
 
     @Test
-    void 회원_데이터_저장_성공() {
-        User user = new User();
-        user.setUserId("testUserId");
-        user.setEmail("testEmail");
-        user.setNickname("testNickname");
-        user.setPassword("testPassword");
+    void addUser_회원가입에_성공해야한다() {
+        UserRequestDTO userRequestDTO = new UserRequestDTO(
+                "testUserId",
+                "testPassword",
+                "testNickname",
+                "test@test.com");
 
-        userMapper.addUser(user);
+        userMapper.addUser(userRequestDTO);
         LoginInfo addedUser = loginMapper.findById("testUserId");
 
         Assertions.assertThat(addedUser.getUserId()).isEqualTo("testUserId");
@@ -35,16 +33,16 @@ class UserMapperTest {
     }
 
     @Test
-    void 회원_아이디가_중복되면_저장_실패() {
-        User user = new User();
-        user.setUserId("testUserId");
-        user.setEmail("testEmail");
-        user.setNickname("testNickname");
-        user.setPassword("testPassword");
+    void addUser_아이디가_중복되면_회원가입에_실패해야한다() {
+        UserRequestDTO userRequestDTO = new UserRequestDTO(
+                "testUserId",
+                "testPassword",
+                "testNickname",
+                "test@test.com");
 
         Assertions.assertThatThrownBy(() -> {
-            userMapper.addUser(user);
-            userMapper.addUser(user);
+            userMapper.addUser(userRequestDTO);
+            userMapper.addUser(userRequestDTO);
         }).isInstanceOf(DataAccessException.class);
     }
 }
