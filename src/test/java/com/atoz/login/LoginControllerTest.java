@@ -1,5 +1,6 @@
 package com.atoz.login;
 
+import com.atoz.ApiResponse;
 import com.atoz.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,9 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -41,9 +39,9 @@ public class LoginControllerTest {
 
     ObjectMapper objectMapper;
 
-    LoginRequestDTO testLoginRequestDTO;
+    LoginDTO testLoginDTO;
 
-    LoginRequestDTO encryptedTestLoginInfo;
+    LoginDTO encryptedTestLoginInfo;
 
     @BeforeEach
     public void beforeEach() {
@@ -55,12 +53,12 @@ public class LoginControllerTest {
 
         objectMapper = new ObjectMapper();
 
-        testLoginRequestDTO = LoginRequestDTO.builder()
+        testLoginDTO = LoginDTO.builder()
                 .userId("testId")
                 .password("testPassword")
                 .build();
 
-        encryptedTestLoginInfo = LoginRequestDTO.builder()
+        encryptedTestLoginInfo = LoginDTO.builder()
                 .userId("testId")
                 .password("testPassword")
                 .build();
@@ -68,40 +66,38 @@ public class LoginControllerTest {
 
     @Test
     void 올바른_아이디_비밀번호_쌍_로그인_성공() throws Exception {
-        given(loginService.getLoginInfo(any(LoginRequestDTO.class))).willReturn(encryptedTestLoginInfo);
+        given(loginService.getLoginInfo(any(LoginDTO.class))).willReturn(encryptedTestLoginInfo);
 
         ResultActions actions = mockMvc.perform(post("/user/login")
-                .content(objectMapper.writeValueAsString(testLoginRequestDTO))
+                .content(objectMapper.writeValueAsString(testLoginDTO))
                 .contentType(MediaType.APPLICATION_JSON));
 
-
-        Map<String, Object> responseBodyMap = new HashMap<>();
-        responseBodyMap.put("message", "login success");
-
+        ApiResponse<LoginDTO> data = ApiResponse.<LoginDTO>builder()
+                .message("login success")
+                .data(LoginDTO.builder().userId("testId").build()).build();
         actions.andExpect(status().isOk())
-                .andExpect(content().string(objectMapper.writeValueAsString(responseBodyMap)));
-
-        verify(loginService).getLoginInfo(any(LoginRequestDTO.class));
+                .andExpect(content().string(objectMapper.writeValueAsString(data)));
+        verify(loginService).getLoginInfo(any(LoginDTO.class));
     }
 
     @Test
     void 틀린_아이디_비밀번호_쌍_로그인_실패() throws Exception {
-        LoginRequestDTO otherLoginRequestDTO = LoginRequestDTO.builder()
+        LoginDTO otherLoginDTO = LoginDTO.builder()
                 .userId("testId")
                 .password("testPassword2")
                 .build();
-        given(loginService.getLoginInfo(any(LoginRequestDTO.class))).willThrow(new LoginValidationException("패스워드 값이 일치하지 않습니다."));
+        given(loginService.getLoginInfo(any(LoginDTO.class))).willThrow(new LoginValidationException("패스워드 값이 일치하지 않습니다."));
 
         ResultActions actions = mockMvc
                 .perform(post("/user/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(otherLoginRequestDTO)))
+                .content(objectMapper.writeValueAsString(otherLoginDTO)))
                 .andDo(print());
 
         ErrorResponse errorResponse = new ErrorResponse("패스워드 값이 일치하지 않습니다.");
 
         actions.andExpect(status().isUnauthorized())
                 .andExpect(content().string(objectMapper.writeValueAsString(errorResponse)));
-        verify(loginService).getLoginInfo(any(LoginRequestDTO.class));
+        verify(loginService).getLoginInfo(any(LoginDTO.class));
     }
 }

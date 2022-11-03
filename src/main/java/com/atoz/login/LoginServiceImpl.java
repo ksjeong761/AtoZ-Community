@@ -14,21 +14,21 @@ public class LoginServiceImpl implements LoginService {
 
     @Transactional
     @Override
-    public LoginRequestDTO getLoginInfo(LoginRequestDTO loginRequestDTO) {
-        LoginRequestDTO storedLoginRequestDTO = loginMapper.findById(loginRequestDTO.getUserId());
+    public LoginDTO getLoginInfo(LoginDTO loginDTO) {
+        LoginDTO storedLoginDTO = loginMapper.findById(loginDTO.getUserId());
 
-        if (storedLoginRequestDTO == null) {
+        if (storedLoginDTO == null) {
             throw new LoginValidationException("해당 유저가 존재하지 않습니다.");
         }
 
-        if (!isValidPassword(loginRequestDTO, storedLoginRequestDTO)) {
+        if (!isValidPassword(loginDTO, storedLoginDTO)) {
             throw new LoginValidationException("패스워드 값이 일치하지 않습니다.");
         }
 
-        return storedLoginRequestDTO;
+        return storedLoginDTO;
     }
 
-    private boolean isValidPassword(LoginRequestDTO loginRequestDTO, LoginRequestDTO storedLoginRequestDTO) {
-        return loginRequestDTO.getPassword().equals(storedLoginRequestDTO.getPassword());
+    private boolean isValidPassword(LoginDTO loginDTO, LoginDTO storedLoginDTO) {
+        return loginDTO.getPassword().equals(storedLoginDTO.getPassword());
     }
 }

@@ -1,5 +1,6 @@
 package com.atoz.login;
 
+import com.atoz.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,18 +22,19 @@ public class LoginController {
     private final LoginService loginService;
 
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@Validated @RequestBody LoginRequestDTO loginRequestDTO,
-                                        HttpServletRequest request) {
+    public ApiResponse<LoginDTO> login(@Validated @RequestBody LoginDTO loginDTO,
+                                       HttpServletRequest request) {
 
-        LoginRequestDTO userLoginRequestDTO = loginService.getLoginInfo(loginRequestDTO);
+        LoginDTO userLoginDTO = loginService.getLoginInfo(loginDTO);
 
         HttpSession session = request.getSession();
-        session.setAttribute(SessionConst.LOGIN_MEMBER, userLoginRequestDTO);
+        session.setAttribute(SessionConst.LOGIN_MEMBER, userLoginDTO);
 
-        Map<String, Object> responseBodyMap = new HashMap<>();
-        responseBodyMap.put("message", "login success");
+        LoginDTO responseData = LoginDTO.builder().userId(userLoginDTO.getUserId()).build();
 
-        return ResponseEntity.ok().body(responseBodyMap);
+        return ApiResponse.<LoginDTO>builder()
+                .message("login success")
+                .data(responseData).build();
     }
 
     @PostMapping("/logout")

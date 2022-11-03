@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginRequestDTO {
+public class LoginDTO {
 
     @NotNull(message = "아이디를 반드시 입력해주세요")
     private String userId;
