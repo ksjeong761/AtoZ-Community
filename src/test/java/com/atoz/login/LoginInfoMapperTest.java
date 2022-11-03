@@ -35,27 +35,21 @@ public class LoginInfoMapperTest {
 
     @Test
     void 유저아이디로_유저_정보_조회_성공() {
-        //given
         userMapper.addUser(user);
 
-        //when
         LoginRequestDTO findUser = loginMapper.findById(user.getUserId());
         log.info("findUser id={}, password={}", findUser.getUserId(), findUser.getPassword());
 
-        //then
         saveAndFindUserEquality(user, findUser);
     }
 
     @Test
     void 유저아이디로_유저_정보_조회_실패() {
-        //given
         userMapper.addUser(user);
 
-        //when
         String findUserName = "test";
         LoginRequestDTO findUser = loginMapper.findById("test");
 
-        //then
         assertThat(findUser).isNull();
     }
 
@@ -63,6 +57,4 @@ public class LoginInfoMapperTest {
         assertThat(findUser.getUserId()).isEqualTo(user.getUserId());
         assertThat(findUser.getPassword()).isEqualTo(user.getPassword());
     }
-
-    ;
 }
