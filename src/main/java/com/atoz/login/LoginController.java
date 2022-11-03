@@ -21,13 +21,13 @@ public class LoginController {
     private final LoginService loginService;
 
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@Validated @RequestBody LoginInfo loginInfo,
+    public ResponseEntity<Object> login(@Validated @RequestBody LoginRequestDTO loginRequestDTO,
                                         HttpServletRequest request) {
 
-        LoginInfo userLoginInfo = loginService.getLoginInfo(loginInfo);
+        LoginRequestDTO userLoginRequestDTO = loginService.getLoginInfo(loginRequestDTO);
 
         HttpSession session = request.getSession();
-        session.setAttribute(SessionConst.LOGIN_MEMBER, userLoginInfo);
+        session.setAttribute(SessionConst.LOGIN_MEMBER, userLoginRequestDTO);
 
         Map<String, Object> responseBodyMap = new HashMap<>();
         responseBodyMap.put("message", "login success");

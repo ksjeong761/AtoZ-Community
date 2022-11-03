@@ -5,14 +5,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginInfo {
+public class LoginRequestDTO {
 
     @NotNull(message = "아이디를 반드시 입력해주세요")
     private String userId;

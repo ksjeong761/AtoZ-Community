@@ -25,18 +25,18 @@ public class LoginControllerTest {
     @MockBean
     LoginService loginService;
 
-    LoginInfo testLoginInfo;
+    LoginRequestDTO testLoginRequestDTO;
 
-    LoginInfo encryptedTestLoginInfo;
+    LoginRequestDTO encryptedTestLoginInfo;
 
     @BeforeEach
     public void beforeEach() {
-        testLoginInfo = LoginInfo.builder()
+        testLoginRequestDTO = LoginRequestDTO.builder()
                 .userId("testId")
                 .password("testPassword")
                 .build();
 
-        encryptedTestLoginInfo = LoginInfo.builder()
+        encryptedTestLoginInfo = LoginRequestDTO.builder()
                 .userId("testId")
                 .password("testPassword")
                 .build();
@@ -45,42 +45,42 @@ public class LoginControllerTest {
     @Test
     void 올바른_아이디_비밀번호_쌍_로그인_성공() throws Exception {
         //given
-        given(loginService.getLoginInfo(any(LoginInfo.class))).willReturn(encryptedTestLoginInfo);
+        given(loginService.getLoginInfo(any(LoginRequestDTO.class))).willReturn(encryptedTestLoginInfo);
 
         //when
         ResultActions actions = mockMvc.perform(post("/user/login")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("userId", testLoginInfo.getUserId())
-                .param("password", testLoginInfo.getPassword()));
+                .param("userId", testLoginRequestDTO.getUserId())
+                .param("password", testLoginRequestDTO.getPassword()));
 
 
         //then
         actions.andExpect(status().isOk())
                 .andExpect(content().string("login success"));
 
-        verify(loginService).getLoginInfo(any(LoginInfo.class));
+        verify(loginService).getLoginInfo(any(LoginRequestDTO.class));
     }
 
     @Test
     void 틀린_아이디_비밀번호_쌍_로그인_실패() throws Exception {
         //given
-        LoginInfo otherLoginInfo = LoginInfo.builder()
+        LoginRequestDTO otherLoginRequestDTO = LoginRequestDTO.builder()
                 .userId("testId")
                 .password("testPassword2")
                 .build();
 
-        given(loginService.getLoginInfo(any(LoginInfo.class))).willReturn(null);
+        given(loginService.getLoginInfo(any(LoginRequestDTO.class))).willReturn(null);
 
         //when
         ResultActions actions = mockMvc.perform(post("/user/login")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("userId", otherLoginInfo.getUserId())
-                .param("password", otherLoginInfo.getPassword()))
+                .param("userId", otherLoginRequestDTO.getUserId())
+                .param("password", otherLoginRequestDTO.getPassword()))
                 .andDo(print());
 
 
         //then
         actions.andExpect(status().isUnauthorized());
-        verify(loginService).getLoginInfo(any(LoginInfo.class));
+        verify(loginService).getLoginInfo(any(LoginRequestDTO.class));
     }
 }

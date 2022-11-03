@@ -4,5 +4,5 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface LoginMapper {
-    LoginInfo findById(String userId);
+    LoginRequestDTO findById(String userId);
 }

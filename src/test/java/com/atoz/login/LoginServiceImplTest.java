@@ -23,18 +23,18 @@ class LoginServiceImplTest {
     @InjectMocks
     LoginServiceImpl loginServiceImpl;
 
-    LoginInfo testLoginInfo;
+    LoginRequestDTO testLoginRequestDTO;
 
-    LoginInfo encryptedTestLoginInfo;
+    LoginRequestDTO encryptedTestLoginRequestDTO;
 
     @BeforeEach
     public void beforeEach() {
-        testLoginInfo = LoginInfo.builder()
+        testLoginRequestDTO = LoginRequestDTO.builder()
                 .userId("testId")
                 .password("testPassword")
                 .build();
 
-        encryptedTestLoginInfo = LoginInfo.builder()
+        encryptedTestLoginRequestDTO = LoginRequestDTO.builder()
                 .userId("testId")
                 .password("testPassword")
                 .build();
@@ -42,24 +42,24 @@ class LoginServiceImplTest {
 
     @Test
     void 올바른_아이디_비밀번호_쌍_로그인_성공() {
-        when(loginMapper.findById(testLoginInfo.getUserId())).thenReturn(encryptedTestLoginInfo);
+        when(loginMapper.findById(testLoginRequestDTO.getUserId())).thenReturn(encryptedTestLoginRequestDTO);
 
-        LoginInfo loginInfo = loginServiceImpl.getLoginInfo(testLoginInfo);
+        LoginRequestDTO loginRequestDTO = loginServiceImpl.getLoginInfo(testLoginRequestDTO);
 
         verify(loginMapper).findById("testId");
-        assertThat(loginInfo).isEqualTo(encryptedTestLoginInfo);
+        assertThat(loginRequestDTO).isEqualTo(encryptedTestLoginRequestDTO);
     }
 
     @Test
     void 틀린_아이디_비밀번호_쌍_로그인_실패() {
-        LoginInfo otherLoginInfo = LoginInfo.builder()
+        LoginRequestDTO otherLoginRequestDTO = LoginRequestDTO.builder()
                 .userId("testId")
                 .password("testPassword2")
                 .build();
 
-        when(loginMapper.findById(otherLoginInfo.getUserId())).thenReturn(encryptedTestLoginInfo);
+        when(loginMapper.findById(otherLoginRequestDTO.getUserId())).thenReturn(encryptedTestLoginRequestDTO);
 
-        Assertions.assertThatThrownBy(() -> loginServiceImpl.getLoginInfo(otherLoginInfo))
+        Assertions.assertThatThrownBy(() -> loginServiceImpl.getLoginInfo(otherLoginRequestDTO))
                 .isInstanceOf(LoginValidationException.class);
         verify(loginMapper).findById("testId");
     }

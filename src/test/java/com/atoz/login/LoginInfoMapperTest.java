@@ -39,7 +39,7 @@ public class LoginInfoMapperTest {
         userMapper.addUser(user);
 
         //when
-        LoginInfo findUser = loginMapper.findById(user.getUserId());
+        LoginRequestDTO findUser = loginMapper.findById(user.getUserId());
         log.info("findUser id={}, password={}", findUser.getUserId(), findUser.getPassword());
 
         //then
@@ -53,13 +53,13 @@ public class LoginInfoMapperTest {
 
         //when
         String findUserName = "test";
-        LoginInfo findUser = loginMapper.findById("test");
+        LoginRequestDTO findUser = loginMapper.findById("test");
 
         //then
         assertThat(findUser).isNull();
     }
 
-    private void saveAndFindUserEquality(User user, LoginInfo findUser) {
+    private void saveAndFindUserEquality(User user, LoginRequestDTO findUser) {
         assertThat(findUser.getUserId()).isEqualTo(user.getUserId());
         assertThat(findUser.getPassword()).isEqualTo(user.getPassword());
     }
