@@ -13,7 +13,6 @@ import org.springframework.test.context.TestPropertySource;
 @MybatisTest
 class UserMapperTest {
 
-    @Autowired
     private UserMapper userMapper;
 
     @Autowired
