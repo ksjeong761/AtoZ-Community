@@ -1,4 +1,4 @@
-package com.atoz.login;
+package com.atoz.error;
 
 public class LoginValidationException extends RuntimeException {
     public LoginValidationException() {
