@@ -1,5 +1,6 @@
-package com.atoz.login;
+package com.atoz.user;
 
+import com.atoz.error.LoginValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,16 +8,16 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.*;
 
 @Slf4j
-class LoginServiceImplTest {
+class UserServiceTest {
 
-    LoginServiceImpl loginServiceImpl;
+    UserService loginService;
 
     SpyStubLoginMapper loginMapper;
 
     @BeforeEach
     public void beforeEach() {
         loginMapper = new SpyStubLoginMapper();
-        loginServiceImpl = new LoginServiceImpl(loginMapper);
+        loginService = new UserServiceImpl(loginMapper);
     }
 
     @Test
@@ -26,7 +27,7 @@ class LoginServiceImplTest {
                 .password("testPassword")
                 .build();
 
-        LoginDTO actualLoginDTO = loginServiceImpl.getLoginInfo(expectedLoginDTO);
+        LoginDTO actualLoginDTO = loginService.getLoginInfo(expectedLoginDTO);
 
         assertThat(loginMapper.getCallFindByIdCount()).isEqualTo(1);
         isEquality(actualLoginDTO, expectedLoginDTO);
@@ -41,7 +42,7 @@ class LoginServiceImplTest {
 
 
         assertThatThrownBy(() ->
-                loginServiceImpl.getLoginInfo(expectedLoginDTO))
+                loginService.getLoginInfo(expectedLoginDTO))
                 .isInstanceOf(LoginValidationException.class)
                 .hasMessage("해당 유저가 존재하지 않습니다.");
         assertThat(loginMapper.getCallFindByIdCount()).isEqualTo(1);
@@ -55,7 +56,7 @@ class LoginServiceImplTest {
                 .build();
 
         assertThatThrownBy(() ->
-                loginServiceImpl.getLoginInfo(expectedLoginDTO))
+                loginService.getLoginInfo(expectedLoginDTO))
                 .isInstanceOf(LoginValidationException.class)
                 .hasMessage("패스워드 값이 일치하지 않습니다.");
         assertThat(loginMapper.getCallFindByIdCount()).isEqualTo(1);
@@ -66,9 +67,14 @@ class LoginServiceImplTest {
         assertThat(actual.getPassword()).isEqualTo(expected.getPassword());
     }
 
-    static class SpyStubLoginMapper implements LoginMapper {
+    static class SpyStubLoginMapper implements UserMapper {
 
         private int callFindByIdCount = 0;
+
+        @Override
+        public void addUser(RegisterDTO registerDTO) {
+
+        }
 
         @Override
         public LoginDTO findById(String userId) {

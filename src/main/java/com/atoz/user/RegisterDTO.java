@@ -1,6 +1,8 @@
 package com.atoz.user;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -10,7 +12,7 @@ import javax.validation.constraints.Size;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRequestDTO {
+public class RegisterDTO {
 
     @NotNull(message = "아이디를 반드시 입력해주세요.")
     @Size(min = 1, max = 20, message = "1 ~ 20자 사이의 아이디를 입력해주세요.")

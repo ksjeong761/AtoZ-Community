@@ -1,4 +1,4 @@
-package com.atoz.login;
+package com.atoz.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,12 +18,4 @@ public class LoginDTO {
 
     @NotNull(message = "패스워드를 반드시 입력해주세요")
     private String password;
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public String getPassword() {
-        return password;
-    }
 }
