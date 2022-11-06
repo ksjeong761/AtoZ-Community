@@ -1,9 +1,7 @@
 package com.atoz.login;
 
-import com.atoz.login.entity.LoginInfo;
-import com.atoz.login.mapper.LoginMapper;
-import com.atoz.user.User;
 import com.atoz.user.UserMapper;
+import com.atoz.user.UserRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +16,7 @@ import static org.assertj.core.api.Assertions.*;
 @MybatisTest
 public class LoginInfoMapperTest {
 
-    private User user;
+    private UserRequestDTO expectedUserRequestDTO;
 
     @Autowired
     private UserMapper userMapper;
@@ -28,43 +26,31 @@ public class LoginInfoMapperTest {
 
     @BeforeEach
     public void beforeEach() {
-        user = new User();
-        user.setUserId("testId");
-        user.setPassword("testPassword");
-        user.setNickname("testNickname");
-        user.setEmail("test@test.com");
+        expectedUserRequestDTO = new UserRequestDTO("testId", "testPassword", "testNickname", "test@test.com");
     }
 
     @Test
     void 유저아이디로_유저_정보_조회_성공() {
-        //given
-        userMapper.addUser(user);
+        userMapper.addUser(expectedUserRequestDTO);
 
-        //when
-        LoginInfo findUser = loginMapper.findById(user.getUserId());
-        log.info("findUser id={}, password={}", findUser.getUserId(), findUser.getPassword());
+        LoginDTO actualLoginDTO = loginMapper.findById(expectedUserRequestDTO.getUserId());
+        log.info("findUser id={}, password={}", actualLoginDTO.getUserId(), actualLoginDTO.getPassword());
 
-        //then
-        saveAndFindUserEquality(user, findUser);
+        isEquality(expectedUserRequestDTO, actualLoginDTO);
     }
 
     @Test
     void 유저아이디로_유저_정보_조회_실패() {
-        //given
-        userMapper.addUser(user);
+        userMapper.addUser(expectedUserRequestDTO);
 
-        //when
         String findUserName = "test";
-        LoginInfo findUser = loginMapper.findById("test");
+        LoginDTO findUser = loginMapper.findById("test");
 
-        //then
         assertThat(findUser).isNull();
     }
 
-    private void saveAndFindUserEquality(User user, LoginInfo findUser) {
-        assertThat(findUser.getUserId()).isEqualTo(user.getUserId());
-        assertThat(findUser.getPassword()).isEqualTo(user.getPassword());
+    private void isEquality(UserRequestDTO actual, LoginDTO expected) {
+        assertThat(actual.getUserId()).isEqualTo(expected.getUserId());
+        assertThat(actual.getPassword()).isEqualTo(expected.getPassword());
     }
-
-    ;
 }

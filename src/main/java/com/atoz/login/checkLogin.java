@@ -1,4 +1,4 @@
-package com.atoz.login.annotation;
+package com.atoz.login;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

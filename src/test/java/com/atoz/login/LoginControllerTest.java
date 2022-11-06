@@ -1,47 +1,64 @@
 package com.atoz.login;
 
-import com.atoz.login.controller.LoginController;
-import com.atoz.login.entity.LoginInfo;
-import com.atoz.login.service.LoginService;
+import com.atoz.ApiResponse;
+import com.atoz.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(LoginController.class)
+@ExtendWith(MockitoExtension.class)
 public class LoginControllerTest {
-    @Autowired
+
     MockMvc mockMvc;
 
-    @MockBean
+    @InjectMocks
+    LoginController loginController;
+
+    @Mock
     LoginService loginService;
 
-    LoginInfo testLoginInfo;
+    ObjectMapper objectMapper;
 
-    LoginInfo encryptedTestLoginInfo;
+    LoginDTO testLoginDTO;
+
+    LoginDTO encryptedTestLoginInfo;
 
     @BeforeEach
     public void beforeEach() {
-        testLoginInfo = LoginInfo.builder()
+        this.mockMvc = MockMvcBuilders
+                .standaloneSetup(loginController)
+                .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
+                .setControllerAdvice(ExceptionControllerAdvice.class)
+                .build();
+
+        objectMapper = new ObjectMapper();
+
+        testLoginDTO = LoginDTO.builder()
                 .userId("testId")
                 .password("testPassword")
                 .build();
 
-        encryptedTestLoginInfo = LoginInfo.builder()
+        encryptedTestLoginInfo = LoginDTO.builder()
                 .userId("testId")
                 .password("testPassword")
                 .build();
@@ -49,45 +66,38 @@ public class LoginControllerTest {
 
     @Test
     void 올바른_아이디_비밀번호_쌍_로그인_성공() throws Exception {
-        //given
-        given(loginService.getLoginInfo(any(LoginInfo.class))).willReturn(encryptedTestLoginInfo);
+        given(loginService.getLoginInfo(any(LoginDTO.class))).willReturn(encryptedTestLoginInfo);
 
-        //when
         ResultActions actions = mockMvc.perform(post("/user/login")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("userId", testLoginInfo.getUserId())
-                .param("password", testLoginInfo.getPassword()));
+                .content(objectMapper.writeValueAsString(testLoginDTO))
+                .contentType(MediaType.APPLICATION_JSON));
 
-
-        //then
+        ApiResponse<LoginDTO> data = ApiResponse.<LoginDTO>builder()
+                .message("login success")
+                .data(LoginDTO.builder().userId("testId").build()).build();
         actions.andExpect(status().isOk())
-                .andExpect(content().string("login success"));
-
-        verify(loginService).getLoginInfo(any(LoginInfo.class));
+                .andExpect(content().string(objectMapper.writeValueAsString(data)));
+        verify(loginService).getLoginInfo(any(LoginDTO.class));
     }
 
     @Test
     void 틀린_아이디_비밀번호_쌍_로그인_실패() throws Exception {
-        //given
-        LoginInfo otherLoginInfo = LoginInfo.builder()
+        LoginDTO otherLoginDTO = LoginDTO.builder()
                 .userId("testId")
                 .password("testPassword2")
                 .build();
+        given(loginService.getLoginInfo(any(LoginDTO.class))).willThrow(new LoginValidationException("패스워드 값이 일치하지 않습니다."));
 
-        given(loginService.getLoginInfo(any(LoginInfo.class))).willReturn(null);
-
-        //when
-        ResultActions actions = mockMvc.perform(post("/user/login")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("userId", otherLoginInfo.getUserId())
-                .param("password", otherLoginInfo.getPassword()))
+        ResultActions actions = mockMvc
+                .perform(post("/user/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(otherLoginDTO)))
                 .andDo(print());
 
+        ErrorResponse errorResponse = new ErrorResponse("패스워드 값이 일치하지 않습니다.");
 
-        //then
-        actions.andExpect(status().isOk())
-                .andExpect(content().string("fail"));
-
-        verify(loginService).getLoginInfo(any(LoginInfo.class));
+        actions.andExpect(status().isUnauthorized())
+                .andExpect(content().string(objectMapper.writeValueAsString(errorResponse)));
+        verify(loginService).getLoginInfo(any(LoginDTO.class));
     }
 }

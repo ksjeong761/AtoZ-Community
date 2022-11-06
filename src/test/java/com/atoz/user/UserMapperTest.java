@@ -1,7 +1,7 @@
 package com.atoz.user;
 
-import com.atoz.login.entity.LoginInfo;
-import com.atoz.login.mapper.LoginMapper;
+import com.atoz.login.LoginMapper;
+import com.atoz.login.LoginDTO;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
@@ -15,6 +15,7 @@ class UserMapperTest {
 
     private UserMapper userMapper;
 
+    @Autowired
     private LoginMapper loginMapper;
 
     @Test
@@ -26,7 +27,7 @@ class UserMapperTest {
                 "test@test.com");
 
         userMapper.addUser(userRequestDTO);
-        LoginInfo addedUser = loginMapper.findById("testUserId");
+        LoginDTO addedUser = loginMapper.findById("testUserId");
 
         Assertions.assertThat(addedUser.getUserId()).isEqualTo("testUserId");
         Assertions.assertThat(addedUser.getPassword()).isEqualTo("testPassword");
