@@ -2,5 +2,8 @@ package com.atoz.user;
 
 public interface UserService {
 
-    UserResponseDTO register(UserRequestDTO userRequestDTO);
+    UserResponseDTO signup(SignupDTO signupDTO);
+
+    SigninDTO findSigninInfo(SigninDTO signinDTO);
+
 }

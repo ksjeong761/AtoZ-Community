@@ -1,4 +1,4 @@
-package com.atoz.login;
+package com.atoz.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,19 +11,11 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginDTO {
+public class SigninDTO {
 
     @NotNull(message = "아이디를 반드시 입력해주세요")
     private String userId;
 
     @NotNull(message = "패스워드를 반드시 입력해주세요")
     private String password;
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public String getPassword() {
-        return password;
-    }
 }

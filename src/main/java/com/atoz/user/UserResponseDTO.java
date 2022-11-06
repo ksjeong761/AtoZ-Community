@@ -11,9 +11,9 @@ public class UserResponseDTO {
 
     private final String email;
 
-    public UserResponseDTO(UserRequestDTO requestDTO) {
-        this.userId = requestDTO.getUserId();
-        this.nickname = requestDTO.getNickname();
-        this.email = requestDTO.getEmail();
+    public UserResponseDTO(SignupDTO signupDTO) {
+        this.userId = signupDTO.getUserId();
+        this.nickname = signupDTO.getNickname();
+        this.email = signupDTO.getEmail();
     }
 }

@@ -1,5 +1,6 @@
-package com.atoz.login;
+package com.atoz.user;
 
+import com.atoz.error.SigninFailedException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,75 +8,80 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.*;
 
 @Slf4j
-class LoginServiceImplTest {
+class UserServiceTest {
 
-    LoginServiceImpl loginServiceImpl;
+    UserService userService;
 
-    SpyStubLoginMapper loginMapper;
+    SpyStubUserMapper userMapper;
 
     @BeforeEach
     public void beforeEach() {
-        loginMapper = new SpyStubLoginMapper();
-        loginServiceImpl = new LoginServiceImpl(loginMapper);
+        userMapper = new SpyStubUserMapper();
+        userService = new UserServiceImpl(userMapper);
     }
 
     @Test
     void 올바른_아이디_비밀번호_쌍_로그인_성공() {
-        LoginDTO expectedLoginDTO = LoginDTO.builder()
+        SigninDTO expectedSigninDTO = SigninDTO.builder()
                 .userId("testId")
                 .password("testPassword")
                 .build();
 
-        LoginDTO actualLoginDTO = loginServiceImpl.getLoginInfo(expectedLoginDTO);
+        SigninDTO actualSigninDTO = userService.findSigninInfo(expectedSigninDTO);
 
-        assertThat(loginMapper.getCallFindByIdCount()).isEqualTo(1);
-        isEquality(actualLoginDTO, expectedLoginDTO);
+        assertThat(userMapper.getCallFindByIdCount()).isEqualTo(1);
+        isEquality(actualSigninDTO, expectedSigninDTO);
     }
 
     @Test
     void 미등록_유저_아이디_로그인_실패() {
-        LoginDTO expectedLoginDTO = LoginDTO.builder()
+        SigninDTO expectedSigninDTO = SigninDTO.builder()
                 .userId("testId2")
                 .password("testPassword")
                 .build();
 
 
         assertThatThrownBy(() ->
-                loginServiceImpl.getLoginInfo(expectedLoginDTO))
-                .isInstanceOf(LoginValidationException.class)
+                userService.findSigninInfo(expectedSigninDTO))
+                .isInstanceOf(SigninFailedException.class)
                 .hasMessage("해당 유저가 존재하지 않습니다.");
-        assertThat(loginMapper.getCallFindByIdCount()).isEqualTo(1);
+        assertThat(userMapper.getCallFindByIdCount()).isEqualTo(1);
     }
 
     @Test
     void 틀린_아이디_로그인_쌍_실패() {
-        LoginDTO expectedLoginDTO = LoginDTO.builder()
+        SigninDTO expectedSigninDTO = SigninDTO.builder()
                 .userId("testId")
                 .password("testPassword2")
                 .build();
 
         assertThatThrownBy(() ->
-                loginServiceImpl.getLoginInfo(expectedLoginDTO))
-                .isInstanceOf(LoginValidationException.class)
+                userService.findSigninInfo(expectedSigninDTO))
+                .isInstanceOf(SigninFailedException.class)
                 .hasMessage("패스워드 값이 일치하지 않습니다.");
-        assertThat(loginMapper.getCallFindByIdCount()).isEqualTo(1);
+        assertThat(userMapper.getCallFindByIdCount()).isEqualTo(1);
     }
 
-    private void isEquality(LoginDTO actual, LoginDTO expected) {
+    private void isEquality(SigninDTO actual, SigninDTO expected) {
         assertThat(actual.getUserId()).isEqualTo(expected.getUserId());
         assertThat(actual.getPassword()).isEqualTo(expected.getPassword());
     }
 
-    static class SpyStubLoginMapper implements LoginMapper {
+    static class SpyStubUserMapper implements UserMapper {
 
         private int callFindByIdCount = 0;
 
         @Override
-        public LoginDTO findById(String userId) {
+        public void addUser(SignupDTO signupDTO) {
+
+        }
+
+        @Override
+        public SigninDTO findById(String userId) {
             this.callFindByIdCount++;
 
             if (userId.equals("testId")) {
-                return LoginDTO.builder()
+                return SigninDTO.builder()
                         .userId("testId")
                         .password("testPassword")
                         .build();

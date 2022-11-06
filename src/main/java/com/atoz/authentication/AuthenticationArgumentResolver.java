@@ -1,5 +1,6 @@
-package com.atoz.login;
+package com.atoz.authentication;
 
+import com.atoz.user.SigninDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -11,20 +12,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 @Slf4j
-public class LoginInfoArgumentResolver implements HandlerMethodArgumentResolver {
+public class AuthenticationArgumentResolver implements HandlerMethodArgumentResolver {
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        log.info("LoginMemberArgumentResolver.supportsParameter");
+        log.info("AuthenticationArgumentResolver.supportsParameter");
 
-        boolean hasLoginAnnotation = parameter.hasParameterAnnotation(checkLogin.class);
-        boolean hasMemberType = LoginDTO.class.isAssignableFrom(parameter.getParameterType());
+        boolean hasAuthCheckAnnotation = parameter.hasParameterAnnotation(AuthenticationCheck.class);
+        boolean hasMemberType = SigninDTO.class.isAssignableFrom(parameter.getParameterType());
 
-        return hasLoginAnnotation && hasMemberType;
+        return hasAuthCheckAnnotation && hasMemberType;
     }
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        log.info("LoginMemberArgumentResolver.resolveArgument");
+        log.info("AuthenticationArgumentResolver.resolveArgument");
 
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         HttpSession session = request.getSession();
@@ -32,6 +33,6 @@ public class LoginInfoArgumentResolver implements HandlerMethodArgumentResolver 
             return null;
         }
 
-        return session.getAttribute(SessionConst.LOGIN_MEMBER);
+        return session.getAttribute(AuthenticationConst.SIGNIN_MEMBER);
     }
 }
