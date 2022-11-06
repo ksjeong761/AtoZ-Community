@@ -5,8 +5,8 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface UserMapper {
 
-    void addUser(RegisterDTO registerDTO);
+    void addUser(SignupDTO signupDTO);
 
-    LoginDTO findById(String userId);
+    SigninDTO findById(String userId);
 
 }

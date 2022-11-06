@@ -24,29 +24,29 @@ public class UserController {
     @Autowired
     private final UserService userService;
 
-    @PostMapping("/register")
-    public UserResponseDTO register(@Validated @RequestBody RegisterDTO registerDTO) {
-        return userService.register(registerDTO);
+    @PostMapping("/signup")
+    public UserResponseDTO signup(@Validated @RequestBody SignupDTO signupDTO) {
+        return userService.signup(signupDTO);
     }
 
-    @PostMapping("/login")
-    public ApiResponse<LoginDTO> login(@Validated @RequestBody LoginDTO loginDTO,
-                                       HttpServletRequest request) {
+    @PostMapping("/signin")
+    public ApiResponse<SigninDTO> signin(@Validated @RequestBody SigninDTO signinDTO,
+                                         HttpServletRequest request) {
 
-        LoginDTO userLoginDTO = userService.getLoginInfo(loginDTO);
+        SigninDTO userSigninDTO = userService.findSigninInfo(signinDTO);
 
         HttpSession session = request.getSession();
-        session.setAttribute(AuthenticationConst.LOGIN_MEMBER, userLoginDTO);
+        session.setAttribute(AuthenticationConst.SIGNIN_MEMBER, userSigninDTO);
 
-        LoginDTO responseData = LoginDTO.builder().userId(userLoginDTO.getUserId()).build();
+        SigninDTO responseData = SigninDTO.builder().userId(userSigninDTO.getUserId()).build();
 
-        return ApiResponse.<LoginDTO>builder()
-                .message("login success")
+        return ApiResponse.<SigninDTO>builder()
+                .message("signin success")
                 .data(responseData).build();
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<Object> logout(HttpServletRequest request, HttpServletResponse response) {
+    @PostMapping("/signout")
+    public ResponseEntity<Object> signout(HttpServletRequest request, HttpServletResponse response) {
 
         HttpSession session = request.getSession(false);
         if (session != null) {
@@ -54,7 +54,7 @@ public class UserController {
         }
 
         Map<String, String> responseBodyMap = new HashMap<>();
-        responseBodyMap.put("message", "logout success");
+        responseBodyMap.put("message", "signout success");
 
         return ResponseEntity.ok().build();
     }

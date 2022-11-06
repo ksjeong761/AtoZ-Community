@@ -3,12 +3,12 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.atoz.user.UserMapper">
-    <insert id="addUser" parameterType="com.atoz.user.RegisterDTO">
+    <insert id="addUser" parameterType="com.atoz.user.SignupDTO">
         insert into users (user_id, password, nickname, email)
         values (#{userId}, #{password}, #{nickname}, #{email});
     </insert>
 
-    <select id="findById" resultType="com.atoz.user.LoginDTO" parameterType="java.lang.String">
+    <select id="findById" resultType="com.atoz.user.SigninDTO" parameterType="java.lang.String">
         select user_id AS userId, password from users where user_id = #{userId};
     </select>
 </mapper>

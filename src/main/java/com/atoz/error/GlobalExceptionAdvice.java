@@ -35,6 +35,7 @@ public class GlobalExceptionAdvice {
         if (rootCause != null) {
             errorMessage = rootCause.getMessage();
         }
+
         return ResponseEntity.internalServerError().body(new ErrorResponseDTO(errorMessage));
     }
 }

@@ -1,6 +1,6 @@
 package com.atoz.user;
 
-import com.atoz.error.LoginValidationException;
+import com.atoz.error.SigninFailedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,29 +15,29 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private final UserMapper userMapper;
 
-    public UserResponseDTO register(RegisterDTO registerDTO) {
-        userMapper.addUser(registerDTO);
+    public UserResponseDTO signup(SignupDTO signupDTO) {
+        userMapper.addUser(signupDTO);
 
-        return new UserResponseDTO(registerDTO);
+        return new UserResponseDTO(signupDTO);
     }
 
     @Transactional
     @Override
-    public LoginDTO getLoginInfo(LoginDTO loginDTO) {
-        LoginDTO storedLoginDTO = userMapper.findById(loginDTO.getUserId());
+    public SigninDTO findSigninInfo(SigninDTO signinDTO) {
+        SigninDTO storedSigninDTO = userMapper.findById(signinDTO.getUserId());
 
-        if (storedLoginDTO == null) {
-            throw new LoginValidationException("해당 유저가 존재하지 않습니다.");
+        if (storedSigninDTO == null) {
+            throw new SigninFailedException("해당 유저가 존재하지 않습니다.");
         }
 
-        if (!isValidPassword(loginDTO, storedLoginDTO)) {
-            throw new LoginValidationException("패스워드 값이 일치하지 않습니다.");
+        if (!isValidPassword(signinDTO, storedSigninDTO)) {
+            throw new SigninFailedException("패스워드 값이 일치하지 않습니다.");
         }
 
-        return storedLoginDTO;
+        return storedSigninDTO;
     }
 
-    private boolean isValidPassword(LoginDTO loginDTO, LoginDTO storedLoginDTO) {
-        return loginDTO.getPassword().equals(storedLoginDTO.getPassword());
+    private boolean isValidPassword(SigninDTO signinDTO, SigninDTO storedSigninDTO) {
+        return signinDTO.getPassword().equals(storedSigninDTO.getPassword());
     }
 }

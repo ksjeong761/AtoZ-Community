@@ -15,7 +15,7 @@ public class AuthenticationConfig implements WebMvcConfigurer {
         registry.addInterceptor(new AuthenticationInterceptor())
                 .order(1)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/", "/user/register", "/user/login", "/user/logout", "/css/**", "/*.ico", "/error");
+                .excludePathPatterns("/", "/user/signup", "/user/signin", "/user/signout", "/css/**", "/*.ico", "/error");
     }
 
     @Override
