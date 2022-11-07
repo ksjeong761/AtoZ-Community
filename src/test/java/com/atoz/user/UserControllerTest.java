@@ -38,11 +38,6 @@ class UserControllerTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    SigninDTO testSigninDTO;
-
-    SigninDTO encryptedTestSigninDTO;
-
-
     private MockMvc mockMvc;
 
     @BeforeEach
@@ -51,16 +46,6 @@ class UserControllerTest {
                 .standaloneSetup(userController)
                 .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
                 .setControllerAdvice(GlobalExceptionAdvice.class)
-                .build();
-
-        testSigninDTO = SigninDTO.builder()
-                .userId("testId")
-                .password("testPassword")
-                .build();
-
-        encryptedTestSigninDTO = SigninDTO.builder()
-                .userId("testId")
-                .password("testPassword")
                 .build();
     }
 
@@ -187,39 +172,39 @@ class UserControllerTest {
     }
 
     @Test
-    void 올바른_아이디_비밀번호_쌍_로그인_성공() throws Exception {
-        given(userService.findSigninInfo(any(SigninDTO.class))).willReturn(encryptedTestSigninDTO);
+    void signin_로그인에_성공해야한다() throws Exception {
+        SigninDTO testSigninDTO = SigninDTO.builder()
+                .userId("testId")
+                .password("testPassword")
+                .build();
+        UserResponseDTO responseDTO = new UserResponseDTO("testId", "testNickname", "testEmail");
+        given(userService.signin(any(SigninDTO.class))).willReturn(responseDTO);
 
         ResultActions actions = mockMvc.perform(post("/user/signin")
                 .content(objectMapper.writeValueAsString(testSigninDTO))
                 .contentType(MediaType.APPLICATION_JSON));
 
-        ApiResponse<SigninDTO> data = ApiResponse.<SigninDTO>builder()
-                .message("signin success")
-                .data(SigninDTO.builder().userId("testId").build()).build();
         actions.andExpect(status().isOk())
-                .andExpect(content().string(objectMapper.writeValueAsString(data)));
-        verify(userService).findSigninInfo(any(SigninDTO.class));
+                .andExpect(content().string(objectMapper.writeValueAsString(responseDTO)));
+        verify(userService).signin(any(SigninDTO.class));
     }
 
     @Test
-    void 틀린_아이디_비밀번호_쌍_로그인_실패() throws Exception {
+    void signin_비밀번호가_틀리면_로그인에_실패해야한다() throws Exception {
         SigninDTO otherSigninDTO = SigninDTO.builder()
                 .userId("testId")
                 .password("testPassword2")
                 .build();
-        given(userService.findSigninInfo(any(SigninDTO.class))).willThrow(new SigninFailedException("패스워드 값이 일치하지 않습니다."));
-
-        ResultActions actions = mockMvc
-                .perform(post("/user/signin")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(otherSigninDTO)))
-                .andDo(print());
-
         ErrorResponseDTO errorResponse = new ErrorResponseDTO("패스워드 값이 일치하지 않습니다.");
+        given(userService.signin(any(SigninDTO.class))).willThrow(new SigninFailedException("패스워드 값이 일치하지 않습니다."));
 
-        actions.andExpect(status().isUnauthorized())
+        ResultActions actions = mockMvc.perform(post("/user/signin")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(otherSigninDTO)));
+
+        actions.andDo(print())
+                .andExpect(status().isUnauthorized())
                 .andExpect(content().string(objectMapper.writeValueAsString(errorResponse)));
-        verify(userService).findSigninInfo(any(SigninDTO.class));
+        verify(userService).signin(any(SigninDTO.class));
     }
 }

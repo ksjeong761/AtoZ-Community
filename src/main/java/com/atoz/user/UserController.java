@@ -30,24 +30,18 @@ public class UserController {
     }
 
     @PostMapping("/signin")
-    public ApiResponse<SigninDTO> signin(@Validated @RequestBody SigninDTO signinDTO,
-                                         HttpServletRequest request) {
-
-        SigninDTO userSigninDTO = userService.findSigninInfo(signinDTO);
+    public UserResponseDTO signin(@Validated @RequestBody SigninDTO signinDTO,
+                                  HttpServletRequest request) {
+        UserResponseDTO responseData = userService.signin(signinDTO);
 
         HttpSession session = request.getSession();
-        session.setAttribute(AuthenticationConst.SIGNIN_MEMBER, userSigninDTO);
+        session.setAttribute(AuthenticationConst.SIGNIN_MEMBER, responseData);
 
-        SigninDTO responseData = SigninDTO.builder().userId(userSigninDTO.getUserId()).build();
-
-        return ApiResponse.<SigninDTO>builder()
-                .message("signin success")
-                .data(responseData).build();
+        return responseData;
     }
 
     @PostMapping("/signout")
-    public ResponseEntity<Object> signout(HttpServletRequest request, HttpServletResponse response) {
-
+    public ResponseEntity<Object> signout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
