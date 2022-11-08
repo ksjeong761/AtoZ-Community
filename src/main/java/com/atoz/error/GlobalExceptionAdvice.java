@@ -24,8 +24,13 @@ public class GlobalExceptionAdvice {
                 .map(error -> error.getDefaultMessage())
                 .collect(Collectors.toList());
 
-        return ResponseEntity.badRequest()
-                .body(new MultipleErrorResponseDTO(errorMessages));
+        return ResponseEntity.badRequest().body(new MultipleErrorResponseDTO(errorMessages));
+    }
+
+    // 로그인에 실패했을 때 401 응답
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponseDTO> handleSigninFailed(SigninFailedException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponseDTO(ex.getMessage()));
     }
 
     // 요청은 정상적이지만 데이터베이스 관련 예외가 발생했을 때 500 응답
@@ -39,11 +44,5 @@ public class GlobalExceptionAdvice {
         }
 
         return ResponseEntity.internalServerError().body(new ErrorResponseDTO(errorMessage));
-    }
-
-    // 로그인에 실패했을 때 403 응답
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponseDTO> handleSigninFailed(SigninFailedException ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponseDTO(ex.getMessage()));
     }
 }

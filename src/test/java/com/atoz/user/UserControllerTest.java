@@ -1,6 +1,5 @@
 package com.atoz.user;
 
-import com.atoz.ApiResponse;
 import com.atoz.error.SigninFailedException;
 import com.atoz.error.GlobalExceptionAdvice;
 import com.atoz.error.ErrorResponseDTO;

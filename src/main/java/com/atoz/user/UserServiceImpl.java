@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
 
     private boolean isValidPassword(SigninDTO signinDTO, UserEntity user) {
         HashManager hashManager = new HashManager();
-        byte[] hashedPassword = hashManager.hashString(signinDTO.getPassword(), user.getPasswordSalt());
+        byte[] hashedPassword = hashManager.computeHash(signinDTO.getPassword(), user.getPasswordSalt());
 
         return Arrays.equals(hashedPassword, user.getPassword());
     }

@@ -21,7 +21,7 @@ public class UserEntity {
     public UserEntity(SignupDTO signupDTO) {
         HashManager hashManager = new HashManager();
         byte[] salt = hashManager.makeSalt();
-        byte[] hashedPassword = hashManager.hashString(signupDTO.getPassword(), salt);
+        byte[] hashedPassword = hashManager.computeHash(signupDTO.getPassword(), salt);
 
         this.userId = signupDTO.getUserId();
         this.password = hashedPassword;

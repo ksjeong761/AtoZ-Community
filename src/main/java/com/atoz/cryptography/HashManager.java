@@ -14,7 +14,7 @@ public class HashManager {
         return salt;
     }
 
-    public byte[] hashString(String input, byte[] salt) {
+    public byte[] computeHash(String input, byte[] salt) {
         MessageDigest messageDigest;
         try {
             messageDigest = MessageDigest.getInstance("SHA-256");
