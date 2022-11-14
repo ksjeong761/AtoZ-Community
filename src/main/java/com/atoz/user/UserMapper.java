@@ -7,6 +7,10 @@ public interface UserMapper {
 
     void addUser(SignupDTO signupDTO);
 
+    void addUser(UserEntity userEntity);
+
+    void addAuthority(UserEntity userEntity);
+
     SigninDTO findById(String userId);
 
 }

@@ -77,6 +77,14 @@ class UserServiceTest {
         }
 
         @Override
+        public void addUser(UserEntity userEntity) {
+        }
+
+        @Override
+        public void addAuthority(UserEntity userEntity) {
+        }
+
+        @Override
         public SigninDTO findById(String userId) {
             this.callFindByIdCount++;
 

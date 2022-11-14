@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.atoz.authentication.AuthMapper">
+
+    <resultMap id="JwtSigninDTOResultMap" type="com.atoz.authentication.JwtSigninDTO">
+        <constructor>
+            <arg column="user_id" javaType="java.lang.String"/>
+            <arg column="password" javaType="java.lang.String"/>
+            <arg column="nickname" javaType="java.lang.String"/>
+            <arg column="email" javaType="java.lang.String"/>
+            <arg resultMap="AuthorityResultMap" javaType="com.atoz.authentication.Authority"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="AuthorityResultMap" type="com.atoz.authentication.Authority">
+        <constructor>
+            <arg resultMap="MemberAuthResultMap" javaType="com.atoz.authentication.MemberAuth"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="MemberAuthResultMap" type="com.atoz.authentication.MemberAuth">
+        <constructor>
+            <arg column="authority_name" javaType="java.lang.Enum"/>
+        </constructor>
+    </resultMap>
+
+    <select id="findById" resultMap="JwtSigninDTOResultMap" parameterType="java.lang.String">
+        SELECT A.user_id,
+                A.password,
+                A.nickname,
+                A.email,
+                B.authority_name
+        FROM users A, authority B
+        WHERE A.user_id = #{userId}
+        AND A.user_id = B.user_id;
+    </select>
+
+<!--    <insert id="saveRefreshToken" parameterType="com.atoz.authentication.RefreshToken">-->
+<!--        INSERT INTO refresh_token (token_key, token_value)-->
+<!--        VALUES(#{tokenKey}, #{tokenValue})-->
+<!--        ON DUPLICATE KEY-->
+<!--        UPDATE token_value = VALUES(token_value);-->
+<!--    </insert>-->
+
+    <insert id="saveRefreshToken" parameterType="com.atoz.authentication.RefreshToken">
+        INSERT INTO refresh_token (token_key, token_value)
+        VALUES(#{tokenKey}, #{tokenValue})
+    </insert>
+
+    <update id="updateRefreshToken" parameterType="com.atoz.authentication.RefreshToken">
+        UPDATE refresh_token
+        SET token_value = #{tokenValue}
+        WHERE token_key = #{tokenKey}
+    </update>
+
+    <select id="findByKey" resultType="com.atoz.authentication.RefreshToken" parameterType="java.lang.String">
+        select
+            token_key AS tokenKey,
+            token_value AS tokenValue
+        from refresh_token
+        where token_key = #{tokenKey};
+    </select>
+
+    <delete id="deleteRefreshToken" parameterType="java.lang.String">
+        delete from refresh_token
+        where token_key = #{tokenKey};
+    </delete>
+</mapper>
