@@ -25,8 +25,8 @@ public class AuthController {
         return new AuthResponseDTO("로그아웃되었습니다.");
     }
 
-    @PostMapping("/reissue")
-    public TokenDTO reissue(@RequestBody TokenRequestDTO tokenRequestDTO) {
-        return authService.reissue(tokenRequestDTO);
+    @PostMapping("/refresh")
+    public TokenDTO refresh(@RequestBody TokenRequestDTO tokenRequestDTO) {
+        return authService.refresh(tokenRequestDTO);
     }
 }

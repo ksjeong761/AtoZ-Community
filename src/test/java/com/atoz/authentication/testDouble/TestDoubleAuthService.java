@@ -54,7 +54,7 @@ public class TestDoubleAuthService {
         authMapper.deleteRefreshToken(authentication.getName());
     }
 
-    public TokenDTO reissue(TokenRequestDTO tokenRequestDTO) {
+    public TokenDTO refresh(TokenRequestDTO tokenRequestDTO) {
         String orgAccessToken = tokenRequestDTO.getAccessToken();
         String orgRefreshToken = tokenRequestDTO.getRefreshToken();
 

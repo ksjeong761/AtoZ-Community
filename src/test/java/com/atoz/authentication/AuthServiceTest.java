@@ -102,7 +102,7 @@ class AuthServiceTest {
         Thread.sleep(1000L);
 
         //when
-        TokenDTO reissuedToken = authService.reissue(tokenRequestDTO);
+        TokenDTO reissuedToken = authService.refresh(tokenRequestDTO);
 
         //then
         assertThat(reissuedToken.getGrantType()).isEqualTo("Bearer");

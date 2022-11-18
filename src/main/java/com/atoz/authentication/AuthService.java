@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -68,7 +67,7 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenDTO reissue(TokenRequestDTO tokenRequestDTO) {
+    public TokenDTO refresh(TokenRequestDTO tokenRequestDTO) {
         String originAccessToken = tokenRequestDTO.getAccessToken();
         String originRefreshToken = tokenRequestDTO.getRefreshToken();
 
