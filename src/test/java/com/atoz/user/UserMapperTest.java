@@ -19,65 +19,75 @@ class UserMapperTest {
     @Autowired
     private UserMapper userMapper;
 
-    private SignupDTO expectedSignupDTO;
+    private SignupDTO signedUpUser;
 
     @BeforeEach
     public void beforeEach() {
-        expectedSignupDTO = new SignupDTO("testId", "testPassword", "testNickname", "test@test.com");
+
     }
 
     @Test
     void addUser_회원가입에_성공해야한다() {
-        SignupDTO signupDTO = new SignupDTO(
+        UserEntity user = new UserEntity(new SignupDTO(
                 "testUserId",
                 "testPassword",
                 "testNickname",
-                "test@test.com");
+                "test@test.com"
+        ));
 
-        userMapper.addUser(signupDTO);
-        SigninDTO addedUser = userMapper.findById("testUserId");
+        userMapper.addUser(user);
+        userMapper.addAuthority(user);
+        UserEntity addedUser = userMapper.findById(user.getUserId()).orElse(null);
 
-        Assertions.assertThat(addedUser.getUserId()).isEqualTo("testUserId");
-        Assertions.assertThat(addedUser.getPassword()).isEqualTo("testPassword");
+        assertThat(addedUser.getUserId()).isEqualTo("testUserId");
     }
 
     @Test
     void addUser_아이디가_중복되면_회원가입에_실패해야한다() {
-        SignupDTO signupDTO = new SignupDTO(
+        UserEntity user = new UserEntity(new SignupDTO(
                 "testUserId",
                 "testPassword",
                 "testNickname",
-                "test@test.com");
+                "test@test.com"
+        ));
 
         Assertions.assertThatThrownBy(() -> {
-            userMapper.addUser(signupDTO);
-            userMapper.addUser(signupDTO);
+            userMapper.addUser(user);
+            userMapper.addUser(user);
         }).isInstanceOf(DataAccessException.class);
     }
 
 
     @Test
-    void 유저아이디로_유저_정보_조회_성공() {
-        userMapper.addUser(expectedSignupDTO);
+    void findById_사용자정보를_조회할수있다() {
+        UserEntity signedUpUser = new UserEntity(new SignupDTO(
+                "testUserId",
+                "testPassword",
+                "testNickname",
+                "test@test.com"
+        ));
+        userMapper.addUser(signedUpUser);
+        userMapper.addAuthority(signedUpUser);
 
-        SigninDTO actualSigninDTO = userMapper.findById(expectedSignupDTO.getUserId());
-        log.info("findUser id={}, password={}", actualSigninDTO.getUserId(), actualSigninDTO.getPassword());
+        UserEntity foundUser = userMapper.findById(signedUpUser.getUserId()).orElse(null);
+        log.info("foundUser id={}, password={}", foundUser.getUserId(), foundUser.getPassword());
 
-        isEquality(expectedSignupDTO, actualSigninDTO);
+        assertThat(signedUpUser.getUserId()).isEqualTo(foundUser.getUserId());
     }
 
     @Test
-    void 유저아이디로_유저_정보_조회_실패() {
-        userMapper.addUser(expectedSignupDTO);
+    void findById_가입되지않은_사용자정보를_조회할수없다() {
+        UserEntity signedUpUser = new UserEntity(new SignupDTO(
+                "testUserId",
+                "testPassword",
+                "testNickname",
+                "test@test.com"
+        ));
+        userMapper.addUser(signedUpUser);
+        userMapper.addAuthority(signedUpUser);
 
-        String findUserName = "test";
-        SigninDTO findUser = userMapper.findById("test");
+        UserEntity findUser = userMapper.findById("wrong userId").orElse(null);
 
         assertThat(findUser).isNull();
-    }
-
-    private void isEquality(SignupDTO actual, SigninDTO expected) {
-        assertThat(actual.getUserId()).isEqualTo(expected.getUserId());
-        assertThat(actual.getPassword()).isEqualTo(expected.getPassword());
     }
 }

@@ -2,6 +2,7 @@ package com.atoz.authentication;
 
 import com.atoz.error.InvalidTokenException;
 import com.atoz.user.SigninDTO;
+import com.atoz.user.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,7 +19,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class AuthService {
     private final AuthenticationManager authenticationManager;
-    private final AuthMapper authMapper;
+    private final RefreshTokenMapper refreshTokenMapper;
     private final TokenProvider tokenProvider;
     private final CustomUserDetailService customUserDetailService;
 
@@ -29,7 +30,7 @@ public class AuthService {
         Authentication authenticate = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
         String userId = authenticate.getName();
 
-        JwtSigninDTO user = customUserDetailService.getUser(userId);
+        UserEntity user = customUserDetailService.getUser(userId);
 
         Set<Authority> authorities = new HashSet<>();
         authorities.add(user.getAuthority());
@@ -37,7 +38,7 @@ public class AuthService {
         String accessToken = tokenProvider.createAccessToken(userId, authorities);
         String refreshToken = tokenProvider.createRefreshToken(userId, authorities);
 
-        RefreshToken orgRefreshToken = authMapper.findByKey(user.getUserId()).orElse(null);
+        RefreshToken orgRefreshToken = refreshTokenMapper.findTokenByKey(user.getUserId()).orElse(null);
 
         // refresh token 저장
         RefreshToken newRefreshToken = RefreshToken.builder()
@@ -46,9 +47,9 @@ public class AuthService {
                 .build();
 
         if (orgRefreshToken == null) {
-            authMapper.saveRefreshToken(newRefreshToken);
+            refreshTokenMapper.saveToken(newRefreshToken);
         } else {
-            authMapper.updateRefreshToken(newRefreshToken);
+            refreshTokenMapper.updateToken(newRefreshToken);
         }
 
         return tokenProvider.createTokenDTO(accessToken, refreshToken);
@@ -62,8 +63,8 @@ public class AuthService {
         Authentication authentication = tokenProvider.getAuthentication(accessToken);
         String tokenKey = authentication.getName();
 
-        authMapper.findByKey(tokenKey).orElseThrow(() -> new InvalidTokenException("인증정보가 없습니다."));
-        authMapper.deleteRefreshToken(authentication.getName());
+        refreshTokenMapper.findTokenByKey(tokenKey).orElseThrow(() -> new InvalidTokenException("인증정보가 없습니다."));
+        refreshTokenMapper.deleteToken(authentication.getName());
     }
 
     @Transactional
@@ -75,7 +76,7 @@ public class AuthService {
 
         Authentication authentication = tokenProvider.getAuthentication(originAccessToken);
 
-        RefreshToken refreshToken = authMapper.findByKey(authentication.getName())
+        RefreshToken refreshToken = refreshTokenMapper.findTokenByKey(authentication.getName())
                 .orElseThrow(() -> new InvalidTokenException("로그아웃된 사용자"));
 
         if (!refreshToken.getTokenValue().equals(originRefreshToken)) {
@@ -83,7 +84,7 @@ public class AuthService {
         }
 
         String userId = tokenProvider.getUserIdByToken(originAccessToken);
-        JwtSigninDTO user = customUserDetailService.getUser(userId);
+        UserEntity user = customUserDetailService.getUser(userId);
 
         Set<Authority> authorities = new HashSet<>();
         authorities.add(user.getAuthority());
@@ -97,7 +98,7 @@ public class AuthService {
                 .tokenValue(newRefreshToken)
                 .build();
 
-        authMapper.updateRefreshToken(reissuedToken);
+        refreshTokenMapper.updateToken(reissuedToken);
 
         return tokenDTO;
     }

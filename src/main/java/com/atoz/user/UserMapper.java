@@ -2,15 +2,15 @@ package com.atoz.user;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.Optional;
+
 @Mapper
 public interface UserMapper {
-
-    void addUser(SignupDTO signupDTO);
 
     void addUser(UserEntity userEntity);
 
     void addAuthority(UserEntity userEntity);
 
-    SigninDTO findById(String userId);
+    Optional<UserEntity> findById(String userId);
 
 }

@@ -1,6 +1,6 @@
 package com.atoz.authentication;
 
-import com.atoz.authentication.testDouble.TestAuthMapper;
+import com.atoz.authentication.testDouble.TestRefreshTokenMapper;
 import com.atoz.authentication.testDouble.TestDoubleAuthService;
 import com.atoz.error.InvalidTokenException;
 import com.atoz.user.SigninDTO;
@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class AuthServiceTest {
 
     private TestDoubleAuthService authService;
-    private TestAuthMapper authMapper = new TestAuthMapper();
+    private TestRefreshTokenMapper authMapper = new TestRefreshTokenMapper();
 
     @BeforeEach
     public void beforeEach() {
@@ -31,7 +31,7 @@ class AuthServiceTest {
 
         TokenDTO signin = authService.signin(presentedIdPassword);
 
-        RefreshToken savedRefreshToken = authMapper.findByKey(presentedIdPassword.getUserId()).orElse(null);
+        RefreshToken savedRefreshToken = authMapper.findTokenByKey(presentedIdPassword.getUserId()).orElse(null);
         assertThat(signin.getGrantType()).isEqualTo("Bearer");
         assertThat(savedRefreshToken).isNotNull();
     }
@@ -71,7 +71,7 @@ class AuthServiceTest {
 
         authService.signout(tokenRequestDTO);
 
-        RefreshToken deletedToken = authMapper.findByKey(presentedIdPassword.getUserId()).orElse(null);
+        RefreshToken deletedToken = authMapper.findTokenByKey(presentedIdPassword.getUserId()).orElse(null);
         assertThat(deletedToken).isNull();
     }
 

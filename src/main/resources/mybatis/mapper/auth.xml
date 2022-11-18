@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.atoz.authentication.AuthMapper">
+<mapper namespace="com.atoz.authentication.RefreshTokenMapper">
 
     <resultMap id="JwtSigninDTOResultMap" type="com.atoz.authentication.JwtSigninDTO">
         <constructor>
@@ -45,18 +45,18 @@
 <!--        UPDATE token_value = VALUES(token_value);-->
 <!--    </insert>-->
 
-    <insert id="saveRefreshToken" parameterType="com.atoz.authentication.RefreshToken">
+    <insert id="saveToken" parameterType="com.atoz.authentication.RefreshToken">
         INSERT INTO refresh_token (token_key, token_value)
         VALUES(#{tokenKey}, #{tokenValue})
     </insert>
 
-    <update id="updateRefreshToken" parameterType="com.atoz.authentication.RefreshToken">
+    <update id="updateToken" parameterType="com.atoz.authentication.RefreshToken">
         UPDATE refresh_token
         SET token_value = #{tokenValue}
         WHERE token_key = #{tokenKey}
     </update>
 
-    <select id="findByKey" resultType="com.atoz.authentication.RefreshToken" parameterType="java.lang.String">
+    <select id="findTokenByKey" resultType="com.atoz.authentication.RefreshToken" parameterType="java.lang.String">
         select
             token_key AS tokenKey,
             token_value AS tokenValue
@@ -64,7 +64,7 @@
         where token_key = #{tokenKey};
     </select>
 
-    <delete id="deleteRefreshToken" parameterType="java.lang.String">
+    <delete id="deleteToken" parameterType="java.lang.String">
         delete from refresh_token
         where token_key = #{tokenKey};
     </delete>

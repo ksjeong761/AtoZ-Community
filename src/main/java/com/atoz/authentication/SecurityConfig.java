@@ -20,7 +20,7 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final CustomUserIdPasswordAuthProvider customUserIdPasswordAuthProvider;
-    private final AuthMapper authMapper;
+    private final RefreshTokenMapper refreshTokenMapper;
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
@@ -50,7 +50,7 @@ public class SecurityConfig {
                 .antMatchers("v3/api-docs", "/configuration/**", "/wagger*/**", "/webjars/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(new JwtFilter(tokenProvider, authMapper), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtFilter(tokenProvider, refreshTokenMapper), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

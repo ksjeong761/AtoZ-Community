@@ -20,7 +20,7 @@ public class JwtFilter extends OncePerRequestFilter {
     public static final String BEARER_PREFIX = "Bearer";
 
     private final TokenProvider tokenProvider;
-    private final AuthMapper authMapper;
+    private final RefreshTokenMapper refreshTokenMapper;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -35,7 +35,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 tokenProvider.validateToken(token);
 
                 String userId = tokenProvider.getUserIdByToken(token);
-                authMapper.findByKey(userId).orElseThrow(() -> new InvalidTokenException("로그아웃된 사용자"));
+                refreshTokenMapper.findTokenByKey(userId).orElseThrow(() -> new InvalidTokenException("로그아웃된 사용자"));
 
                 this.setAuthentication(token);
             } else {

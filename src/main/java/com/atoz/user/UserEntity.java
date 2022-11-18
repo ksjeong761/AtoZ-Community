@@ -20,6 +20,22 @@ public class UserEntity {
 
     private Authority authority;
 
+    public UserEntity(String userId, String password, String nickname, String email, Authority authority) {
+        this.userId = userId;
+        this.password = password;
+        this.nickname = nickname;
+        this.email = email;
+        this.authority = authority;
+    }
+
+    public UserEntity(SignupDTO signupDTO) {
+        this.userId = signupDTO.getUserId();
+        this.password = signupDTO.getPassword();
+        this.email = signupDTO.getEmail();
+        this.nickname = signupDTO.getNickname();
+        this.authority = Authority.builder().authorityName(MemberAuth.ROLE_USER).build();
+    }
+
     public UserEntity(PasswordEncoder passwordEncoder, SignupDTO signupDTO) {
 
         String password = passwordEncoder.encode(signupDTO.getPassword());

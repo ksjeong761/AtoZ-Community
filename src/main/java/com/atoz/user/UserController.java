@@ -29,21 +29,21 @@ public class UserController {
         return userService.signup(signupDTO);
     }
 
-    @PostMapping("/signin")
-    public ApiResponse<SigninDTO> signin(@Validated @RequestBody SigninDTO signinDTO,
-                                         HttpServletRequest request) {
-
-        SigninDTO userSigninDTO = userService.findSigninInfo(signinDTO);
-
-        HttpSession session = request.getSession();
-        session.setAttribute(AuthenticationConst.SIGNIN_MEMBER, userSigninDTO);
-
-        SigninDTO responseData = SigninDTO.builder().userId(userSigninDTO.getUserId()).build();
-
-        return ApiResponse.<SigninDTO>builder()
-                .message("signin success")
-                .data(responseData).build();
-    }
+//    @PostMapping("/signin")
+//    public ApiResponse<SigninDTO> signin(@Validated @RequestBody SigninDTO signinDTO,
+//                                         HttpServletRequest request) {
+//
+//        SigninDTO userSigninDTO = userService.findSigninInfo(signinDTO);
+//
+//        HttpSession session = request.getSession();
+//        session.setAttribute(AuthenticationConst.SIGNIN_MEMBER, userSigninDTO);
+//
+//        SigninDTO responseData = SigninDTO.builder().userId(userSigninDTO.getUserId()).build();
+//
+//        return ApiResponse.<SigninDTO>builder()
+//                .message("signin success")
+//                .data(responseData).build();
+//    }
 
     @PostMapping("/signout")
     public ResponseEntity<Object> signout(HttpServletRequest request, HttpServletResponse response) {

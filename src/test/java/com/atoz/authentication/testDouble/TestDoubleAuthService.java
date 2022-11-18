@@ -16,7 +16,7 @@ public class TestDoubleAuthService {
             new TestDoubleCustomUserIdPasswordAuthProvider();
     private TestDoubleCustomUserDetailService customUserDetailService;
     private TokenProvider tokenProvider = new TokenProvider(secretKey, 1800000, 604800000);
-    private AuthMapper authMapper = new TestAuthMapper();
+    private RefreshTokenMapper refreshTokenMapper = new TestRefreshTokenMapper();
 
     public TokenDTO signin(SigninDTO signinDTO) {
         UsernamePasswordAuthenticationToken authenticationToken =
@@ -36,7 +36,7 @@ public class TestDoubleAuthService {
         String accessToken = tokenProvider.createAccessToken(signinDTO.getUserId(), authorities);
         String refreshToken = tokenProvider.createRefreshToken(userId, authorities);
 
-        authMapper.saveRefreshToken(RefreshToken.builder()
+        refreshTokenMapper.saveToken(RefreshToken.builder()
                 .tokenKey(userId)
                 .tokenValue(refreshToken)
                 .build());
@@ -49,9 +49,9 @@ public class TestDoubleAuthService {
         tokenProvider.validateToken(accessToken);
         Authentication authentication = tokenProvider.getAuthentication(accessToken);
 
-        authMapper.findByKey(authentication.getName()).orElseThrow(() -> new InvalidTokenException("인증정보가 없습니다."));
+        refreshTokenMapper.findTokenByKey(authentication.getName()).orElseThrow(() -> new InvalidTokenException("인증정보가 없습니다."));
 
-        authMapper.deleteRefreshToken(authentication.getName());
+        refreshTokenMapper.deleteToken(authentication.getName());
     }
 
     public TokenDTO refresh(TokenRequestDTO tokenRequestDTO) {
@@ -75,7 +75,7 @@ public class TestDoubleAuthService {
                 .tokenValue(newRefreshToken)
                 .build();
 
-        authMapper.saveRefreshToken(saveRefreshToken);
+        refreshTokenMapper.saveToken(saveRefreshToken);
 
         return tokenDTO;
     }

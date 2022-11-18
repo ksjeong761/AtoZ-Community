@@ -18,7 +18,40 @@
         VALUES (#{userId}, #{authority.authorityName});
     </insert>
 
-    <select id="findById" resultType="com.atoz.user.SigninDTO" parameterType="java.lang.String">
-        SELECT user_id AS userId, password FROM users WHERE user_id = #{userId};
+<!--    <select id="findById" resultType="com.atoz.user.SigninDTO" parameterType="java.lang.String">-->
+<!--        SELECT user_id AS userId, password FROM users WHERE user_id = #{userId};-->
+<!--    </select>-->
+
+    <resultMap id="UserEntityResultMap" type="com.atoz.user.UserEntity">
+        <constructor>
+            <arg column="user_id" javaType="java.lang.String"/>
+            <arg column="password" javaType="java.lang.String"/>
+            <arg column="nickname" javaType="java.lang.String"/>
+            <arg column="email" javaType="java.lang.String"/>
+            <arg resultMap="AuthorityResultMap" javaType="com.atoz.authentication.Authority"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="AuthorityResultMap" type="com.atoz.authentication.Authority">
+        <constructor>
+            <arg resultMap="MemberAuthResultMap" javaType="com.atoz.authentication.MemberAuth"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="MemberAuthResultMap" type="com.atoz.authentication.MemberAuth">
+        <constructor>
+            <arg column="authority_name" javaType="java.lang.Enum"/>
+        </constructor>
+    </resultMap>
+
+    <select id="findById" resultMap="UserEntityResultMap" parameterType="java.lang.String">
+        SELECT A.user_id,
+        A.password,
+        A.nickname,
+        A.email,
+        B.authority_name
+        FROM users A, authority B
+        WHERE A.user_id = #{userId}
+        AND A.user_id = B.user_id;
     </select>
 </mapper>
