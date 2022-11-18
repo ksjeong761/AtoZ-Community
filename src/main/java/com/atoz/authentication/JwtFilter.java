@@ -35,7 +35,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 tokenProvider.validateToken(token);
 
                 String userId = tokenProvider.getUserIdByToken(token);
-                refreshTokenMapper.findTokenByKey(userId).orElseThrow(() -> new InvalidTokenException("로그아웃된 사용자"));
+                refreshTokenMapper.findTokenByKey(userId).orElseThrow(() -> new InvalidTokenException("로그아웃된 사용자입니다."));
 
                 this.setAuthentication(token);
             } else {

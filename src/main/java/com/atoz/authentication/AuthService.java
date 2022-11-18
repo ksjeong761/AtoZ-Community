@@ -83,7 +83,7 @@ public class AuthService {
         Authentication authentication = tokenProvider.getAuthentication(originAccessToken);
 
         RefreshToken refreshToken = refreshTokenMapper.findTokenByKey(authentication.getName())
-                .orElseThrow(() -> new InvalidTokenException("로그아웃된 사용자"));
+                .orElseThrow(() -> new InvalidTokenException("로그아웃된 사용자입니다."));
 
         if (!refreshToken.getTokenValue().equals(originRefreshToken)) {
             throw new InvalidTokenException("토큰이 일치하지 않습니다.");
