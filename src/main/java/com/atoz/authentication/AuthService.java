@@ -3,11 +3,13 @@ package com.atoz.authentication;
 import com.atoz.error.InvalidTokenException;
 import com.atoz.user.SigninDTO;
 import com.atoz.user.UserEntity;
+import com.atoz.user.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,17 +22,18 @@ import java.util.Set;
 public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final RefreshTokenMapper refreshTokenMapper;
+    private final UserMapper userMapper;
     private final TokenProvider tokenProvider;
-    private final CustomUserDetailService customUserDetailService;
 
     @Transactional
     public TokenDTO signin(SigninDTO signinDTO) {
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(signinDTO.getUserId(), signinDTO.getPassword());
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                new UsernamePasswordAuthenticationToken(signinDTO.getUserId(), signinDTO.getPassword());
 
         Authentication authenticate = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
         String userId = authenticate.getName();
 
-        UserEntity user = customUserDetailService.getUser(userId);
+        UserEntity user = getUserById(userId);
 
         Set<Authority> authorities = new HashSet<>();
         authorities.add(user.getAuthority());
@@ -38,11 +41,16 @@ public class AuthService {
         String accessToken = tokenProvider.createAccessToken(userId, authorities);
         String refreshToken = tokenProvider.createRefreshToken(userId, authorities);
 
+        saveOrUpdateRefreshToken(user, refreshToken);
+
+        return tokenProvider.createTokenDTO(accessToken, refreshToken);
+    }
+
+    private void saveOrUpdateRefreshToken(UserEntity user, String refreshToken) {
         RefreshToken orgRefreshToken = refreshTokenMapper.findTokenByKey(user.getUserId()).orElse(null);
 
-        // refresh token 저장
         RefreshToken newRefreshToken = RefreshToken.builder()
-                .tokenKey(userId)
+                .tokenKey(user.getUserId())
                 .tokenValue(refreshToken)
                 .build();
 
@@ -51,8 +59,6 @@ public class AuthService {
         } else {
             refreshTokenMapper.updateToken(newRefreshToken);
         }
-
-        return tokenProvider.createTokenDTO(accessToken, refreshToken);
     }
 
     @Transactional
@@ -84,7 +90,7 @@ public class AuthService {
         }
 
         String userId = tokenProvider.getUserIdByToken(originAccessToken);
-        UserEntity user = customUserDetailService.getUser(userId);
+        UserEntity user = getUserById(userId);
 
         Set<Authority> authorities = new HashSet<>();
         authorities.add(user.getAuthority());
@@ -92,7 +98,7 @@ public class AuthService {
         String newAccessToken = tokenProvider.createAccessToken(userId, authorities);
         String newRefreshToken = tokenProvider.createRefreshToken(userId, authorities);
         TokenDTO tokenDTO = tokenProvider.createTokenDTO(newAccessToken, newRefreshToken);
-
+    
         RefreshToken reissuedToken = RefreshToken.builder()
                 .tokenKey(userId)
                 .tokenValue(newRefreshToken)
@@ -101,5 +107,11 @@ public class AuthService {
         refreshTokenMapper.updateToken(reissuedToken);
 
         return tokenDTO;
+    }
+
+    private UserEntity getUserById(String userId) {
+        UserEntity user = userMapper.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("해당 유저가 존재하지 않습니다."));
+        return user;
     }
 }

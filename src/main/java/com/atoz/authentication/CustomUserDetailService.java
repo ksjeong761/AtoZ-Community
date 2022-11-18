@@ -36,12 +36,6 @@ public class CustomUserDetailService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("해당 유저가 존재하지 않습니다."));
     }
 
-    @Transactional(readOnly = true)
-    public UserEntity getUser(String userId) {
-        return userMapper.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("해당 유저가 존재하지 않습니다."));
-    }
-
     private UserDetails createUserDetails(UserEntity member) {
         Set<Authority> authorities = new HashSet<>();
         authorities.add(member.getAuthority());
