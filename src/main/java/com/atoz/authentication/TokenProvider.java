@@ -19,10 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.security.Key;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
@@ -53,10 +50,7 @@ public class TokenProvider {
     protected String createToken(String userId, Set<Authority> auth, long tokenValid) {
         Claims claims = Jwts.claims().setSubject(userId);
 
-        claims.put(AUTHORITIES_KEY,
-                auth.stream()
-                        .map(Authority::getAuthorityName)
-                        .collect(Collectors.joining(",")));
+        claims.put(AUTHORITIES_KEY, auth);
 
         Date now = new Date();
 
@@ -107,12 +101,12 @@ public class TokenProvider {
             throw new RuntimeException("유저에게 아무런 권한이 없습니다.");
         }
 
-        Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(AUTHORITIES_KEY)
-                                    .toString()
-                                    .split(","))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
+
+        Collection<? extends GrantedAuthority> authorities = Set.of(claims.get(AUTHORITIES_KEY))
+                                                                .stream()
+                                                                .map(String::valueOf)
+                                                                .map(SimpleGrantedAuthority::new)
+                                                                .collect(Collectors.toList());
 
         UserDetails principal = new User(claims.getSubject(), "", authorities);
 

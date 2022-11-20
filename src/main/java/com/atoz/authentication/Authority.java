@@ -11,6 +11,6 @@ public enum Authority {
     }
 
     public String getAuthorityName() {
-        return this.authorityName.toString();
+        return this.authorityName;
     }
 }
