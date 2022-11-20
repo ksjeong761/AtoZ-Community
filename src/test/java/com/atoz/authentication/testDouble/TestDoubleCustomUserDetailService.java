@@ -2,7 +2,6 @@ package com.atoz.authentication.testDouble;
 
 import com.atoz.authentication.Authority;
 import com.atoz.authentication.JwtSigninDTO;
-import com.atoz.authentication.MemberAuth;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,7 +25,7 @@ public class TestDoubleCustomUserDetailService implements UserDetailsService {
             String password = passwordEncoder.encode("testPassword");
 
             Set<Authority> authorities = new HashSet<>();
-            authorities.add(Authority.builder().authorityName(MemberAuth.ROLE_USER).build());
+            authorities.add(Authority.ROLE_USER);
             List<SimpleGrantedAuthority> authList = authorities.stream().map(Authority::getAuthorityName).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
 
             return new User(username, password, authList);
@@ -44,7 +43,7 @@ public class TestDoubleCustomUserDetailService implements UserDetailsService {
                     .password(password)
                     .nickname("testNickname")
                     .email("test@test.com")
-                    .authority(Authority.builder().authorityName(MemberAuth.ROLE_USER).build())
+                    .authority(Authority.ROLE_USER)
                     .build();
         }
         throw new UsernameNotFoundException("해당 유저가 존재하지 않습니다.");

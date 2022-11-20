@@ -13,7 +13,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Slf4j
@@ -35,8 +34,7 @@ public class AuthService {
 
         UserEntity user = getUserById(userId);
 
-        Set<Authority> authorities = new HashSet<>();
-        authorities.add(user.getAuthority());
+        Set<Authority> authorities = user.getAuthorities();
 
         String accessToken = tokenProvider.createAccessToken(userId, authorities);
         String refreshToken = tokenProvider.createRefreshToken(userId, authorities);
@@ -92,8 +90,7 @@ public class AuthService {
         String userId = tokenProvider.getUserIdByToken(originAccessToken);
         UserEntity user = getUserById(userId);
 
-        Set<Authority> authorities = new HashSet<>();
-        authorities.add(user.getAuthority());
+        Set<Authority> authorities = user.getAuthorities();
 
         String newAccessToken = tokenProvider.createAccessToken(userId, authorities);
         String newRefreshToken = tokenProvider.createRefreshToken(userId, authorities);

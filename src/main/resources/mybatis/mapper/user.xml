@@ -3,11 +3,6 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.atoz.user.UserMapper">
-<!--    <insert id="addUser" parameterType="com.atoz.user.SignupDTO">-->
-<!--        insert into users (user_id, password, nickname, email)-->
-<!--        values (#{userId}, #{password}, #{nickname}, #{email});-->
-<!--    </insert>-->
-
     <insert id="addUser" parameterType="com.atoz.user.UserEntity">
         INSERT INTO users (user_id, password, nickname, email)
         VALUES (#{userId}, #{password}, #{nickname}, #{email});
@@ -15,43 +10,36 @@
 
     <insert id="addAuthority" parameterType="com.atoz.user.UserEntity">
         INSERT INTO authority (user_id, authority_name)
-        VALUES (#{userId}, #{authority.authorityName});
+        VALUES
+        <foreach collection="authorities" item="authority" separator=",">
+            (
+                #{userId},
+                #{authority.authorityName}
+            )
+        </foreach>
     </insert>
 
-<!--    <select id="findById" resultType="com.atoz.user.SigninDTO" parameterType="java.lang.String">-->
-<!--        SELECT user_id AS userId, password FROM users WHERE user_id = #{userId};-->
-<!--    </select>-->
-
     <resultMap id="UserEntityResultMap" type="com.atoz.user.UserEntity">
-        <constructor>
-            <arg column="user_id" javaType="java.lang.String"/>
-            <arg column="password" javaType="java.lang.String"/>
-            <arg column="nickname" javaType="java.lang.String"/>
-            <arg column="email" javaType="java.lang.String"/>
-            <arg resultMap="AuthorityResultMap" javaType="com.atoz.authentication.Authority"/>
-        </constructor>
+        <result property="userId" column="user_id"/>
+        <result property="password" column="password"/>
+        <result property="nickname" column="nickname"/>
+        <result property="email" column="email"/>
+        <collection property="authorities" column="user_id" select="AuthorityResultMap"/>
     </resultMap>
 
-    <resultMap id="AuthorityResultMap" type="com.atoz.authentication.Authority">
-        <constructor>
-            <arg resultMap="MemberAuthResultMap" javaType="com.atoz.authentication.MemberAuth"/>
-        </constructor>
-    </resultMap>
-
-    <resultMap id="MemberAuthResultMap" type="com.atoz.authentication.MemberAuth">
-        <constructor>
-            <arg column="authority_name" javaType="java.lang.Enum"/>
-        </constructor>
-    </resultMap>
+    <select id="AuthorityResultMap" resultType="com.atoz.authentication.Authority">
+        SELECT authority_name
+        FROM authority
+        WHERE user_id = #{user_id}
+    </select>
 
     <select id="findById" resultMap="UserEntityResultMap" parameterType="java.lang.String">
-        SELECT A.user_id,
-        A.password,
-        A.nickname,
-        A.email,
-        B.authority_name
-        FROM users A, authority B
-        WHERE A.user_id = #{userId}
-        AND A.user_id = B.user_id;
+        SELECT
+            user_id,
+            password,
+            nickname,
+            email
+        FROM users
+        WHERE user_id = #{user_id}
     </select>
 </mapper>

@@ -1,5 +1,6 @@
 package com.atoz.user;
 
+import com.atoz.authentication.Authority;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,6 +9,9 @@ import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.TestPropertySource;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,12 +32,14 @@ class UserMapperTest {
 
     @Test
     void addUser_회원가입에_성공해야한다() {
-        UserEntity user = new UserEntity(new SignupDTO(
-                "testUserId",
-                "testPassword",
-                "testNickname",
-                "test@test.com"
-        ));
+        Set<Authority> authorities = new HashSet<>();
+        authorities.add(Authority.ROLE_USER);
+
+        UserEntity user = UserEntity.builder().userId("testUserId")
+                .password("testPassword")
+                .nickname("testNickname")
+                .email("test@test.com")
+                .authorities(authorities).build();
 
         userMapper.addUser(user);
         userMapper.addAuthority(user);
@@ -44,12 +50,14 @@ class UserMapperTest {
 
     @Test
     void addUser_아이디가_중복되면_회원가입에_실패해야한다() {
-        UserEntity user = new UserEntity(new SignupDTO(
-                "testUserId",
-                "testPassword",
-                "testNickname",
-                "test@test.com"
-        ));
+        Set<Authority> authorities = new HashSet<>();
+        authorities.add(Authority.ROLE_USER);
+
+        UserEntity user = UserEntity.builder().userId("testUserId")
+                .password("testPassword")
+                .nickname("testNickname")
+                .email("test@test.com")
+                .authorities(authorities).build();
 
         Assertions.assertThatThrownBy(() -> {
             userMapper.addUser(user);
@@ -60,12 +68,13 @@ class UserMapperTest {
 
     @Test
     void findById_사용자정보를_조회할수있다() {
-        UserEntity signedUpUser = new UserEntity(new SignupDTO(
-                "testUserId",
-                "testPassword",
-                "testNickname",
-                "test@test.com"
-        ));
+        Set<Authority> authorities = new HashSet<>();
+        authorities.add(Authority.ROLE_USER);
+        UserEntity signedUpUser = UserEntity.builder().userId("testUserId")
+                .password("testPassword")
+                .nickname("testNickname")
+                .email("test@test.com")
+                .authorities(authorities).build();
         userMapper.addUser(signedUpUser);
         userMapper.addAuthority(signedUpUser);
 
@@ -77,12 +86,13 @@ class UserMapperTest {
 
     @Test
     void findById_가입되지않은_사용자정보를_조회할수없다() {
-        UserEntity signedUpUser = new UserEntity(new SignupDTO(
-                "testUserId",
-                "testPassword",
-                "testNickname",
-                "test@test.com"
-        ));
+        Set<Authority> authorities = new HashSet<>();
+        authorities.add(Authority.ROLE_USER);
+        UserEntity signedUpUser = UserEntity.builder().userId("testUserId")
+                .password("testPassword")
+                .nickname("testNickname")
+                .email("test@test.com")
+                .authorities(authorities).build();
         userMapper.addUser(signedUpUser);
         userMapper.addAuthority(signedUpUser);
 

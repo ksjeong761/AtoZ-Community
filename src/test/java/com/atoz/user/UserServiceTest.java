@@ -1,13 +1,14 @@
 package com.atoz.user;
 
 import com.atoz.authentication.Authority;
-import com.atoz.authentication.MemberAuth;
-import com.atoz.error.SigninFailedException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -20,8 +21,9 @@ class UserServiceTest {
 
     @BeforeEach
     public void beforeEach() {
+        PasswordEncoder passwordEncoder = new Argon2PasswordEncoder();
         userMapper = new SpyStubUserMapper();
-        userService = new UserServiceImpl(userMapper);
+        userService = new UserServiceImpl(userMapper, passwordEncoder);
     }
 
 //    @Test
@@ -92,12 +94,15 @@ class UserServiceTest {
 //                        .userId("testId")
 //                        .password("testPassword")
 //                        .build();
+
+                Set<Authority> authorities = new HashSet<>();
+                authorities.add(Authority.ROLE_USER);
                 return Optional.ofNullable(
                         new UserEntity("testId",
                                 "testPassword",
                                 "testNickname",
                                 "test@test.com",
-                                new Authority(MemberAuth.ROLE_USER)));
+                                authorities));
             } else {
                 return null;
             }

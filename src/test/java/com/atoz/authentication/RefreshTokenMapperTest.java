@@ -45,7 +45,9 @@ class RefreshTokenMapperTest {
 
     @Test
     void findById_사용자정보를_조회할수있다() {
-        UserEntity userEntity = new UserEntity(passwordEncoder, signupDTO);
+        Set<Authority> authorities = new HashSet<>();
+        authorities.add(Authority.ROLE_USER);
+        UserEntity userEntity = new UserEntity(passwordEncoder, signupDTO, authorities);
         userMapper.addUser(userEntity);
         userMapper.addAuthority(userEntity);
 
@@ -66,12 +68,13 @@ class RefreshTokenMapperTest {
 
     @Test
     void findByKey_저장된_리프레시토큰을_조회할수있다() {
-        UserEntity userEntity = new UserEntity(passwordEncoder, signupDTO);
+        Set<Authority> authorities = new HashSet<>();
+        authorities.add(Authority.ROLE_USER);
+        UserEntity userEntity = new UserEntity(passwordEncoder, signupDTO, authorities);
         userMapper.addUser(userEntity);
         userMapper.addAuthority(userEntity);
 
-        Set<Authority> auths = new HashSet<>();
-        auths.add(userEntity.getAuthority());
+        Set<Authority> auths = userEntity.getAuthorities();
         String tokenValue = tokenProvider.createRefreshToken(userEntity.getUserId(), auths);
         RefreshToken expectedToken = RefreshToken.builder().tokenKey(userEntity.getUserId()).tokenValue(tokenValue).build();
         refreshTokenMapper.saveToken(expectedToken);
@@ -96,12 +99,13 @@ class RefreshTokenMapperTest {
 
     @Test
     void updateRefreshToken_저장된리프레시토큰을_업데이트할_수_있다() throws InterruptedException {
-        UserEntity userEntity = new UserEntity(passwordEncoder, signupDTO);
+        Set<Authority> authorities = new HashSet<>();
+        authorities.add(Authority.ROLE_USER);
+        UserEntity userEntity = new UserEntity(passwordEncoder, signupDTO, authorities);
         userMapper.addUser(userEntity);
         userMapper.addAuthority(userEntity);
 
-        Set<Authority> auths = new HashSet<>();
-        auths.add(userEntity.getAuthority());
+        Set<Authority> auths = userEntity.getAuthorities();
         String orgTokenValue = tokenProvider.createRefreshToken(userEntity.getUserId(), auths);
         RefreshToken orgRefreshToken = RefreshToken.builder().tokenKey(userEntity.getUserId()).tokenValue(orgTokenValue).build();
         refreshTokenMapper.saveToken(orgRefreshToken);
@@ -123,12 +127,13 @@ class RefreshTokenMapperTest {
 
     @Test
     void deleteRefreshToken_저장된리프레시토큰을_삭제할수있다() throws InterruptedException {
-        UserEntity userEntity = new UserEntity(passwordEncoder, signupDTO);
+        Set<Authority> authorities = new HashSet<>();
+        authorities.add(Authority.ROLE_USER);
+        UserEntity userEntity = new UserEntity(passwordEncoder, signupDTO, authorities);
         userMapper.addUser(userEntity);
         userMapper.addAuthority(userEntity);
 
-        Set<Authority> auths = new HashSet<>();
-        auths.add(userEntity.getAuthority());
+        Set<Authority> auths = userEntity.getAuthorities();
         String orgTokenValue = tokenProvider.createRefreshToken(userEntity.getUserId(), auths);
         RefreshToken orgRefreshToken = RefreshToken.builder().tokenKey(userEntity.getUserId()).tokenValue(orgTokenValue).build();
         refreshTokenMapper.saveToken(orgRefreshToken);

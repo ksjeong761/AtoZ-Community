@@ -1,14 +1,12 @@
 package com.atoz.authentication;
 
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+public enum Authority {
+    ROLE_USER("ROLE_USER"),
+    ROLE_ADMIN("ROLE_ADMIN");
 
-@Builder
-@NoArgsConstructor
-public class Authority {
-    private MemberAuth authorityName;
+    private final String authorityName;
 
-    public Authority(MemberAuth authorityName) {
+    Authority(String authorityName) {
         this.authorityName = authorityName;
     }
 
