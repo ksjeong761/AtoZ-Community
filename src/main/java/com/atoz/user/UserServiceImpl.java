@@ -1,14 +1,14 @@
 package com.atoz.user;
 
-import com.atoz.cryptography.HashManager;
-import com.atoz.error.SigninFailedException;
+import com.atoz.authentication.entity.Authority;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -17,34 +17,16 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     public UserResponseDTO signup(SignupDTO signupDTO) {
-        userMapper.addUser(new UserEntity(signupDTO));
+        Set<Authority> authorities = new HashSet<>();
+        authorities.add(Authority.ROLE_USER);
+
+        UserEntity userEntity = new UserEntity(passwordEncoder, signupDTO, authorities);
+        userMapper.addUser(userEntity);
+        userMapper.addAuthority(userEntity);
 
         return new UserResponseDTO(signupDTO);
-    }
-
-    @Transactional
-    @Override
-    public UserResponseDTO signin(SigninDTO signinDTO) {
-        UserEntity user = userMapper.findById(signinDTO.getUserId());
-
-        if (user == null) {
-            throw new SigninFailedException("해당 유저가 존재하지 않습니다.");
-        }
-
-        if (!isValidPassword(signinDTO, user)) {
-            throw new SigninFailedException("패스워드 값이 일치하지 않습니다.");
-        }
-
-        return new UserResponseDTO(user);
-    }
-
-
-    private boolean isValidPassword(SigninDTO signinDTO, UserEntity user) {
-        HashManager hashManager = new HashManager();
-        byte[] hashedPassword = hashManager.computeHash(signinDTO.getPassword(), user.getPasswordSalt());
-
-        return Arrays.equals(hashedPassword, user.getPassword());
     }
 }

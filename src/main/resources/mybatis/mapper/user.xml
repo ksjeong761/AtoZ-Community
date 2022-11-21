@@ -4,13 +4,42 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.atoz.user.UserMapper">
     <insert id="addUser" parameterType="com.atoz.user.UserEntity">
-        INSERT INTO users (user_id, password, nickname, email, password_salt)
-        VALUES (#{userId}, #{password}, #{nickname}, #{email}, #{passwordSalt});
+        INSERT INTO users (user_id, password, nickname, email)
+        VALUES (#{userId}, #{password}, #{nickname}, #{email});
     </insert>
 
-    <select id="findById" resultType="com.atoz.user.UserEntity" parameterType="java.lang.String">
-        SELECT user_id AS userId, password, nickname, email, password_salt AS passwordSalt
+    <insert id="addAuthority" parameterType="com.atoz.user.UserEntity">
+        INSERT INTO authority (user_id, authority_name)
+        VALUES
+        <foreach collection="authorities" item="authority" separator=",">
+            (
+                #{userId},
+                #{authority}
+            )
+        </foreach>
+    </insert>
+
+    <resultMap id="UserEntityResultMap" type="com.atoz.user.UserEntity">
+        <result property="userId" column="user_id"/>
+        <result property="password" column="password"/>
+        <result property="nickname" column="nickname"/>
+        <result property="email" column="email"/>
+        <collection property="authorities" column="user_id" select="AuthorityResultMap"/>
+    </resultMap>
+
+    <select id="AuthorityResultMap" resultType="com.atoz.authentication.entity.Authority">
+        SELECT authority_name
+        FROM authority
+        WHERE user_id = #{user_id}
+    </select>
+
+    <select id="findById" resultMap="UserEntityResultMap" parameterType="java.lang.String">
+        SELECT
+            user_id,
+            password,
+            nickname,
+            email
         FROM users
-        WHERE user_id = #{userId};
+        WHERE user_id = #{user_id}
     </select>
 </mapper>

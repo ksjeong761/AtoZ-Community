@@ -12,3 +12,12 @@ server:
 
 mybatis:
   mapper-locations: classpath:mybatis/mapper/**/*.xml
+
+# HS512 알고리즘을 사용하여 secret key 설정
+# secret 값은 특정 문자열을 Base64로 인코딩한 값 사용
+# echo -n "our-project-name-AtoZ-like-blind-for-generation-our-project-like-blind-generation" | openssl base64
+jwt:
+  header: Authorization
+  secret: b3VyLXByb2plY3QtbmFtZS1BdG9aLWxpa2UtYmxpbmQtZm9yLWdlbmVyYXRpb24tb3VyLXByb2plY3QtbGlrZS1ibGluZC1nZW5lcmF0aW9u
+  access-token-expire-time: 1800000
+  refresh-token-expire-time: 604800000

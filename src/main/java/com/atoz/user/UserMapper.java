@@ -2,11 +2,14 @@ package com.atoz.user;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.Optional;
+
 @Mapper
 public interface UserMapper {
 
     void addUser(UserEntity userEntity);
 
-    UserEntity findById(String userId);
+    void addAuthority(UserEntity userEntity);
 
+    Optional<UserEntity> findById(String userId);
 }
