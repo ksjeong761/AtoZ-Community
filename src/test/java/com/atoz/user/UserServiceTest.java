@@ -11,13 +11,15 @@ import static org.assertj.core.api.Assertions.*;
 @Slf4j
 class UserServiceTest {
 
-    UserService userService;
+    SpyStubUserMapper userMapper = new SpyStubUserMapper();
 
     SpyStubUserMapper userMapper;
+    
+    PasswordEncoder passwordEncoder;
 
     @BeforeEach
     public void beforeEach() {
-        PasswordEncoder passwordEncoder = new Argon2PasswordEncoder();
+        passwordEncoder = new Argon2PasswordEncoder();
         userMapper = new SpyStubUserMapper();
         userService = new UserServiceImpl(userMapper, passwordEncoder);
     }

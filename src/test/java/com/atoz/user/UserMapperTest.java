@@ -22,19 +22,16 @@ class UserMapperTest {
 
     @Autowired
     private UserMapper userMapper;
-
-    private SignupDTO signedUpUser;
+    
+    Set<Authority> authorities = new HashSet<>();
 
     @BeforeEach
     public void beforeEach() {
-
+        authorities.add(Authority.ROLE_USER);
     }
 
     @Test
     void addUser_회원가입에_성공해야한다() {
-        Set<Authority> authorities = new HashSet<>();
-        authorities.add(Authority.ROLE_USER);
-
         UserEntity user = UserEntity.builder().userId("testUserId")
                 .password("testPassword")
                 .nickname("testNickname")
@@ -49,10 +46,7 @@ class UserMapperTest {
     }
 
     @Test
-    void addUser_아이디가_중복되면_회원가입에_실패해야한다() {
-        Set<Authority> authorities = new HashSet<>();
-        authorities.add(Authority.ROLE_USER);
-
+    void addUser_이미_가입되어있다면_회원가입에_실패해야한다() {
         UserEntity user = UserEntity.builder().userId("testUserId")
                 .password("testPassword")
                 .nickname("testNickname")
@@ -65,11 +59,8 @@ class UserMapperTest {
         }).isInstanceOf(DataAccessException.class);
     }
 
-
     @Test
     void findById_사용자정보를_조회할수있다() {
-        Set<Authority> authorities = new HashSet<>();
-        authorities.add(Authority.ROLE_USER);
         UserEntity signedUpUser = UserEntity.builder().userId("testUserId")
                 .password("testPassword")
                 .nickname("testNickname")
@@ -86,8 +77,6 @@ class UserMapperTest {
 
     @Test
     void findById_가입되지않은_사용자정보를_조회할수없다() {
-        Set<Authority> authorities = new HashSet<>();
-        authorities.add(Authority.ROLE_USER);
         UserEntity signedUpUser = UserEntity.builder().userId("testUserId")
                 .password("testPassword")
                 .nickname("testNickname")

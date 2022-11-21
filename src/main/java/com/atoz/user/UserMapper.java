@@ -12,5 +12,4 @@ public interface UserMapper {
     void addAuthority(UserEntity userEntity);
 
     Optional<UserEntity> findById(String userId);
-
 }

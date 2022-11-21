@@ -20,7 +20,6 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     public UserResponseDTO signup(SignupDTO signupDTO) {
-
         Set<Authority> authorities = new HashSet<>();
         authorities.add(Authority.ROLE_USER);
 
@@ -29,9 +28,5 @@ public class UserServiceImpl implements UserService {
         userMapper.addAuthority(userEntity);
 
         return new UserResponseDTO(signupDTO);
-    }
-
-    private boolean isValidPassword(SigninDTO signinDTO, SigninDTO storedSigninDTO) {
-        return signinDTO.getPassword().equals(storedSigninDTO.getPassword());
     }
 }
