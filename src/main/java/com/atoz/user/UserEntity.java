@@ -1,6 +1,6 @@
 package com.atoz.user;
 
-import com.atoz.authentication.Authority;
+import com.atoz.authentication.entity.Authority;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package com.atoz.authentication;
+package com.atoz.authentication.entity;
 
 import lombok.Builder;
 import lombok.Getter;

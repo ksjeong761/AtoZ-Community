@@ -1,5 +1,8 @@
 package com.atoz.authentication;
 
+import com.atoz.authentication.controller.AuthController;
+import com.atoz.authentication.dto.response.TokenResponseDTO;
+import com.atoz.authentication.service.AuthServiceImpl;
 import com.atoz.error.GlobalExceptionAdvice;
 import com.atoz.user.SigninDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,7 +30,7 @@ class AuthControllerTest {
     private AuthController authController;
 
     @Mock
-    AuthService authService;
+    AuthServiceImpl authServiceImpl;
 
     private MockMvc mockMvc;
 
@@ -47,7 +50,7 @@ class AuthControllerTest {
                 .userId("testId")
                 .password("testPassword")
                 .build();
-        given(authService.signin(any(SigninDTO.class))).willReturn(TokenDTO.builder().grantType("Bearer").build());
+        given(authServiceImpl.signin(any(SigninDTO.class))).willReturn(TokenResponseDTO.builder().grantType("Bearer").build());
 
         mockMvc.perform(post("/auth/signin")
                         .contentType(MediaType.APPLICATION_JSON)

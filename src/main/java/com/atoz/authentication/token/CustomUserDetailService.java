@@ -1,5 +1,6 @@
-package com.atoz.authentication;
+package com.atoz.authentication.token;
 
+import com.atoz.authentication.entity.Authority;
 import com.atoz.user.UserEntity;
 import com.atoz.user.UserMapper;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CustomUserDetailService implements UserDetailsService {
 
-    private final RefreshTokenMapper refreshTokenMapper;
     private final UserMapper userMapper;
 
     /**
@@ -40,7 +40,7 @@ public class CustomUserDetailService implements UserDetailsService {
 
         List<SimpleGrantedAuthority> authList = authorities
                 .stream()
-                .map(Authority::getAuthorityName)
+                .map(auth -> auth.name())
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 

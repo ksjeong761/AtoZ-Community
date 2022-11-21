@@ -1,5 +1,11 @@
-package com.atoz.authentication;
+package com.atoz.authentication.service;
 
+import com.atoz.authentication.entity.Authority;
+import com.atoz.authentication.token.TokenProvider;
+import com.atoz.authentication.dto.request.TokenRequestDTO;
+import com.atoz.authentication.entity.RefreshToken;
+import com.atoz.authentication.mapper.RefreshTokenMapper;
+import com.atoz.authentication.dto.response.TokenResponseDTO;
 import com.atoz.error.InvalidTokenException;
 import com.atoz.user.SigninDTO;
 import com.atoz.user.UserEntity;
@@ -18,14 +24,15 @@ import java.util.Set;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final RefreshTokenMapper refreshTokenMapper;
     private final UserMapper userMapper;
     private final TokenProvider tokenProvider;
 
+    @Override
     @Transactional
-    public TokenDTO signin(SigninDTO signinDTO) {
+    public TokenResponseDTO signin(SigninDTO signinDTO) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                 new UsernamePasswordAuthenticationToken(signinDTO.getUserId(), signinDTO.getPassword());
 
@@ -59,6 +66,7 @@ public class AuthService {
         }
     }
 
+    @Override
     @Transactional
     public void signout(TokenRequestDTO tokenRequestDTO) {
         String accessToken = tokenRequestDTO.getAccessToken();
@@ -71,8 +79,9 @@ public class AuthService {
         refreshTokenMapper.deleteToken(authentication.getName());
     }
 
+    @Override
     @Transactional
-    public TokenDTO refresh(TokenRequestDTO tokenRequestDTO) {
+    public TokenResponseDTO refresh(TokenRequestDTO tokenRequestDTO) {
         String originAccessToken = tokenRequestDTO.getAccessToken();
         String originRefreshToken = tokenRequestDTO.getRefreshToken();
 
@@ -94,7 +103,7 @@ public class AuthService {
 
         String newAccessToken = tokenProvider.createAccessToken(userId, authorities);
         String newRefreshToken = tokenProvider.createRefreshToken(userId, authorities);
-        TokenDTO tokenDTO = tokenProvider.createTokenDTO(newAccessToken, newRefreshToken);
+        TokenResponseDTO tokenResponseDTO = tokenProvider.createTokenDTO(newAccessToken, newRefreshToken);
     
         RefreshToken reissuedToken = RefreshToken.builder()
                 .tokenKey(userId)
@@ -103,7 +112,7 @@ public class AuthService {
 
         refreshTokenMapper.updateToken(reissuedToken);
 
-        return tokenDTO;
+        return tokenResponseDTO;
     }
 
     private UserEntity getUserById(String userId) {

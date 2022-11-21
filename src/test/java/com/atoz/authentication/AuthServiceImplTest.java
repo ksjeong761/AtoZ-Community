@@ -1,7 +1,10 @@
 package com.atoz.authentication;
 
-import com.atoz.authentication.testDouble.TestRefreshTokenMapper;
-import com.atoz.authentication.testDouble.TestDoubleAuthService;
+import com.atoz.authentication.help.StubRefreshTokenMapper;
+import com.atoz.authentication.help.StubAuthService;
+import com.atoz.authentication.dto.request.TokenRequestDTO;
+import com.atoz.authentication.entity.RefreshToken;
+import com.atoz.authentication.dto.response.TokenResponseDTO;
 import com.atoz.error.InvalidTokenException;
 import com.atoz.user.SigninDTO;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,14 +15,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class AuthServiceTest {
+class AuthServiceImplTest {
 
-    private TestDoubleAuthService authService;
-    private TestRefreshTokenMapper authMapper = new TestRefreshTokenMapper();
+    private StubAuthService authService;
+    private StubRefreshTokenMapper authMapper = new StubRefreshTokenMapper();
 
     @BeforeEach
     public void beforeEach() {
-        authService = new TestDoubleAuthService();
+        authService = new StubAuthService();
     }
 
     @Test
@@ -29,7 +32,7 @@ class AuthServiceTest {
                 .password("testPassword")
                 .build();
 
-        TokenDTO signin = authService.signin(presentedIdPassword);
+        TokenResponseDTO signin = authService.signin(presentedIdPassword);
 
         RefreshToken savedRefreshToken = authMapper.findTokenByKey(presentedIdPassword.getUserId()).orElse(null);
         assertThat(signin.getGrantType()).isEqualTo("Bearer");
@@ -66,7 +69,7 @@ class AuthServiceTest {
                 .userId("testId")
                 .password("testPassword")
                 .build();
-        TokenDTO signin = authService.signin(presentedIdPassword);
+        TokenResponseDTO signin = authService.signin(presentedIdPassword);
         TokenRequestDTO tokenRequestDTO = new TokenRequestDTO(signin.getAccessToken(), signin.getRefreshToken());
 
         authService.signout(tokenRequestDTO);
@@ -81,7 +84,7 @@ class AuthServiceTest {
                 .userId("testId")
                 .password("testPassword")
                 .build();
-        TokenDTO signin = authService.signin(presentedIdPassword);
+        TokenResponseDTO signin = authService.signin(presentedIdPassword);
         TokenRequestDTO tokenRequestDTO = new TokenRequestDTO(signin.getAccessToken(), signin.getRefreshToken());
         authService.signout(tokenRequestDTO);
 
@@ -97,12 +100,12 @@ class AuthServiceTest {
                 .userId("testId")
                 .password("testPassword")
                 .build();
-        TokenDTO orgToken = authService.signin(presentedIdPassword);
+        TokenResponseDTO orgToken = authService.signin(presentedIdPassword);
         TokenRequestDTO tokenRequestDTO = new TokenRequestDTO(orgToken.getAccessToken(), orgToken.getRefreshToken());
         Thread.sleep(1000L);
 
         //when
-        TokenDTO reissuedToken = authService.refresh(tokenRequestDTO);
+        TokenResponseDTO reissuedToken = authService.refresh(tokenRequestDTO);
 
         //then
         assertThat(reissuedToken.getGrantType()).isEqualTo("Bearer");

@@ -1,4 +1,4 @@
-package com.atoz.authentication;
+package com.atoz.authentication.token;
 
 import com.atoz.error.InvalidTokenException;
 import org.springframework.security.core.AuthenticationException;

@@ -1,4 +1,4 @@
-package com.atoz.authentication;
+package com.atoz.authentication.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,13 +1,11 @@
-package com.atoz.authentication.testDouble;
+package com.atoz.authentication.help;
 
-import com.atoz.authentication.RefreshTokenMapper;
-import com.atoz.authentication.JwtSigninDTO;
-import com.atoz.authentication.RefreshToken;
+import com.atoz.authentication.mapper.RefreshTokenMapper;
+import com.atoz.authentication.entity.RefreshToken;
 
 import java.util.*;
 
-public class TestRefreshTokenMapper implements RefreshTokenMapper {
-    private static Map<String, JwtSigninDTO> users = new HashMap<>();
+public class StubRefreshTokenMapper implements RefreshTokenMapper {
     private static Map<String, RefreshToken> tokens = new HashMap<>();
 
     @Override

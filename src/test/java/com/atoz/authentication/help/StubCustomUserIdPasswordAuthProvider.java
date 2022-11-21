@@ -1,4 +1,4 @@
-package com.atoz.authentication.testDouble;
+package com.atoz.authentication.help;
 
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-public class TestDoubleCustomUserIdPasswordAuthProvider implements AuthenticationProvider {
+public class StubCustomUserIdPasswordAuthProvider implements AuthenticationProvider {
 
     private PasswordEncoder passwordEncoder = new Argon2PasswordEncoder();
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
@@ -26,8 +26,8 @@ public class TestDoubleCustomUserIdPasswordAuthProvider implements Authenticatio
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        TestDoubleCustomUserDetailService testDoubleCustomUserDetailService = new TestDoubleCustomUserDetailService();
-        UserDetails user = testDoubleCustomUserDetailService.loadUserByUsername(authentication.getName());
+        StubCustomUserDetailService stubCustomUserDetailService = new StubCustomUserDetailService();
+        UserDetails user = stubCustomUserDetailService.loadUserByUsername(authentication.getName());
 
         Object principal = user;
 

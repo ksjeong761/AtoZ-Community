@@ -1,6 +1,6 @@
 package com.atoz.user;
 
-import com.atoz.authentication.Authority;
+import com.atoz.authentication.entity.Authority;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

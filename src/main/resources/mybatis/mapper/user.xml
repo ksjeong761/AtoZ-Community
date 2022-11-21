@@ -14,7 +14,7 @@
         <foreach collection="authorities" item="authority" separator=",">
             (
                 #{userId},
-                #{authority.authorityName}
+                #{authority}
             )
         </foreach>
     </insert>
@@ -27,7 +27,7 @@
         <collection property="authorities" column="user_id" select="AuthorityResultMap"/>
     </resultMap>
 
-    <select id="AuthorityResultMap" resultType="com.atoz.authentication.Authority">
+    <select id="AuthorityResultMap" resultType="com.atoz.authentication.entity.Authority">
         SELECT authority_name
         FROM authority
         WHERE user_id = #{user_id}

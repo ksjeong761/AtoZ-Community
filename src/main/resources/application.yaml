@@ -3,7 +3,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3316/atoz?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul
     username: root
-    password: Sangmin90!
+    password: DEFAULT
 
 server:
   servlet:

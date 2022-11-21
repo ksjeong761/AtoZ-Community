@@ -1,4 +1,4 @@
-package com.atoz.authentication;
+package com.atoz.authentication.token;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;

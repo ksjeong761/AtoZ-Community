@@ -1,4 +1,4 @@
-package com.atoz.authentication;
+package com.atoz.authentication.dto.response;
 
 import lombok.Getter;
 

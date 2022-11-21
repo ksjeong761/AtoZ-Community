@@ -1,5 +1,7 @@
-package com.atoz.authentication;
+package com.atoz.authentication.token;
 
+import com.atoz.authentication.entity.Authority;
+import com.atoz.authentication.dto.response.TokenResponseDTO;
 import com.atoz.error.InvalidTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -86,8 +88,8 @@ public class TokenProvider {
     /**
      * TokenDTO 생성
      */
-    public TokenDTO createTokenDTO(String accessToken, String refreshToken) {
-        return TokenDTO.builder()
+    public TokenResponseDTO createTokenDTO(String accessToken, String refreshToken) {
+        return TokenResponseDTO.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .grantType(BEARER_TYPE)
