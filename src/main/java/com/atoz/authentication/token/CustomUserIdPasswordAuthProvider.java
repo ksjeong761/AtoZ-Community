@@ -10,6 +10,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -31,12 +32,7 @@ public class CustomUserIdPasswordAuthProvider implements AuthenticationProvider 
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        UserDetails user = null;
-        try {
-            user = retrieveUser(authentication.getName());
-        } catch (RuntimeException e) {
-            throw e;
-        }
+        UserDetails user = retrieveUser(authentication.getName());
 
         Object principalToReturn = user;
         UsernamePasswordAuthenticationToken result =
@@ -53,14 +49,7 @@ public class CustomUserIdPasswordAuthProvider implements AuthenticationProvider 
     }
 
     protected final UserDetails retrieveUser(String userId) {
-        try {
-            UserDetails loadedUser = customUserDetailService.loadUserByUsername(userId);
-
-            return loadedUser;
-        } catch (Exception e) {
-            throw new InternalAuthenticationServiceException(
-                    "내부 인증 로직 중 알 수 없는 오류가 발생하였습니다.");
-        }
+        return customUserDetailService.loadUserByUsername(userId);
     }
 
     @Override
