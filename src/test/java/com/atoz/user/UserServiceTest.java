@@ -13,15 +13,14 @@ class UserServiceTest {
 
     SpyStubUserMapper userMapper = new SpyStubUserMapper();
 
-    SpyStubUserMapper userMapper;
-    
-    PasswordEncoder passwordEncoder;
+    PasswordEncoder passwordEncoder = new Argon2PasswordEncoder();
+
+    UserService userService = new UserServiceImpl(userMapper, passwordEncoder);
+
 
     @BeforeEach
     public void beforeEach() {
-        passwordEncoder = new Argon2PasswordEncoder();
-        userMapper = new SpyStubUserMapper();
-        userService = new UserServiceImpl(userMapper, passwordEncoder);
+
     }
 
     private void isEquality(SigninDTO actual, SigninDTO expected) {

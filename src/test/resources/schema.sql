@@ -4,7 +4,7 @@ CREATE TABLE users (
     password VARCHAR(256) NOT NULL,
 --    password BINARY(32) NOT NULL,
     nickname VARCHAR(20) NOT NULL,
-    email VARCHAR(320) NOT NULL,
+    email VARCHAR(320) NOT NULL
 --    password_salt BINARY(32) NOT NULL
 );
 
