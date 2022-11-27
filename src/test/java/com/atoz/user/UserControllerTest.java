@@ -1,6 +1,7 @@
 package com.atoz.user;
 
 import com.atoz.error.GlobalExceptionAdvice;
+import com.atoz.user.help.DummyUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -22,14 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
 
-    @InjectMocks
-    UserController userController;
-
-    @Mock
-    UserService userService;
-
+    private final UserController userController = new UserController(new Argon2PasswordEncoder(), new DummyUserService());
     private final ObjectMapper objectMapper = new ObjectMapper();
-
     private MockMvc mockMvc;
 
     @BeforeEach

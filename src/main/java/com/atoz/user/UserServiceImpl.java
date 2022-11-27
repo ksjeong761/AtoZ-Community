@@ -1,20 +1,14 @@
 package com.atoz.user;
 
-import com.atoz.user.dto.SignupDTO;
 import com.atoz.user.dto.UserResponseDTO;
-import com.atoz.user.entity.Authority;
 import com.atoz.user.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -22,19 +16,14 @@ import java.util.Set;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserMapper userMapper;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
-    public UserResponseDTO signup(SignupDTO signupDTO) {
-        Set<Authority> authorities = new HashSet<>();
-        authorities.add(Authority.ROLE_USER);
-
-        UserEntity userEntity = new UserEntity(passwordEncoder, signupDTO, authorities);
+    public UserResponseDTO signup(UserEntity userEntity) {
         userMapper.addUser(userEntity);
         userMapper.addAuthority(userEntity);
 
-        return new UserResponseDTO(signupDTO);
+        return userEntity.toResponseDto();
     }
 
     /**
