@@ -1,7 +1,7 @@
 package com.atoz.user.help;
 
-import com.atoz.authentication.entity.Authority;
-import com.atoz.user.UserEntity;
+import com.atoz.user.entity.Authority;
+import com.atoz.user.entity.UserEntity;
 import com.atoz.user.UserMapper;
 
 import java.util.HashSet;

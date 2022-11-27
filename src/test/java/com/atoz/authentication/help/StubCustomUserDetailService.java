@@ -1,6 +1,6 @@
 package com.atoz.authentication.help;
 
-import com.atoz.authentication.entity.Authority;
+import com.atoz.user.entity.Authority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;

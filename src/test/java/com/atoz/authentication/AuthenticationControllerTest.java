@@ -1,10 +1,10 @@
 package com.atoz.authentication;
 
-import com.atoz.authentication.controller.AuthenticationController;
-import com.atoz.authentication.dto.response.TokenResponseDTO;
-import com.atoz.authentication.service.AuthenticationServiceImpl;
+import com.atoz.security.authentication.AuthenticationController;
+import com.atoz.security.authentication.dto.TokenResponseDTO;
+import com.atoz.security.authentication.AuthenticationServiceImpl;
 import com.atoz.error.GlobalExceptionAdvice;
-import com.atoz.user.SigninDTO;
+import com.atoz.user.dto.SigninDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

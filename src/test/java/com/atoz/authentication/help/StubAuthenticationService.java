@@ -1,16 +1,16 @@
 package com.atoz.authentication.help;
 
 
-import com.atoz.authentication.entity.Authority;
-import com.atoz.authentication.dto.request.TokenRequestDTO;
-import com.atoz.authentication.entity.RefreshTokenEntity;
-import com.atoz.authentication.mapper.RefreshTokenMapper;
-import com.atoz.authentication.dto.response.TokenResponseDTO;
-import com.atoz.authentication.service.AuthenticationService;
-import com.atoz.authentication.token.TokenProvider;
-import com.atoz.error.InvalidTokenException;
-import com.atoz.user.SigninDTO;
-import com.atoz.user.UserEntity;
+import com.atoz.user.entity.Authority;
+import com.atoz.security.authentication.dto.TokenRequestDTO;
+import com.atoz.security.token.RefreshTokenEntity;
+import com.atoz.security.token.RefreshTokenMapper;
+import com.atoz.security.authentication.dto.TokenResponseDTO;
+import com.atoz.security.authentication.AuthenticationService;
+import com.atoz.security.token.TokenProvider;
+import com.atoz.error.exception.InvalidTokenException;
+import com.atoz.user.dto.SigninDTO;
+import com.atoz.user.entity.UserEntity;
 import com.atoz.user.help.SpyStubUserMapper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

@@ -2,11 +2,11 @@ package com.atoz.authentication;
 
 import com.atoz.authentication.help.StubRefreshTokenMapper;
 import com.atoz.authentication.help.StubAuthenticationService;
-import com.atoz.authentication.dto.request.TokenRequestDTO;
-import com.atoz.authentication.entity.RefreshTokenEntity;
-import com.atoz.authentication.dto.response.TokenResponseDTO;
-import com.atoz.error.InvalidTokenException;
-import com.atoz.user.SigninDTO;
+import com.atoz.security.authentication.dto.TokenRequestDTO;
+import com.atoz.security.token.RefreshTokenEntity;
+import com.atoz.security.authentication.dto.TokenResponseDTO;
+import com.atoz.error.exception.InvalidTokenException;
+import com.atoz.user.dto.SigninDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.BadCredentialsException;

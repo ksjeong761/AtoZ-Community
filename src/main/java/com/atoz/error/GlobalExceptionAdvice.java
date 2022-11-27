@@ -1,5 +1,9 @@
 package com.atoz.error;
 
+import com.atoz.error.dto.ErrorResponseDTO;
+import com.atoz.error.dto.MultipleErrorResponseDTO;
+import com.atoz.error.exception.InvalidTokenException;
+import com.atoz.error.exception.UnAuthorizedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;

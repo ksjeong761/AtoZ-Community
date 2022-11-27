@@ -1,5 +1,6 @@
 package com.atoz.user;
 
+import com.atoz.user.entity.UserEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.Optional;

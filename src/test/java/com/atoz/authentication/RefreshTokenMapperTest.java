@@ -1,11 +1,11 @@
 package com.atoz.authentication;
 
-import com.atoz.authentication.entity.Authority;
-import com.atoz.authentication.entity.RefreshTokenEntity;
-import com.atoz.authentication.mapper.RefreshTokenMapper;
-import com.atoz.authentication.token.TokenProvider;
-import com.atoz.user.SignupDTO;
-import com.atoz.user.UserEntity;
+import com.atoz.user.entity.Authority;
+import com.atoz.security.token.RefreshTokenEntity;
+import com.atoz.security.token.RefreshTokenMapper;
+import com.atoz.security.token.TokenProvider;
+import com.atoz.user.dto.SignupDTO;
+import com.atoz.user.entity.UserEntity;
 import com.atoz.user.UserMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

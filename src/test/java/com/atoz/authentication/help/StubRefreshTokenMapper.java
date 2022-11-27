@@ -1,7 +1,7 @@
 package com.atoz.authentication.help;
 
-import com.atoz.authentication.mapper.RefreshTokenMapper;
-import com.atoz.authentication.entity.RefreshTokenEntity;
+import com.atoz.security.token.RefreshTokenMapper;
+import com.atoz.security.token.RefreshTokenEntity;
 
 import java.util.*;
 

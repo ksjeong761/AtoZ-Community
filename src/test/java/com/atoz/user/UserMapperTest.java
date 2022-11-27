@@ -1,6 +1,7 @@
 package com.atoz.user;
 
-import com.atoz.authentication.entity.Authority;
+import com.atoz.user.entity.Authority;
+import com.atoz.user.entity.UserEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
