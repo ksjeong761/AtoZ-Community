@@ -1,6 +1,5 @@
 package com.atoz.authentication.config;
 
-import com.atoz.authentication.token.CustomUserIdPasswordAuthProvider;
 import com.atoz.authentication.token.JwtAccessDeniedHandler;
 import com.atoz.authentication.token.JwtAuthenticationEntryPoint;
 import com.atoz.authentication.token.JwtFilter;
@@ -10,13 +9,21 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -25,14 +32,32 @@ public class SecurityConfig {
     private final TokenProvider tokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-    private final CustomUserIdPasswordAuthProvider customUserIdPasswordAuthProvider;
     private final RefreshTokenMapper refreshTokenMapper;
+
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        String idForEncode = "argon2";
+
+        Map<String, PasswordEncoder> encoders = new HashMap<>();
+        encoders.put(idForEncode, new Argon2PasswordEncoder());
+
+        return new DelegatingPasswordEncoder(idForEncode, encoders);
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+
+        return daoAuthenticationProvider;
+    }
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder =
                 http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.authenticationProvider(customUserIdPasswordAuthProvider);
+        authenticationManagerBuilder.authenticationProvider(authenticationProvider());
         return authenticationManagerBuilder.build();
     }
 
@@ -53,7 +78,6 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/auth/**", "/user/**").permitAll()
-                .antMatchers("v3/api-docs", "/configuration/**", "/wagger*/**", "/webjars/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtFilter(tokenProvider, refreshTokenMapper), UsernamePasswordAuthenticationFilter.class);
