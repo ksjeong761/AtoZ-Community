@@ -1,5 +1,6 @@
 package com.atoz.security.authentication;
 
+import com.atoz.security.token.TokenParser;
 import com.atoz.user.entity.Authority;
 import com.atoz.security.token.TokenProvider;
 import com.atoz.security.authentication.dto.TokenRequestDTO;
@@ -29,6 +30,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final RefreshTokenMapper refreshTokenMapper;
     private final UserMapper userMapper;
     private final TokenProvider tokenProvider;
+    private final TokenParser tokenParser;
 
     @Override
     @Transactional
@@ -48,7 +50,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         saveOrUpdateRefreshToken(user, refreshToken);
 
-        return tokenProvider.createTokenDTO(accessToken, refreshToken);
+        return tokenParser.createTokenDTO(accessToken, refreshToken);
     }
 
     private void saveOrUpdateRefreshToken(UserEntity user, String refreshToken) {
@@ -70,9 +72,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Transactional
     public void signout(TokenRequestDTO tokenRequestDTO) {
         String accessToken = tokenRequestDTO.getAccessToken();
-        tokenProvider.validateToken(accessToken);
 
-        Authentication authentication = tokenProvider.getAuthentication(accessToken);
+        Authentication authentication = tokenParser.toAuthentication(accessToken);
         String tokenKey = authentication.getName();
 
         refreshTokenMapper.findTokenByKey(tokenKey).orElseThrow(() -> new InvalidTokenException("인증정보가 없습니다."));
@@ -85,9 +86,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String originAccessToken = tokenRequestDTO.getAccessToken();
         String originRefreshToken = tokenRequestDTO.getRefreshToken();
 
-        tokenProvider.validateToken(originRefreshToken);
-
-        Authentication authentication = tokenProvider.getAuthentication(originAccessToken);
+        Authentication authentication = tokenParser.toAuthentication(originAccessToken);
 
         RefreshTokenEntity refreshTokenEntity = refreshTokenMapper.findTokenByKey(authentication.getName())
                 .orElseThrow(() -> new InvalidTokenException("로그아웃된 사용자입니다."));
@@ -96,14 +95,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new InvalidTokenException("토큰이 일치하지 않습니다.");
         }
 
-        String userId = tokenProvider.getUserIdByToken(originAccessToken);
+        String userId = tokenParser.parseUserId(originAccessToken);
         UserEntity user = getUserById(userId);
 
         Set<Authority> authorities = user.getAuthorities();
 
         String newAccessToken = tokenProvider.createAccessToken(userId, authorities);
         String newRefreshToken = tokenProvider.createRefreshToken(userId, authorities);
-        TokenResponseDTO tokenResponseDTO = tokenProvider.createTokenDTO(newAccessToken, newRefreshToken);
+        TokenResponseDTO tokenResponseDTO = tokenParser.createTokenDTO(newAccessToken, newRefreshToken);
     
         RefreshTokenEntity reissuedToken = RefreshTokenEntity.builder()
                 .tokenKey(userId)

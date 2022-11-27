@@ -1,6 +1,7 @@
 package com.atoz.authentication.help;
 
 
+import com.atoz.security.token.TokenParser;
 import com.atoz.user.entity.Authority;
 import com.atoz.security.authentication.dto.TokenRequestDTO;
 import com.atoz.security.token.RefreshTokenEntity;
@@ -24,6 +25,7 @@ public class StubAuthenticationService implements AuthenticationService {
             new StubCustomUserIdPasswordAuthProvider();
     private StubCustomUserDetailService customUserDetailService;
     private TokenProvider tokenProvider = new TokenProvider(secretKey, 1800000, 604800000);
+    private TokenParser tokenParser = new TokenParser(secretKey);
     private RefreshTokenMapper refreshTokenMapper = new StubRefreshTokenMapper();
     private SpyStubUserMapper userMapper = new SpyStubUserMapper();
 
@@ -51,14 +53,13 @@ public class StubAuthenticationService implements AuthenticationService {
                 .tokenValue(refreshToken)
                 .build());
 
-        return tokenProvider.createTokenDTO(accessToken, refreshToken);
+        return tokenParser.createTokenDTO(accessToken, refreshToken);
     }
 
     @Override
     public void signout(TokenRequestDTO tokenRequestDTO) {
         String accessToken = tokenRequestDTO.getAccessToken();
-        tokenProvider.validateToken(accessToken);
-        Authentication authentication = tokenProvider.getAuthentication(accessToken);
+        Authentication authentication = tokenParser.toAuthentication(accessToken);
 
         refreshTokenMapper.findTokenByKey(authentication.getName()).orElseThrow(() -> new InvalidTokenException("인증정보가 없습니다."));
 
@@ -70,9 +71,9 @@ public class StubAuthenticationService implements AuthenticationService {
         String orgAccessToken = tokenRequestDTO.getAccessToken();
         String orgRefreshToken = tokenRequestDTO.getRefreshToken();
 
-        Authentication authentication = tokenProvider.getAuthentication(orgAccessToken);
+        Authentication authentication = tokenParser.toAuthentication(orgAccessToken);
 
-        String userId = tokenProvider.getUserIdByToken(orgAccessToken);
+        String userId = tokenParser.parseUserId(orgAccessToken);
 
         UserEntity user = userMapper.findById(userId).orElseThrow(() -> new UsernameNotFoundException("해당 유저가 존재하지 않습니다."));
 
@@ -80,7 +81,7 @@ public class StubAuthenticationService implements AuthenticationService {
 
         String newAccessToken = tokenProvider.createAccessToken(userId, authorities);
         String newRefreshToken = tokenProvider.createRefreshToken(userId, authorities);
-        TokenResponseDTO tokenResponseDTO = tokenProvider.createTokenDTO(newAccessToken, newRefreshToken);
+        TokenResponseDTO tokenResponseDTO = tokenParser.createTokenDTO(newAccessToken, newRefreshToken);
 
         RefreshTokenEntity saveRefreshTokenEntity = RefreshTokenEntity.builder()
                 .tokenKey(userId)

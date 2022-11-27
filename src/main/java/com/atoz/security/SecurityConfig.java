@@ -29,11 +29,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
-    private final TokenProvider tokenProvider;
+
+    private final JwtAuthorizationFilter jwtAuthorizationFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-    private final RefreshTokenMapper refreshTokenMapper;
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -80,7 +79,7 @@ public class SecurityConfig {
                 .antMatchers("/auth/**", "/user/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(new JwtAuthorizationFilter(tokenProvider, refreshTokenMapper), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

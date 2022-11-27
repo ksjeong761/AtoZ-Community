@@ -2,6 +2,7 @@ package com.atoz.security.authorization;
 
 import com.atoz.security.token.RefreshTokenMapper;
 import com.atoz.error.exception.InvalidTokenException;
+import com.atoz.security.token.TokenParser;
 import com.atoz.security.token.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -21,7 +22,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String BEARER_PREFIX = "Bearer";
 
-    private final TokenProvider tokenProvider;
+    private final TokenParser tokenParser;
     private final RefreshTokenMapper refreshTokenMapper;
 
     @Override
@@ -34,9 +35,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             String token = resolveToken(request);
 
             if (StringUtils.hasText(token)) {
-                tokenProvider.validateToken(token);
-
-                String userId = tokenProvider.getUserIdByToken(token);
+                String userId = tokenParser.parseUserId(token);
                 refreshTokenMapper.findTokenByKey(userId).orElseThrow(() -> new InvalidTokenException("로그아웃된 사용자입니다."));
 
                 this.setAuthentication(token);
@@ -47,7 +46,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     private void setAuthentication(String token) {
-        Authentication authentication = tokenProvider.getAuthentication(token);
+        Authentication authentication = tokenParser.toAuthentication(token);
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
