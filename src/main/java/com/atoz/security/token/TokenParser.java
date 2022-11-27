@@ -57,17 +57,6 @@ public class TokenParser {
                 .getSubject();
     }
 
-    /**
-     * TokenDTO 생성
-     */
-    public TokenResponseDTO createTokenDTO(String accessToken, String refreshToken) {
-        return TokenResponseDTO.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .grantType(BEARER_PREFIX)
-                .build();
-    }
-
     public Authentication toAuthentication(String accessToken) {
         Claims claims = this.parseClaims(accessToken);
         if (claims.get(AUTHORITIES_KEY) == null || !StringUtils.hasText(claims.get(AUTHORITIES_KEY).toString())) {

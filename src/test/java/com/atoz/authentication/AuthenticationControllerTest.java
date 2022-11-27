@@ -50,7 +50,8 @@ class AuthenticationControllerTest {
                 .userId("testId")
                 .password("testPassword")
                 .build();
-        given(authServiceImpl.signin(any(SigninDTO.class))).willReturn(TokenResponseDTO.builder().grantType("Bearer").build());
+        given(authServiceImpl.signin(any(SigninDTO.class)))
+                .willReturn(TokenResponseDTO.builder().build());
 
         mockMvc.perform(post("/auth/signin")
                         .contentType(MediaType.APPLICATION_JSON)

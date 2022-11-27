@@ -35,7 +35,6 @@ class AuthenticationServiceImplTest {
         TokenResponseDTO signin = authService.signin(presentedIdPassword);
 
         RefreshTokenEntity savedRefreshTokenEntity = authMapper.findTokenByKey(presentedIdPassword.getUserId()).orElse(null);
-        assertThat(signin.getGrantType()).isEqualTo("Bearer");
         assertThat(savedRefreshTokenEntity).isNotNull();
     }
 
@@ -108,7 +107,6 @@ class AuthenticationServiceImplTest {
         TokenResponseDTO reissuedToken = authService.refresh(tokenRequestDTO);
 
         //then
-        assertThat(reissuedToken.getGrantType()).isEqualTo("Bearer");
         assertThat(reissuedToken.getAccessToken()).isNotEqualTo(orgToken.getAccessToken());
         assertThat(reissuedToken.getRefreshToken()).isNotEqualTo(orgToken.getRefreshToken());
     }

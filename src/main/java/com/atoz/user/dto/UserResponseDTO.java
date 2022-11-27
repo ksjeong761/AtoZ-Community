@@ -1,6 +1,5 @@
 package com.atoz.user.dto;
 
-import com.atoz.user.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -18,11 +17,5 @@ public class UserResponseDTO {
         this.userId = signupDTO.getUserId();
         this.nickname = signupDTO.getNickname();
         this.email = signupDTO.getEmail();
-    }
-
-    public UserResponseDTO(UserEntity user) {
-        this.userId = user.getUserId();
-        this.nickname = user.getNickname();
-        this.email = user.getEmail();
     }
 }
