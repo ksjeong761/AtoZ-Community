@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
     private final UserService userService;
 
     @PostMapping("/signup")

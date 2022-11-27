@@ -1,37 +1,33 @@
 package com.atoz.user.entity;
 
 import com.atoz.user.dto.SignupDTO;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserEntity {
 
     private String userId;
 
     private String password;
 
-//    private byte[] password;
-
     private String nickname;
 
     private String email;
 
     private Set<Authority> authorities;
-
-    @Builder
-    public UserEntity(String userId, String password, String nickname, String email, Set<Authority> authorities) {
-        this.userId = userId;
-        this.password = password;
-        this.nickname = nickname;
-        this.email = email;
-        this.authorities = authorities;
-    }
 
     public UserEntity(PasswordEncoder passwordEncoder, SignupDTO signupDTO, Set<Authority> authorities) {
         String password = passwordEncoder.encode(signupDTO.getPassword());
@@ -43,17 +39,17 @@ public class UserEntity {
         this.authorities = authorities;
     }
 
-//    private byte[] passwordSalt;
+    public UserDetails toUserDetails() {
+        List<SimpleGrantedAuthority> authorities = getAuthorities()
+                .stream()
+                .map(Enum::name)
+                .map(SimpleGrantedAuthority::new)
+                .toList();
 
-//    public UserEntity(SignupDTO signupDTO) {
-//        HashManager hashManager = new HashManager();
-//        byte[] salt = hashManager.makeSalt();
-//        byte[] hashedPassword = hashManager.computeHash(signupDTO.getPassword(), salt);
-
-//        this.userId = signupDTO.getUserId();
-//        this.password = hashedPassword;
-//        this.email = signupDTO.getEmail();
-//        this.nickname = signupDTO.getNickname();
-//        this.passwordSalt = salt;
-//    }
+        return User.builder()
+                .username(getUserId())
+                .authorities(authorities)
+                .password(getPassword())
+                .build();
+    }
 }

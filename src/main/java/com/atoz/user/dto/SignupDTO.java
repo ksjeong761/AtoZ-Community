@@ -29,4 +29,8 @@ public class SignupDTO {
     @NotBlank(message = "이메일을 반드시 입력해주세요.")
     @Email(message = "이메일 형식이 잘못되었습니다.")
     private String email;
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

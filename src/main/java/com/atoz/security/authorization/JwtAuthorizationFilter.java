@@ -22,7 +22,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        if (!request.getServletPath().startsWith("/auth") && !request.getServletPath().startsWith("/user")) {
+        if (request.getServletPath().startsWith("/auth") || request.getServletPath().startsWith("/user")) {
             filterChain.doFilter(request, response);
             return;
         }

@@ -3,6 +3,8 @@ package com.atoz.security;
 import com.atoz.security.authorization.JwtAccessDeniedHandler;
 import com.atoz.security.authorization.JwtAuthenticationEntryPoint;
 import com.atoz.security.authorization.JwtAuthorizationFilter;
+import com.atoz.user.UserMapper;
+import com.atoz.user.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +16,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,6 +34,7 @@ public class SecurityConfig {
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final UserMapper userMapper;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -42,10 +46,15 @@ public class SecurityConfig {
         return new DelegatingPasswordEncoder(idForEncode, encoders);
     }
 
+    private UserDetailsService userDetailsService() {
+        return new UserServiceImpl(userMapper, passwordEncoder());
+    }
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService());
 
         return daoAuthenticationProvider;
     }
