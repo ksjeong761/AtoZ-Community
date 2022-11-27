@@ -7,12 +7,13 @@ import com.atoz.security.authentication.dto.TokenRequestDTO;
 import com.atoz.security.token.RefreshTokenEntity;
 import com.atoz.security.token.RefreshTokenMapper;
 import com.atoz.security.authentication.dto.TokenResponseDTO;
-import com.atoz.user.dto.SigninDTO;
+import com.atoz.security.authentication.dto.SigninDTO;
 import com.atoz.user.entity.UserEntity;
 import com.atoz.user.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Transactional
     public TokenResponseDTO signin(SigninDTO signinDTO) {
         // 사용자 인증을 받는다.
-        Authentication authentication = authenticationManager.authenticate(signinDTO.toAuthentication());
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signinDTO.getUserId(), signinDTO.getPassword()));
 
         // 토큰을 발급한다.
         return provideToken(authentication);

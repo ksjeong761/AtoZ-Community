@@ -3,7 +3,7 @@ package com.atoz.security.authentication;
 import com.atoz.security.authentication.dto.AuthResponseDTO;
 import com.atoz.security.authentication.dto.TokenResponseDTO;
 import com.atoz.security.authentication.dto.TokenRequestDTO;
-import com.atoz.user.dto.SigninDTO;
+import com.atoz.security.authentication.dto.SigninDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
@@ -15,21 +15,21 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthenticationController {
 
-    private final AuthenticationServiceImpl authServiceImpl;
+    private final AuthenticationService authenticationService;
 
     @PostMapping("/signin")
     public TokenResponseDTO signin(@Validated @RequestBody SigninDTO signinDTO) {
-        return authServiceImpl.signin(signinDTO);
+        return authenticationService.signin(signinDTO);
     }
 
     @DeleteMapping("/signout")
     public AuthResponseDTO logout(@RequestBody TokenRequestDTO tokenRequestDTO) {
-        authServiceImpl.signout(tokenRequestDTO);
+        authenticationService.signout(tokenRequestDTO);
         return new AuthResponseDTO("로그아웃 되었습니다.");
     }
 
     @PostMapping("/refresh")
     public TokenResponseDTO refresh(@RequestBody TokenRequestDTO tokenRequestDTO) {
-        return authServiceImpl.refresh(tokenRequestDTO);
+        return authenticationService.refresh(tokenRequestDTO);
     }
 }

@@ -23,7 +23,6 @@ import java.util.stream.Stream;
 public class TokenParser {
 
     private static final String AUTHORITIES_KEY = "auth";
-    public static final String BEARER_PREFIX = "Bearer";
 
     private final Key secretKey;
 
@@ -35,7 +34,7 @@ public class TokenParser {
     /**
      * 토큰을 검증하면서 파싱한다.
      */
-    private Claims parseClaims(String jwt) {
+    public Claims parseClaims(String jwt) {
         try {
             return Jwts.parserBuilder()
                     .setSigningKey(secretKey)
@@ -51,14 +50,6 @@ public class TokenParser {
         }
     }
 
-    /**
-     * 토큰 값을 파싱하여 클레임에 담긴 사용자 아이디 값을 가져온다.
-     */
-    public String parseUserId(String jwt) {
-        return this.parseClaims(jwt)
-                .getSubject();
-    }
-
     public Authentication parseAuthentication(String jwt) {
         Claims claims = this.parseClaims(jwt);
         if (claims.get(AUTHORITIES_KEY) == null || !StringUtils.hasText(claims.get(AUTHORITIES_KEY).toString())) {
@@ -70,24 +61,5 @@ public class TokenParser {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
         return new UsernamePasswordAuthenticationToken(claims.getSubject(), "", authorities);
-    }
-
-    /**
-     * HTTP 요청 헤더로부터 JWT 토큰을 얻는다.
-     */
-    public String resolveBearerToken(String bearerToken) {
-        if (!StringUtils.hasText(bearerToken)) {
-            throw new InvalidTokenException("bearer 토큰이 비어있습니다.");
-        }
-
-        if (!bearerToken.startsWith(BEARER_PREFIX)) {
-            throw new InvalidTokenException("bearer 토큰 형식이 잘못되었습니다.");
-        }
-
-        String jwt = bearerToken.substring(7);
-        if (!StringUtils.hasText(jwt)) {
-            throw new InvalidTokenException("jwt 토큰이 비어있습니다.");
-        }
-        return jwt;
     }
 }

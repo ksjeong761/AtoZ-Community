@@ -52,16 +52,10 @@ public class TokenProvider {
                 .compact();
     }
 
-    /**
-     * 만료 시간이 짧은 액세스 토큰 생성
-     */
     public String createAccessToken(String userId, Set<Authority> auth) {
         return this.createToken(userId, auth, ACCESS_TOKEN_EXPIRE_TIME);
     }
 
-    /**
-     * 만료 시간이 긴 리프레시 토큰 생성
-     */
     public String createRefreshToken(String userId, Set<Authority> auth) {
         return this.createToken(userId, auth, REFRESH_TOKEN_EXPIRE_TIME);
     }
