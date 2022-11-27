@@ -1,8 +1,8 @@
 package com.atoz.authentication;
 
-import com.atoz.authentication.controller.AuthController;
+import com.atoz.authentication.controller.AuthenticationController;
 import com.atoz.authentication.dto.response.TokenResponseDTO;
-import com.atoz.authentication.service.AuthServiceImpl;
+import com.atoz.authentication.service.AuthenticationServiceImpl;
 import com.atoz.error.GlobalExceptionAdvice;
 import com.atoz.user.SigninDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,13 +24,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-class AuthControllerTest {
+class AuthenticationControllerTest {
 
     @InjectMocks
-    private AuthController authController;
+    private AuthenticationController authenticationController;
 
     @Mock
-    AuthServiceImpl authServiceImpl;
+    AuthenticationServiceImpl authServiceImpl;
 
     private MockMvc mockMvc;
 
@@ -38,7 +38,7 @@ class AuthControllerTest {
 
     @BeforeEach
     public void beforeEach() {
-        mockMvc = MockMvcBuilders.standaloneSetup(authController)
+        mockMvc = MockMvcBuilders.standaloneSetup(authenticationController)
                 .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
                 .setControllerAdvice(GlobalExceptionAdvice.class)
                 .build();

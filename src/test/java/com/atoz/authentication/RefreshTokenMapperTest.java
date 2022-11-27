@@ -1,7 +1,7 @@
 package com.atoz.authentication;
 
 import com.atoz.authentication.entity.Authority;
-import com.atoz.authentication.entity.RefreshToken;
+import com.atoz.authentication.entity.RefreshTokenEntity;
 import com.atoz.authentication.mapper.RefreshTokenMapper;
 import com.atoz.authentication.token.TokenProvider;
 import com.atoz.user.SignupDTO;
@@ -80,11 +80,11 @@ class RefreshTokenMapperTest {
 
         Set<Authority> auths = userEntity.getAuthorities();
         String tokenValue = tokenProvider.createRefreshToken(userEntity.getUserId(), auths);
-        RefreshToken expectedToken = RefreshToken.builder().tokenKey(userEntity.getUserId()).tokenValue(tokenValue).build();
+        RefreshTokenEntity expectedToken = RefreshTokenEntity.builder().tokenKey(userEntity.getUserId()).tokenValue(tokenValue).build();
         refreshTokenMapper.saveToken(expectedToken);
 
 
-        RefreshToken actualToken = refreshTokenMapper.findTokenByKey(userEntity.getUserId()).orElse(null);
+        RefreshTokenEntity actualToken = refreshTokenMapper.findTokenByKey(userEntity.getUserId()).orElse(null);
 
 
         assertThat(actualToken).isNotNull();
@@ -96,7 +96,7 @@ class RefreshTokenMapperTest {
     void findByKey_리프레시토큰이_없는경우_null을_반환한다() {
         String userId = "null";
 
-        RefreshToken actualToken = refreshTokenMapper.findTokenByKey(userId).orElse(null);
+        RefreshTokenEntity actualToken = refreshTokenMapper.findTokenByKey(userId).orElse(null);
 
         assertThat(actualToken).isNull();
     }
@@ -111,22 +111,22 @@ class RefreshTokenMapperTest {
 
         Set<Authority> auths = userEntity.getAuthorities();
         String orgTokenValue = tokenProvider.createRefreshToken(userEntity.getUserId(), auths);
-        RefreshToken orgRefreshToken = RefreshToken.builder().tokenKey(userEntity.getUserId()).tokenValue(orgTokenValue).build();
-        refreshTokenMapper.saveToken(orgRefreshToken);
+        RefreshTokenEntity orgRefreshTokenEntity = RefreshTokenEntity.builder().tokenKey(userEntity.getUserId()).tokenValue(orgTokenValue).build();
+        refreshTokenMapper.saveToken(orgRefreshTokenEntity);
         Thread.sleep(1000L);
 
 
         String updatedTokenValue = tokenProvider.createRefreshToken(userEntity.getUserId(), auths);
         refreshTokenMapper.updateToken(
-                RefreshToken.builder()
+                RefreshTokenEntity.builder()
                         .tokenKey(userEntity.getUserId())
                         .tokenValue(updatedTokenValue)
                         .build());
 
 
-        RefreshToken updatedRefreshToken = refreshTokenMapper.findTokenByKey(userEntity.getUserId()).orElse(null);
-        assertThat(updatedRefreshToken).isNotNull();
-        assertThat(updatedRefreshToken.getTokenValue()).isNotEqualTo(orgRefreshToken.getTokenValue());
+        RefreshTokenEntity updatedRefreshTokenEntity = refreshTokenMapper.findTokenByKey(userEntity.getUserId()).orElse(null);
+        assertThat(updatedRefreshTokenEntity).isNotNull();
+        assertThat(updatedRefreshTokenEntity.getTokenValue()).isNotEqualTo(orgRefreshTokenEntity.getTokenValue());
     }
 
     @Test
@@ -139,15 +139,15 @@ class RefreshTokenMapperTest {
 
         Set<Authority> auths = userEntity.getAuthorities();
         String orgTokenValue = tokenProvider.createRefreshToken(userEntity.getUserId(), auths);
-        RefreshToken orgRefreshToken = RefreshToken.builder().tokenKey(userEntity.getUserId()).tokenValue(orgTokenValue).build();
-        refreshTokenMapper.saveToken(orgRefreshToken);
+        RefreshTokenEntity orgRefreshTokenEntity = RefreshTokenEntity.builder().tokenKey(userEntity.getUserId()).tokenValue(orgTokenValue).build();
+        refreshTokenMapper.saveToken(orgRefreshTokenEntity);
         Thread.sleep(2000L);
 
 
         refreshTokenMapper.deleteToken(userEntity.getUserId());
 
-        RefreshToken updatedRefreshToken = refreshTokenMapper.findTokenByKey(userEntity.getUserId()).orElse(null);
-        assertThat(updatedRefreshToken).isNull();
+        RefreshTokenEntity updatedRefreshTokenEntity = refreshTokenMapper.findTokenByKey(userEntity.getUserId()).orElse(null);
+        assertThat(updatedRefreshTokenEntity).isNull();
     }
 
 }

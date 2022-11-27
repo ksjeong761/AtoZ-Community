@@ -1,9 +1,9 @@
 package com.atoz.authentication;
 
 import com.atoz.authentication.help.StubRefreshTokenMapper;
-import com.atoz.authentication.help.StubAuthService;
+import com.atoz.authentication.help.StubAuthenticationService;
 import com.atoz.authentication.dto.request.TokenRequestDTO;
-import com.atoz.authentication.entity.RefreshToken;
+import com.atoz.authentication.entity.RefreshTokenEntity;
 import com.atoz.authentication.dto.response.TokenResponseDTO;
 import com.atoz.error.InvalidTokenException;
 import com.atoz.user.SigninDTO;
@@ -15,14 +15,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class AuthServiceImplTest {
+class AuthenticationServiceImplTest {
 
-    private StubAuthService authService;
+    private StubAuthenticationService authService;
     private StubRefreshTokenMapper authMapper = new StubRefreshTokenMapper();
 
     @BeforeEach
     public void beforeEach() {
-        authService = new StubAuthService();
+        authService = new StubAuthenticationService();
     }
 
     @Test
@@ -34,9 +34,9 @@ class AuthServiceImplTest {
 
         TokenResponseDTO signin = authService.signin(presentedIdPassword);
 
-        RefreshToken savedRefreshToken = authMapper.findTokenByKey(presentedIdPassword.getUserId()).orElse(null);
+        RefreshTokenEntity savedRefreshTokenEntity = authMapper.findTokenByKey(presentedIdPassword.getUserId()).orElse(null);
         assertThat(signin.getGrantType()).isEqualTo("Bearer");
-        assertThat(savedRefreshToken).isNotNull();
+        assertThat(savedRefreshTokenEntity).isNotNull();
     }
 
     @Test
@@ -74,7 +74,7 @@ class AuthServiceImplTest {
 
         authService.signout(tokenRequestDTO);
 
-        RefreshToken deletedToken = authMapper.findTokenByKey(presentedIdPassword.getUserId()).orElse(null);
+        RefreshTokenEntity deletedToken = authMapper.findTokenByKey(presentedIdPassword.getUserId()).orElse(null);
         assertThat(deletedToken).isNull();
     }
 

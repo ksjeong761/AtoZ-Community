@@ -1,13 +1,12 @@
 package com.atoz.authentication.help;
 
 
-import com.atoz.authentication.*;
 import com.atoz.authentication.entity.Authority;
 import com.atoz.authentication.dto.request.TokenRequestDTO;
-import com.atoz.authentication.entity.RefreshToken;
+import com.atoz.authentication.entity.RefreshTokenEntity;
 import com.atoz.authentication.mapper.RefreshTokenMapper;
 import com.atoz.authentication.dto.response.TokenResponseDTO;
-import com.atoz.authentication.service.AuthService;
+import com.atoz.authentication.service.AuthenticationService;
 import com.atoz.authentication.token.TokenProvider;
 import com.atoz.error.InvalidTokenException;
 import com.atoz.user.SigninDTO;
@@ -17,10 +16,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import java.util.HashSet;
 import java.util.Set;
 
-public class StubAuthService implements AuthService {
+public class StubAuthenticationService implements AuthenticationService {
     private String secretKey = "b3VyLXByb2plY3QtbmFtZS1BdG9aLWxpa2UtYmxpbmQtZm9yLWdlbmVyYXRpb24tb3VyLXByb2plY3QtbGlrZS1ibGluZC1nZW5lcmF0aW9u";
     private StubCustomUserIdPasswordAuthProvider authenticationManager =
             new StubCustomUserIdPasswordAuthProvider();
@@ -48,7 +46,7 @@ public class StubAuthService implements AuthService {
         String accessToken = tokenProvider.createAccessToken(signinDTO.getUserId(), authorities);
         String refreshToken = tokenProvider.createRefreshToken(userId, authorities);
 
-        refreshTokenMapper.saveToken(RefreshToken.builder()
+        refreshTokenMapper.saveToken(RefreshTokenEntity.builder()
                 .tokenKey(userId)
                 .tokenValue(refreshToken)
                 .build());
@@ -84,12 +82,12 @@ public class StubAuthService implements AuthService {
         String newRefreshToken = tokenProvider.createRefreshToken(userId, authorities);
         TokenResponseDTO tokenResponseDTO = tokenProvider.createTokenDTO(newAccessToken, newRefreshToken);
 
-        RefreshToken saveRefreshToken = RefreshToken.builder()
+        RefreshTokenEntity saveRefreshTokenEntity = RefreshTokenEntity.builder()
                 .tokenKey(userId)
                 .tokenValue(newRefreshToken)
                 .build();
 
-        refreshTokenMapper.saveToken(saveRefreshToken);
+        refreshTokenMapper.saveToken(saveRefreshTokenEntity);
 
         return tokenResponseDTO;
     }

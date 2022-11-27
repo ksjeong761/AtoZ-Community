@@ -3,7 +3,7 @@ package com.atoz.authentication.service;
 import com.atoz.authentication.entity.Authority;
 import com.atoz.authentication.token.TokenProvider;
 import com.atoz.authentication.dto.request.TokenRequestDTO;
-import com.atoz.authentication.entity.RefreshToken;
+import com.atoz.authentication.entity.RefreshTokenEntity;
 import com.atoz.authentication.mapper.RefreshTokenMapper;
 import com.atoz.authentication.dto.response.TokenResponseDTO;
 import com.atoz.error.InvalidTokenException;
@@ -24,7 +24,7 @@ import java.util.Set;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl implements AuthService {
+public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final RefreshTokenMapper refreshTokenMapper;
     private final UserMapper userMapper;
@@ -52,17 +52,17 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private void saveOrUpdateRefreshToken(UserEntity user, String refreshToken) {
-        RefreshToken orgRefreshToken = refreshTokenMapper.findTokenByKey(user.getUserId()).orElse(null);
+        RefreshTokenEntity orgRefreshTokenEntity = refreshTokenMapper.findTokenByKey(user.getUserId()).orElse(null);
 
-        RefreshToken newRefreshToken = RefreshToken.builder()
+        RefreshTokenEntity newRefreshTokenEntity = RefreshTokenEntity.builder()
                 .tokenKey(user.getUserId())
                 .tokenValue(refreshToken)
                 .build();
 
-        if (orgRefreshToken == null) {
-            refreshTokenMapper.saveToken(newRefreshToken);
+        if (orgRefreshTokenEntity == null) {
+            refreshTokenMapper.saveToken(newRefreshTokenEntity);
         } else {
-            refreshTokenMapper.updateToken(newRefreshToken);
+            refreshTokenMapper.updateToken(newRefreshTokenEntity);
         }
     }
 
@@ -89,10 +89,10 @@ public class AuthServiceImpl implements AuthService {
 
         Authentication authentication = tokenProvider.getAuthentication(originAccessToken);
 
-        RefreshToken refreshToken = refreshTokenMapper.findTokenByKey(authentication.getName())
+        RefreshTokenEntity refreshTokenEntity = refreshTokenMapper.findTokenByKey(authentication.getName())
                 .orElseThrow(() -> new InvalidTokenException("로그아웃된 사용자입니다."));
 
-        if (!refreshToken.getTokenValue().equals(originRefreshToken)) {
+        if (!refreshTokenEntity.getTokenValue().equals(originRefreshToken)) {
             throw new InvalidTokenException("토큰이 일치하지 않습니다.");
         }
 
@@ -105,7 +105,7 @@ public class AuthServiceImpl implements AuthService {
         String newRefreshToken = tokenProvider.createRefreshToken(userId, authorities);
         TokenResponseDTO tokenResponseDTO = tokenProvider.createTokenDTO(newAccessToken, newRefreshToken);
     
-        RefreshToken reissuedToken = RefreshToken.builder()
+        RefreshTokenEntity reissuedToken = RefreshTokenEntity.builder()
                 .tokenKey(userId)
                 .tokenValue(newRefreshToken)
                 .build();

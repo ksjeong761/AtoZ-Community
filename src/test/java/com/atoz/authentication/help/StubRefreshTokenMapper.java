@@ -1,25 +1,25 @@
 package com.atoz.authentication.help;
 
 import com.atoz.authentication.mapper.RefreshTokenMapper;
-import com.atoz.authentication.entity.RefreshToken;
+import com.atoz.authentication.entity.RefreshTokenEntity;
 
 import java.util.*;
 
 public class StubRefreshTokenMapper implements RefreshTokenMapper {
-    private static Map<String, RefreshToken> tokens = new HashMap<>();
+    private static Map<String, RefreshTokenEntity> tokens = new HashMap<>();
 
     @Override
-    public void saveToken(RefreshToken refreshToken) {
-        tokens.put(refreshToken.getTokenKey(), refreshToken);
+    public void saveToken(RefreshTokenEntity refreshTokenEntity) {
+        tokens.put(refreshTokenEntity.getTokenKey(), refreshTokenEntity);
     }
 
     @Override
-    public void updateToken(RefreshToken refreshToken) {
-        tokens.put(refreshToken.getTokenKey(), refreshToken);
+    public void updateToken(RefreshTokenEntity refreshTokenEntity) {
+        tokens.put(refreshTokenEntity.getTokenKey(), refreshTokenEntity);
     }
 
     @Override
-    public Optional<RefreshToken> findTokenByKey(String tokenKey) {
+    public Optional<RefreshTokenEntity> findTokenByKey(String tokenKey) {
         return Optional.ofNullable(tokens.get(tokenKey));
     }
 

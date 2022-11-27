@@ -1,17 +1,17 @@
 package com.atoz.authentication.mapper;
 
-import com.atoz.authentication.entity.RefreshToken;
+import com.atoz.authentication.entity.RefreshTokenEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.Optional;
 
 @Mapper
 public interface RefreshTokenMapper {
-    void saveToken(RefreshToken refreshToken);
+    void saveToken(RefreshTokenEntity refreshTokenEntity);
 
-    void updateToken(RefreshToken refreshToken);
+    void updateToken(RefreshTokenEntity refreshTokenEntity);
 
-    Optional<RefreshToken> findTokenByKey(String tokenKey);
+    Optional<RefreshTokenEntity> findTokenByKey(String tokenKey);
 
     void deleteToken(String tokenKey);
 }

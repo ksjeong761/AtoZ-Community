@@ -4,18 +4,18 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.atoz.authentication.mapper.RefreshTokenMapper">
-    <insert id="saveToken" parameterType="com.atoz.authentication.entity.RefreshToken">
+    <insert id="saveToken" parameterType="com.atoz.authentication.entity.RefreshTokenEntity">
         INSERT INTO refresh_token (token_key, token_value)
         VALUES(#{tokenKey}, #{tokenValue})
     </insert>
 
-    <update id="updateToken" parameterType="com.atoz.authentication.entity.RefreshToken">
+    <update id="updateToken" parameterType="com.atoz.authentication.entity.RefreshTokenEntity">
         UPDATE refresh_token
         SET token_value = #{tokenValue}
         WHERE token_key = #{tokenKey}
     </update>
 
-    <select id="findTokenByKey" resultType="com.atoz.authentication.entity.RefreshToken" parameterType="java.lang.String">
+    <select id="findTokenByKey" resultType="com.atoz.authentication.entity.RefreshTokenEntity" parameterType="java.lang.String">
         select
             token_key AS tokenKey,
             token_value AS tokenValue

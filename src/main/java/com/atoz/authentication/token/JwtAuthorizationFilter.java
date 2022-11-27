@@ -1,6 +1,5 @@
 package com.atoz.authentication.token;
 
-import com.atoz.authentication.token.TokenProvider;
 import com.atoz.authentication.mapper.RefreshTokenMapper;
 import com.atoz.error.InvalidTokenException;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-public class JwtFilter extends OncePerRequestFilter {
+public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String BEARER_PREFIX = "Bearer";

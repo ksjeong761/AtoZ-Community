@@ -2,7 +2,7 @@ package com.atoz.authentication.config;
 
 import com.atoz.authentication.token.JwtAccessDeniedHandler;
 import com.atoz.authentication.token.JwtAuthenticationEntryPoint;
-import com.atoz.authentication.token.JwtFilter;
+import com.atoz.authentication.token.JwtAuthorizationFilter;
 import com.atoz.authentication.mapper.RefreshTokenMapper;
 import com.atoz.authentication.token.TokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -55,9 +55,9 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder =
-                http.getSharedObject(AuthenticationManagerBuilder.class);
+        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder.authenticationProvider(authenticationProvider());
+
         return authenticationManagerBuilder.build();
     }
 
@@ -80,7 +80,7 @@ public class SecurityConfig {
                 .antMatchers("/auth/**", "/user/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(new JwtFilter(tokenProvider, refreshTokenMapper), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthorizationFilter(tokenProvider, refreshTokenMapper), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
