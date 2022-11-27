@@ -3,8 +3,6 @@ package com.atoz.security;
 import com.atoz.security.authorization.JwtAccessDeniedHandler;
 import com.atoz.security.authorization.JwtAuthenticationEntryPoint;
 import com.atoz.security.authorization.JwtAuthorizationFilter;
-import com.atoz.security.token.RefreshTokenMapper;
-import com.atoz.security.token.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -82,5 +80,4 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
 }

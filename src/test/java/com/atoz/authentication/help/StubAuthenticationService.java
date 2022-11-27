@@ -54,7 +54,7 @@ public class StubAuthenticationService implements AuthenticationService {
     @Override
     public void signout(TokenRequestDTO tokenRequestDTO) {
         String accessToken = tokenRequestDTO.getAccessToken();
-        Authentication authentication = tokenParser.toAuthentication(accessToken);
+        Authentication authentication = tokenParser.parseAuthentication(accessToken);
 
         refreshTokenMapper.findTokenByKey(authentication.getName()).orElseThrow(() -> new InvalidTokenException("인증정보가 없습니다."));
 
@@ -65,7 +65,7 @@ public class StubAuthenticationService implements AuthenticationService {
     public TokenResponseDTO refresh(TokenRequestDTO tokenRequestDTO) {
         String orgAccessToken = tokenRequestDTO.getAccessToken();
         String orgRefreshToken = tokenRequestDTO.getRefreshToken();
-        Authentication authentication = tokenParser.toAuthentication(orgAccessToken);
+        Authentication authentication = tokenParser.parseAuthentication(orgAccessToken);
 
         String userId = tokenParser.parseUserId(orgAccessToken);
         UserEntity user = userMapper.findById(userId).orElseThrow(() -> new UsernameNotFoundException("해당 유저가 존재하지 않습니다."));

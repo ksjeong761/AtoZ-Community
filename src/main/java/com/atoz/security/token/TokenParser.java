@@ -1,7 +1,6 @@
 package com.atoz.security.token;
 
 import com.atoz.error.exception.InvalidTokenException;
-import com.atoz.security.authentication.dto.TokenResponseDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -12,16 +11,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.util.Collection;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Component
 public class TokenParser {
 
     private static final String AUTHORITIES_KEY = "auth";
@@ -37,9 +35,13 @@ public class TokenParser {
     /**
      * 토큰을 검증하면서 파싱한다.
      */
-    private Claims parseClaims(String accessToken) {
+    private Claims parseClaims(String jwt) {
         try {
-            return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(accessToken).getBody();
+            return Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(jwt)
+                    .getBody();
         } catch (ExpiredJwtException ex) {
             throw new InvalidTokenException("만료된 토큰입니다.");
         } catch (IllegalArgumentException ex) {
@@ -52,13 +54,13 @@ public class TokenParser {
     /**
      * 토큰 값을 파싱하여 클레임에 담긴 사용자 아이디 값을 가져온다.
      */
-    public String parseUserId(String token) {
-        return this.parseClaims(token)
+    public String parseUserId(String jwt) {
+        return this.parseClaims(jwt)
                 .getSubject();
     }
 
-    public Authentication toAuthentication(String accessToken) {
-        Claims claims = this.parseClaims(accessToken);
+    public Authentication parseAuthentication(String jwt) {
+        Claims claims = this.parseClaims(jwt);
         if (claims.get(AUTHORITIES_KEY) == null || !StringUtils.hasText(claims.get(AUTHORITIES_KEY).toString())) {
             throw new RuntimeException("유저에게 아무런 권한이 없습니다.");
         }
