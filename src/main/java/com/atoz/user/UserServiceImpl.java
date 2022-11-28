@@ -10,6 +10,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Slf4j
 @Service
@@ -32,9 +34,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        UserEntity userEntity = userMapper.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("해당 유저가 존재하지 않습니다."));
+        Optional<UserEntity> userEntity = userMapper.findById(userId);
+        if (userEntity.isEmpty()) {
+            throw new UsernameNotFoundException("해당 유저가 존재하지 않습니다.");
+        }
 
-        return userEntity.toUserDetails();
+        return userEntity.get().toUserDetails();
     }
 }

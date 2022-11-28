@@ -3,7 +3,6 @@ package com.atoz.user;
 import com.atoz.user.entity.Authority;
 import com.atoz.user.entity.UserEntity;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
@@ -11,9 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.TestPropertySource;
 
+import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 @Slf4j
 @TestPropertySource(locations = "/application-test.yaml")
@@ -23,7 +24,7 @@ class UserMapperTest {
     @Autowired
     private UserMapper userMapper;
 
-    private UserEntity signedUpUser = UserEntity.builder()
+    private final UserEntity signedUpUser = UserEntity.builder()
             .userId("testUserId")
             .password("testPassword")
             .nickname("testNickname")
@@ -32,7 +33,7 @@ class UserMapperTest {
             .build();
 
     @BeforeEach
-    private void beforeEach() {
+    private void setUp() {
         userMapper.addUser(signedUpUser);
         userMapper.addAuthority(signedUpUser);
     }
@@ -50,10 +51,11 @@ class UserMapperTest {
 
         userMapper.addUser(newUser);
         userMapper.addAuthority(newUser);
-        UserEntity addedUser = userMapper.findById(newUser.getUserId()).orElse(null);
+        Optional<UserEntity> addedUser = userMapper.findById(newUser.getUserId());
 
 
-        assertThat(addedUser.getUserId()).isEqualTo(newUser.getUserId());
+        assertThat(addedUser.isPresent()).isTrue();
+        assertThat(addedUser.get().getUserId()).isEqualTo(newUser.getUserId());
     }
 
     @Test
@@ -63,9 +65,12 @@ class UserMapperTest {
                 .build();
 
 
-        Assertions.assertThatThrownBy(() -> {
+        Throwable thrown = catchThrowable(() -> {
             userMapper.addUser(duplicatedUser);
-        }).isInstanceOf(DataAccessException.class);
+        });
+
+
+        assertThat(thrown).isInstanceOf(DataAccessException.class);
     }
 
     @Test
@@ -73,10 +78,11 @@ class UserMapperTest {
         String targetUserId = signedUpUser.getUserId();
 
 
-        UserEntity foundUser = userMapper.findById(targetUserId).orElse(null);
+        Optional<UserEntity> foundUser = userMapper.findById(targetUserId);
 
 
-        assertThat(foundUser.getUserId()).isEqualTo(targetUserId);
+        assertThat(foundUser.isPresent()).isTrue();
+        assertThat(foundUser.get().getUserId()).isEqualTo(targetUserId);
     }
 
     @Test
@@ -84,9 +90,9 @@ class UserMapperTest {
         String targetUserId = "wrongUserId";
 
 
-        UserEntity foundUser = userMapper.findById(targetUserId).orElse(null);
+        Optional<UserEntity> foundUser = userMapper.findById(targetUserId);
 
 
-        assertThat(foundUser).isNull();
+        assertThat(foundUser.isEmpty()).isTrue();
     }
 }

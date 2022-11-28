@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.nio.charset.StandardCharsets;
@@ -44,10 +45,12 @@ class UserControllerTest {
         userData.put("email", "test@test.com");
 
 
-        sut.perform(post("/user/signup")
+        ResultActions resultActions = sut.perform(post("/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userData)))
-                .andExpect(status().isOk());
+                        .content(objectMapper.writeValueAsString(userData)));
+
+
+        resultActions.andExpect(status().isOk());
     }
 
     @Test
@@ -58,10 +61,12 @@ class UserControllerTest {
         userData.put("email", "test@test.com");
 
 
-        sut.perform(post("/user/signup")
+        ResultActions resultActions = sut.perform(post("/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userData)))
-                .andExpect(status().isBadRequest());
+                        .content(objectMapper.writeValueAsString(userData)));
+
+
+        resultActions.andExpect(status().isBadRequest());
     }
 
     @Test
@@ -72,10 +77,12 @@ class UserControllerTest {
         userData.put("email", "test@test.com");
 
 
-        sut.perform(post("/user/signup")
+        ResultActions resultActions = sut.perform(post("/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userData)))
-                .andExpect(status().isBadRequest());
+                        .content(objectMapper.writeValueAsString(userData)));
+
+
+        resultActions.andExpect(status().isBadRequest());
     }
 
     @Test
@@ -86,10 +93,12 @@ class UserControllerTest {
         userData.put("email", "test@test.com");
 
 
-        sut.perform(post("/user/signup")
+        ResultActions resultActions = sut.perform(post("/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userData)))
-                .andExpect(status().isBadRequest());
+                        .content(objectMapper.writeValueAsString(userData)));
+
+
+        resultActions.andExpect(status().isBadRequest());
     }
 
     @Test
@@ -100,10 +109,12 @@ class UserControllerTest {
         userData.put("password", "testPassword");
 
 
-        sut.perform(post("/user/signup")
+        ResultActions resultActions = sut.perform(post("/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userData)))
-                .andExpect(status().isBadRequest());
+                        .content(objectMapper.writeValueAsString(userData)));
+
+
+        resultActions.andExpect(status().isBadRequest());
     }
 
     @Test
@@ -115,10 +126,12 @@ class UserControllerTest {
         userData.put("email", "test@test.com");
 
 
-        sut.perform(post("/user/signup")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userData)))
-                .andExpect(status().isBadRequest());
+        ResultActions resultActions = sut.perform(post("/user/signup")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userData)));
+
+
+        resultActions.andExpect(status().isBadRequest());
     }
 
     @Test
@@ -130,10 +143,12 @@ class UserControllerTest {
         userData.put("email", "test@test.com");
 
 
-        sut.perform(post("/user/signup")
+        ResultActions resultActions = sut.perform(post("/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userData)))
-                .andExpect(status().isBadRequest());
+                        .content(objectMapper.writeValueAsString(userData)));
+
+
+        resultActions.andExpect(status().isBadRequest());
     }
 
     @Test
@@ -145,10 +160,12 @@ class UserControllerTest {
         userData.put("email", "test@test.com");
 
 
-        sut.perform(post("/user/signup")
+        ResultActions resultActions = sut.perform(post("/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userData)))
-                .andExpect(status().isBadRequest());
+                        .content(objectMapper.writeValueAsString(userData)));
+
+
+        resultActions.andExpect(status().isBadRequest());
     }
 
     @Test
@@ -160,9 +177,11 @@ class UserControllerTest {
         userData.put("email", "not email");
 
 
-        sut.perform(post("/user/signup")
+        ResultActions resultActions = sut.perform(post("/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userData)))
-                .andExpect(status().isBadRequest());
+                        .content(objectMapper.writeValueAsString(userData)));
+
+
+        resultActions.andExpect(status().isBadRequest());
     }
 }
