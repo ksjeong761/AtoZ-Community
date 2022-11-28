@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
 class UserServiceTest {
 
-    private final UserService userService = new UserServiceImpl(new SpyUserMapper());
+    private final UserService sut = new UserServiceImpl(new SpyUserMapper());
 
     @Test
     void signup_회원가입하면_가입된_회원정보가_반환된다() {
@@ -27,11 +27,10 @@ class UserServiceTest {
                 .build();
 
 
-        UserResponseDTO response = userService.signup(userEntity);
+        UserResponseDTO response = sut.signup(userEntity);
 
 
         assertThat(response).isNotNull();
         assertThat(response.getUserId()).isEqualTo(userEntity.getUserId());
     }
-
 }

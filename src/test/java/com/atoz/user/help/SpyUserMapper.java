@@ -9,18 +9,17 @@ import java.util.*;
 public class SpyUserMapper implements UserMapper {
     private int callCount_findById = 0;
 
-    UserEntity signedUpUser = UserEntity.builder()
-            .userId("testUserId")
-            .password("testPassword")
-            .nickname("testNickname")
-            .email("test@test.com")
-            .authorities(Set.of(Authority.ROLE_USER))
-            .build();
-
     private final List<UserEntity> users = new ArrayList<>();
     private final List<Authority> authorities = new ArrayList<>();
 
     public SpyUserMapper() {
+        UserEntity signedUpUser = UserEntity.builder()
+                .userId("testUserId")
+                .password("testPassword")
+                .nickname("testNickname")
+                .email("test@test.com")
+                .authorities(Set.of(Authority.ROLE_USER))
+                .build();
         users.add(signedUpUser);
         authorities.addAll(signedUpUser.getAuthorities());
     }

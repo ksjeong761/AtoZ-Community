@@ -17,18 +17,19 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 public class UserDetailsServiceTest {
 
     private final UserMapper userMapper = new SpyUserMapper();
-    private final UserDetailsService userDetailsService = new UserServiceImpl(userMapper);
+    private final UserDetailsService sut = new UserServiceImpl(userMapper);
 
-    UserEntity signedUpUser = UserEntity.builder()
-            .userId("testUserId")
-            .password("testPassword")
-            .email("test@test.com")
-            .nickname("testNickname")
-            .authorities(Set.of(Authority.ROLE_USER))
-            .build();
+    private UserEntity signedUpUser;
 
     @BeforeEach
     void setUp() {
+         signedUpUser = UserEntity.builder()
+                .userId("testUserId")
+                .password("testPassword")
+                .email("test@test.com")
+                .nickname("testNickname")
+                .authorities(Set.of(Authority.ROLE_USER))
+                .build();
         userMapper.addUser(signedUpUser);
     }
 
@@ -37,7 +38,7 @@ public class UserDetailsServiceTest {
         String username = signedUpUser.getUserId();
 
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        UserDetails userDetails = sut.loadUserByUsername(username);
 
 
         assertThat(userDetails).isNotNull();
@@ -50,7 +51,7 @@ public class UserDetailsServiceTest {
 
 
         Throwable thrown = catchThrowable(() -> {
-            userDetailsService.loadUserByUsername(wrongUserId);
+            sut.loadUserByUsername(wrongUserId);
         });
 
 

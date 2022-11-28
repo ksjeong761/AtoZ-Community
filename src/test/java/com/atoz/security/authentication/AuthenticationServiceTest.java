@@ -25,32 +25,33 @@ class AuthenticationServiceTest {
 
     private final UserMapper userMapper = new SpyUserMapper();
     private final RefreshTokenMapper refreshTokenMapper = new StubRefreshTokenMapper();
-    private final AuthenticationService authService = new AuthenticationServiceImpl(
+    private final AuthenticationService sut = new AuthenticationServiceImpl(
             new StubAuthenticationManager(),
             userMapper,
             refreshTokenMapper,
             new StubTokenProvider(),
             new StubAuthorizationProvider());
 
-    private UserEntity signedUpUser = UserEntity.builder()
-            .userId("testUserId")
-            .password("testPassword")
-            .nickname("testNickname")
-            .email("test@test.com")
-            .authorities(Set.of(Authority.ROLE_USER))
-            .build();
+    private UserEntity signedUpUser;
 
     private TokenResponseDTO signedInUser;
 
     @BeforeEach
     private void setUp() {
+        signedUpUser = UserEntity.builder()
+                .userId("testUserId")
+                .password("testPassword")
+                .nickname("testNickname")
+                .email("test@test.com")
+                .authorities(Set.of(Authority.ROLE_USER))
+                .build();
         userMapper.addUser(signedUpUser);
 
-        SigninDTO presentedIdPassword = SigninDTO.builder()
+        SigninDTO signinDTO = SigninDTO.builder()
                 .userId(signedUpUser.getUserId())
                 .password(signedUpUser.getPassword())
                 .build();
-        signedInUser = authService.signin(presentedIdPassword);
+        signedInUser = sut.signin(signinDTO);
     }
 
     /**
@@ -65,7 +66,7 @@ class AuthenticationServiceTest {
                 .build();
 
 
-        TokenResponseDTO providedToken = authService.signin(presentedIdPassword);
+        TokenResponseDTO providedToken = sut.signin(presentedIdPassword);
 
 
         assertThat(providedToken).isNotNull();
@@ -78,7 +79,7 @@ class AuthenticationServiceTest {
         TokenRequestDTO signoutRequest = new TokenRequestDTO(signedInUser.getAccessToken(), signedInUser.getRefreshToken());
 
 
-        authService.signout(signoutRequest);
+        sut.signout(signoutRequest);
         Optional<RefreshTokenEntity> foundToken = refreshTokenMapper.findTokenByKey(signedUpUser.getUserId());
 
 
@@ -90,7 +91,7 @@ class AuthenticationServiceTest {
         TokenRequestDTO refreshRequest = new TokenRequestDTO(signedInUser.getAccessToken(), signedInUser.getRefreshToken());
 
 
-        TokenResponseDTO reissuedToken = authService.refresh(refreshRequest);
+        TokenResponseDTO reissuedToken = sut.refresh(refreshRequest);
 
 
         assertThat(reissuedToken).isNotNull();

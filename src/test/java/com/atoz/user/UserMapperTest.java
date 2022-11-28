@@ -22,20 +22,21 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 class UserMapperTest {
 
     @Autowired
-    private UserMapper userMapper;
+    private UserMapper sut;
 
-    private final UserEntity signedUpUser = UserEntity.builder()
-            .userId("testUserId")
-            .password("testPassword")
-            .nickname("testNickname")
-            .email("test@test.com")
-            .authorities(Set.of(Authority.ROLE_USER))
-            .build();
+    private UserEntity signedUpUser;
 
     @BeforeEach
     private void setUp() {
-        userMapper.addUser(signedUpUser);
-        userMapper.addAuthority(signedUpUser);
+        signedUpUser = UserEntity.builder()
+                .userId("testUserId")
+                .password("testPassword")
+                .nickname("testNickname")
+                .email("test@test.com")
+                .authorities(Set.of(Authority.ROLE_USER))
+                .build();
+        sut.addUser(signedUpUser);
+        sut.addAuthority(signedUpUser);
     }
 
     @Test
@@ -49,9 +50,9 @@ class UserMapperTest {
                 .build();
 
 
-        userMapper.addUser(newUser);
-        userMapper.addAuthority(newUser);
-        Optional<UserEntity> addedUser = userMapper.findById(newUser.getUserId());
+        sut.addUser(newUser);
+        sut.addAuthority(newUser);
+        Optional<UserEntity> addedUser = sut.findById(newUser.getUserId());
 
 
         assertThat(addedUser.isPresent()).isTrue();
@@ -66,7 +67,7 @@ class UserMapperTest {
 
 
         Throwable thrown = catchThrowable(() -> {
-            userMapper.addUser(duplicatedUser);
+            sut.addUser(duplicatedUser);
         });
 
 
@@ -78,7 +79,7 @@ class UserMapperTest {
         String targetUserId = signedUpUser.getUserId();
 
 
-        Optional<UserEntity> foundUser = userMapper.findById(targetUserId);
+        Optional<UserEntity> foundUser = sut.findById(targetUserId);
 
 
         assertThat(foundUser.isPresent()).isTrue();
@@ -90,7 +91,7 @@ class UserMapperTest {
         String targetUserId = "wrongUserId";
 
 
-        Optional<UserEntity> foundUser = userMapper.findById(targetUserId);
+        Optional<UserEntity> foundUser = sut.findById(targetUserId);
 
 
         assertThat(foundUser.isEmpty()).isTrue();
