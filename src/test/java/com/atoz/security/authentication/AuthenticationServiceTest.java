@@ -1,11 +1,9 @@
-package com.atoz.authentication;
+package com.atoz.security.authentication;
 
-import com.atoz.authentication.help.StubAuthenticationManager;
-import com.atoz.authentication.help.StubAuthorizationProvider;
-import com.atoz.authentication.help.StubRefreshTokenMapper;
-import com.atoz.authentication.help.StubTokenProvider;
-import com.atoz.security.authentication.AuthenticationService;
-import com.atoz.security.authentication.AuthenticationServiceImpl;
+import com.atoz.security.authentication.help.StubAuthenticationManager;
+import com.atoz.security.authentication.help.StubAuthorizationProvider;
+import com.atoz.security.authentication.help.StubRefreshTokenMapper;
+import com.atoz.security.authentication.help.StubTokenProvider;
 import com.atoz.security.authentication.dto.TokenRequestDTO;
 import com.atoz.security.token.RefreshTokenEntity;
 import com.atoz.security.authentication.dto.TokenResponseDTO;
@@ -18,6 +16,7 @@ import com.atoz.user.help.SpyUserMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,9 +40,17 @@ class AuthenticationServiceTest {
             .authorities(Set.of(Authority.ROLE_USER))
             .build();
 
+    private TokenResponseDTO signedInUser;
+
     @BeforeEach
     private void setUp() {
         userMapper.addUser(signedUpUser);
+
+        SigninDTO presentedIdPassword = SigninDTO.builder()
+                .userId(signedUpUser.getUserId())
+                .password(signedUpUser.getPassword())
+                .build();
+        signedInUser = authService.signin(presentedIdPassword);
     }
 
     /**
@@ -68,32 +75,22 @@ class AuthenticationServiceTest {
 
     @Test
     void signout_로그아웃하면_리프레시토큰이_삭제되어야한다() {
-        SigninDTO presentedIdPassword = SigninDTO.builder()
-                .userId(signedUpUser.getUserId())
-                .password(signedUpUser.getPassword())
-                .build();
-        TokenResponseDTO signedInUser = authService.signin(presentedIdPassword);
-        TokenRequestDTO signoutRequestDTO = new TokenRequestDTO(signedInUser.getAccessToken(), signedInUser.getRefreshToken());
+        TokenRequestDTO signoutRequest = new TokenRequestDTO(signedInUser.getAccessToken(), signedInUser.getRefreshToken());
 
 
-        authService.signout(signoutRequestDTO);
+        authService.signout(signoutRequest);
+        Optional<RefreshTokenEntity> foundToken = refreshTokenMapper.findTokenByKey(signedUpUser.getUserId());
 
 
-        RefreshTokenEntity foundToken = refreshTokenMapper.findTokenByKey(presentedIdPassword.getUserId()).orElse(null);
-        assertThat(foundToken).isNull();
+        assertThat(foundToken.isEmpty()).isTrue();
     }
 
     @Test
-    void refresh_토큰을_재발급_받을수있다() throws InterruptedException {
-        SigninDTO presentedIdPassword = SigninDTO.builder()
-                .userId(signedUpUser.getUserId())
-                .password(signedUpUser.getPassword())
-                .build();
-        TokenResponseDTO signedInUser = authService.signin(presentedIdPassword);
-        TokenRequestDTO refreshRequestDTO = new TokenRequestDTO(signedInUser.getAccessToken(), signedInUser.getRefreshToken());
+    void refresh_토큰을_재발급_받을수있다() {
+        TokenRequestDTO refreshRequest = new TokenRequestDTO(signedInUser.getAccessToken(), signedInUser.getRefreshToken());
 
 
-        TokenResponseDTO reissuedToken = authService.refresh(refreshRequestDTO);
+        TokenResponseDTO reissuedToken = authService.refresh(refreshRequest);
 
 
         assertThat(reissuedToken).isNotNull();

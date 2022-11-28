@@ -1,5 +1,7 @@
-package com.atoz.authentication;
+package com.atoz.security.authentication;
 
+import com.atoz.security.authentication.dto.TokenRequestDTO;
+import com.atoz.security.authentication.dto.TokenResponseDTO;
 import com.atoz.user.UserMapper;
 import com.atoz.user.entity.Authority;
 import com.atoz.security.token.RefreshTokenEntity;
@@ -35,18 +37,35 @@ class RefreshTokenMapperTest {
             .authorities(Set.of(Authority.ROLE_USER))
             .build();
 
+    private RefreshTokenEntity savedToken = RefreshTokenEntity.builder()
+            .tokenKey(signedUpUser.getUserId())
+            .tokenValue("testRefreshToken")
+            .build();
+
     @BeforeEach
     void setUp() {
         // 외래키 제약조건 때문에 회원가입이 되어 있어야 토큰을 조작할 수 있습니다.
         userMapper.addUser(signedUpUser);
         userMapper.addAuthority(signedUpUser);
+
+        refreshTokenMapper.saveToken(savedToken);
     }
 
     @Test
     void saveToken_리프레시토큰을_저장할수있다() {
+        UserEntity newUser = UserEntity.builder()
+                .userId("newUserId")
+                .password("newPassword")
+                .nickname("newNickname")
+                .email("newTest@test.com")
+                .authorities(Set.of(Authority.ROLE_USER))
+                .build();
+        userMapper.addUser(newUser);
+        userMapper.addAuthority(newUser);
+
         RefreshTokenEntity refreshTokenEntity = RefreshTokenEntity.builder()
-                .tokenKey(signedUpUser.getUserId())
-                .tokenValue("testRefreshToken")
+                .tokenKey(newUser.getUserId())
+                .tokenValue("newRefreshToken")
                 .build();
 
 
@@ -72,17 +91,12 @@ class RefreshTokenMapperTest {
 
     @Test
     void updateToken_저장된_리프레시토큰을_업데이트_할수있다() {
-        RefreshTokenEntity saveRequest = RefreshTokenEntity.builder()
-                .tokenKey(signedUpUser.getUserId())
-                .tokenValue("testRefreshToken")
-                .build();
         RefreshTokenEntity updateRequest = RefreshTokenEntity.builder()
                 .tokenKey(signedUpUser.getUserId())
                 .tokenValue("updateRefreshToken")
                 .build();
 
 
-        refreshTokenMapper.saveToken(saveRequest);
         refreshTokenMapper.updateToken(updateRequest);
         Optional<RefreshTokenEntity> updatedTokenEntity = refreshTokenMapper.findTokenByKey(signedUpUser.getUserId());
 
@@ -94,14 +108,10 @@ class RefreshTokenMapperTest {
 
     @Test
     void deleteToken_저장된_리프레시토큰을_삭제할수있다() {
-        RefreshTokenEntity saveRequest = RefreshTokenEntity.builder()
-                .tokenKey(signedUpUser.getUserId())
-                .tokenValue("testRefreshToken")
-                .build();
+        String targetUserId = signedUpUser.getUserId();
 
 
-        refreshTokenMapper.saveToken(saveRequest);
-        refreshTokenMapper.deleteToken(signedUpUser.getUserId());
+        refreshTokenMapper.deleteToken(targetUserId);
         Optional<RefreshTokenEntity> deletedTokenEntity = refreshTokenMapper.findTokenByKey(signedUpUser.getUserId());
 
 

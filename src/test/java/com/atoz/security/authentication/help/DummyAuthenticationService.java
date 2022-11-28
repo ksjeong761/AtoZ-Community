@@ -1,4 +1,4 @@
-package com.atoz.authentication.help;
+package com.atoz.security.authentication.help;
 
 import com.atoz.security.authentication.dto.TokenRequestDTO;
 import com.atoz.security.authentication.dto.TokenResponseDTO;

@@ -1,4 +1,4 @@
-package com.atoz.authentication.help;
+package com.atoz.security.authentication.help;
 
 import com.atoz.security.token.RefreshTokenMapper;
 import com.atoz.security.token.RefreshTokenEntity;
