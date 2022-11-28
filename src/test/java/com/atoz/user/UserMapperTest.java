@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.TestPropertySource;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,71 +22,71 @@ class UserMapperTest {
 
     @Autowired
     private UserMapper userMapper;
-    
-    Set<Authority> authorities = new HashSet<>();
+
+    private UserEntity signedUpUser = UserEntity.builder()
+            .userId("testUserId")
+            .password("testPassword")
+            .nickname("testNickname")
+            .email("test@test.com")
+            .authorities(Set.of(Authority.ROLE_USER))
+            .build();
 
     @BeforeEach
-    public void beforeEach() {
-        authorities.add(Authority.ROLE_USER);
+    private void beforeEach() {
+        userMapper.addUser(signedUpUser);
+        userMapper.addAuthority(signedUpUser);
     }
 
     @Test
     void addUser_회원가입에_성공해야한다() {
-        UserEntity user = UserEntity.builder().userId("testUserId")
-                .password("testPassword")
-                .nickname("testNickname")
-                .email("test@test.com")
-                .authorities(authorities).build();
+        UserEntity newUser = UserEntity.builder()
+                .userId("newUserId")
+                .password("newPassword")
+                .nickname("newNickname")
+                .email("newEmail@test.com")
+                .authorities(Set.of(Authority.ROLE_USER))
+                .build();
 
-        userMapper.addUser(user);
-        userMapper.addAuthority(user);
-        UserEntity addedUser = userMapper.findById(user.getUserId()).orElse(null);
 
-        assertThat(addedUser.getUserId()).isEqualTo("testUserId");
+        userMapper.addUser(newUser);
+        userMapper.addAuthority(newUser);
+        UserEntity addedUser = userMapper.findById(newUser.getUserId()).orElse(null);
+
+
+        assertThat(addedUser.getUserId()).isEqualTo(newUser.getUserId());
     }
 
     @Test
     void addUser_이미_가입되어있다면_회원가입에_실패해야한다() {
-        UserEntity user = UserEntity.builder().userId("testUserId")
-                .password("testPassword")
-                .nickname("testNickname")
-                .email("test@test.com")
-                .authorities(authorities).build();
+        UserEntity duplicatedUser = UserEntity.builder()
+                .userId("testUserId")
+                .build();
+
 
         Assertions.assertThatThrownBy(() -> {
-            userMapper.addUser(user);
-            userMapper.addUser(user);
+            userMapper.addUser(duplicatedUser);
         }).isInstanceOf(DataAccessException.class);
     }
 
     @Test
     void findById_사용자정보를_조회할수있다() {
-        UserEntity signedUpUser = UserEntity.builder().userId("testUserId")
-                .password("testPassword")
-                .nickname("testNickname")
-                .email("test@test.com")
-                .authorities(authorities).build();
-        userMapper.addUser(signedUpUser);
-        userMapper.addAuthority(signedUpUser);
+        String targetUserId = signedUpUser.getUserId();
 
-        UserEntity foundUser = userMapper.findById(signedUpUser.getUserId()).orElse(null);
-        log.info("foundUser id={}, password={}", foundUser.getUserId(), foundUser.getPassword());
 
-        assertThat(signedUpUser.getUserId()).isEqualTo(foundUser.getUserId());
+        UserEntity foundUser = userMapper.findById(targetUserId).orElse(null);
+
+
+        assertThat(foundUser.getUserId()).isEqualTo(targetUserId);
     }
 
     @Test
     void findById_가입되지않은_사용자정보를_조회할수없다() {
-        UserEntity signedUpUser = UserEntity.builder().userId("testUserId")
-                .password("testPassword")
-                .nickname("testNickname")
-                .email("test@test.com")
-                .authorities(authorities).build();
-        userMapper.addUser(signedUpUser);
-        userMapper.addAuthority(signedUpUser);
+        String targetUserId = "wrongUserId";
 
-        UserEntity findUser = userMapper.findById("wrong userId").orElse(null);
 
-        assertThat(findUser).isNull();
+        UserEntity foundUser = userMapper.findById(targetUserId).orElse(null);
+
+
+        assertThat(foundUser).isNull();
     }
 }

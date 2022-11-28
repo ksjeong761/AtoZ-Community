@@ -6,7 +6,7 @@ import com.atoz.security.token.RefreshTokenEntity;
 import java.util.*;
 
 public class StubRefreshTokenMapper implements RefreshTokenMapper {
-    private static Map<String, RefreshTokenEntity> tokens = new HashMap<>();
+    private static final Map<String, RefreshTokenEntity> tokens = new HashMap<>();
 
     @Override
     public void saveToken(RefreshTokenEntity refreshTokenEntity) {

@@ -1,16 +1,13 @@
 package com.atoz.authentication;
 
+import com.atoz.authentication.help.DummyAuthenticationService;
 import com.atoz.security.authentication.AuthenticationController;
-import com.atoz.security.authentication.dto.TokenResponseDTO;
-import com.atoz.security.authentication.AuthenticationServiceImpl;
 import com.atoz.error.GlobalExceptionAdvice;
-import com.atoz.user.dto.SigninDTO;
+import com.atoz.security.authentication.dto.SigninDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -18,27 +15,19 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.nio.charset.StandardCharsets;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 class AuthenticationControllerTest {
 
-    @InjectMocks
-    private AuthenticationController authenticationController;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @Mock
-    AuthenticationServiceImpl authServiceImpl;
-
-    private MockMvc mockMvc;
-
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private MockMvc sut;
 
     @BeforeEach
     public void beforeEach() {
-        mockMvc = MockMvcBuilders.standaloneSetup(authenticationController)
+        sut = MockMvcBuilders.standaloneSetup(new AuthenticationController(new DummyAuthenticationService()))
                 .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
                 .setControllerAdvice(GlobalExceptionAdvice.class)
                 .build();
@@ -50,10 +39,8 @@ class AuthenticationControllerTest {
                 .userId("testId")
                 .password("testPassword")
                 .build();
-        given(authServiceImpl.signin(any(SigninDTO.class)))
-                .willReturn(TokenResponseDTO.builder().build());
 
-        mockMvc.perform(post("/auth/signin")
+        sut.perform(post("/auth/signin")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(testSigninDTO)))
                 .andExpect(status().isOk());
@@ -64,7 +51,7 @@ class AuthenticationControllerTest {
         SigninDTO testSigninDTO = SigninDTO.builder()
                 .password("testPassword")
                 .build();
-        mockMvc.perform(post("/auth/signin")
+        sut.perform(post("/auth/signin")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(testSigninDTO)))
                 .andExpect(status().isBadRequest());
@@ -75,7 +62,7 @@ class AuthenticationControllerTest {
         SigninDTO testSigninDTO = SigninDTO.builder()
                 .userId("testId")
                 .build();
-        mockMvc.perform(post("/auth/signin")
+        sut.perform(post("/auth/signin")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(testSigninDTO)))
                 .andExpect(status().isBadRequest());
@@ -85,7 +72,7 @@ class AuthenticationControllerTest {
     void signin_아이디와패스워드를_입력하지않아_로그인에_실패한다() throws Exception {
         SigninDTO testSigninDTO = SigninDTO.builder()
                 .build();
-        mockMvc.perform(post("/auth/signin")
+        sut.perform(post("/auth/signin")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(testSigninDTO)))
                 .andExpect(status().isBadRequest());

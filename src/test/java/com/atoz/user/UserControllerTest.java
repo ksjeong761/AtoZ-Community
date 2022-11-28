@@ -6,8 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
@@ -24,14 +22,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
 
-    private final UserController userController = new UserController(new Argon2PasswordEncoder(), new DummyUserService());
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private MockMvc mockMvc;
+
+    private MockMvc sut;
 
     @BeforeEach
     public void beforeEach() {
-        this.mockMvc = MockMvcBuilders
-                .standaloneSetup(userController)
+        this.sut = MockMvcBuilders
+                .standaloneSetup(new UserController(new Argon2PasswordEncoder(), new DummyUserService()))
                 .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
                 .setControllerAdvice(GlobalExceptionAdvice.class)
                 .build();
@@ -45,7 +43,8 @@ class UserControllerTest {
         userData.put("password", "testPassword");
         userData.put("email", "test@test.com");
 
-        mockMvc.perform(post("/user/signup")
+
+        sut.perform(post("/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userData)))
                 .andExpect(status().isOk());
@@ -58,7 +57,8 @@ class UserControllerTest {
         userData.put("password", "testPassword");
         userData.put("email", "test@test.com");
 
-        mockMvc.perform(post("/user/signup")
+
+        sut.perform(post("/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userData)))
                 .andExpect(status().isBadRequest());
@@ -71,7 +71,8 @@ class UserControllerTest {
         userData.put("password", "testPassword");
         userData.put("email", "test@test.com");
 
-        mockMvc.perform(post("/user/signup")
+
+        sut.perform(post("/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userData)))
                 .andExpect(status().isBadRequest());
@@ -84,7 +85,8 @@ class UserControllerTest {
         userData.put("nickname", "testNickname");
         userData.put("email", "test@test.com");
 
-        mockMvc.perform(post("/user/signup")
+
+        sut.perform(post("/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userData)))
                 .andExpect(status().isBadRequest());
@@ -97,7 +99,8 @@ class UserControllerTest {
         userData.put("nickname", "testNickname");
         userData.put("password", "testPassword");
 
-        mockMvc.perform(post("/user/signup")
+
+        sut.perform(post("/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userData)))
                 .andExpect(status().isBadRequest());
@@ -111,7 +114,8 @@ class UserControllerTest {
         userData.put("password", "testPassword");
         userData.put("email", "test@test.com");
 
-        mockMvc.perform(post("/user/signup")
+
+        sut.perform(post("/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userData)))
                 .andExpect(status().isBadRequest());
@@ -125,7 +129,8 @@ class UserControllerTest {
         userData.put("password", "testPassword");
         userData.put("email", "test@test.com");
 
-        mockMvc.perform(post("/user/signup")
+
+        sut.perform(post("/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userData)))
                 .andExpect(status().isBadRequest());
@@ -139,7 +144,8 @@ class UserControllerTest {
         userData.put("password", "");
         userData.put("email", "test@test.com");
 
-        mockMvc.perform(post("/user/signup")
+
+        sut.perform(post("/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userData)))
                 .andExpect(status().isBadRequest());
@@ -153,7 +159,8 @@ class UserControllerTest {
         userData.put("password", "testPassword");
         userData.put("email", "not email");
 
-        mockMvc.perform(post("/user/signup")
+
+        sut.perform(post("/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userData)))
                 .andExpect(status().isBadRequest());

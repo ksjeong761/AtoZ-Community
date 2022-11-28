@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class JwtAuthorizationProvider {
+public class JwtAuthorizationProvider implements AuthorizationProvider {
 
     private final TokenParser tokenParser;
     private final RefreshTokenMapper refreshTokenMapper;

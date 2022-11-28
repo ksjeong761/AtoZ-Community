@@ -1,6 +1,6 @@
 package com.atoz.security.authentication;
 
-import com.atoz.security.authorization.JwtAuthorizationProvider;
+import com.atoz.security.authorization.AuthorizationProvider;
 import com.atoz.user.entity.Authority;
 import com.atoz.security.token.TokenProvider;
 import com.atoz.security.authentication.dto.TokenRequestDTO;
@@ -30,7 +30,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final RefreshTokenMapper refreshTokenMapper;
     private final TokenProvider tokenProvider;
-    private final JwtAuthorizationProvider jwtAuthorizationProvider;
+    private final AuthorizationProvider authorizationProvider;
 
     @Override
     @Transactional
@@ -48,7 +48,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         // 인가를 받는다.
         String accessToken = tokenRequestDTO.getAccessToken();
         String refreshToken = tokenRequestDTO.getRefreshToken();
-        Authentication authentication = jwtAuthorizationProvider.authorize(accessToken, refreshToken);
+        Authentication authentication = authorizationProvider.authorize(accessToken, refreshToken);
 
         // 리프레시 토큰을 삭제한다.
         refreshTokenMapper.deleteToken(authentication.getName());
@@ -60,7 +60,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         // 인가를 받는다.
         String accessToken = tokenRequestDTO.getAccessToken();
         String refreshToken = tokenRequestDTO.getRefreshToken();
-        Authentication authentication = jwtAuthorizationProvider.authorize(accessToken, refreshToken);
+        Authentication authentication = authorizationProvider.authorize(accessToken, refreshToken);
 
         // 토큰을 발급한다.
         return provideToken(authentication);

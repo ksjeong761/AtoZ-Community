@@ -21,7 +21,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String BEARER_PREFIX = "Bearer";
 
-    private final JwtAuthorizationProvider jwtAuthorizationProvider;
+    private final AuthorizationProvider authorizationProvider;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -35,7 +35,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         // 요청받은 토큰이 유효한지 확인한다.
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         String jwt = resolveBearerToken(bearerToken);
-        Authentication authentication = jwtAuthorizationProvider.authorize(jwt);
+        Authentication authentication = authorizationProvider.authorize(jwt);
 
         // 유효하다면 사용자 정보를 저장해둔다.
         SecurityContextHolder.getContext().setAuthentication(authentication);
