@@ -1,6 +1,6 @@
 package com.atoz.security.authentication;
 
-import com.atoz.security.authentication.help.DummyAuthenticationService;
+import com.atoz.security.authentication.helper.DummyAuthenticationService;
 import com.atoz.error.GlobalExceptionAdvice;
 import com.atoz.security.authentication.dto.SigninDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,4 +1,4 @@
-package com.atoz.security.authentication.help;
+package com.atoz.security.token.helper;
 
 import com.atoz.security.token.TokenProvider;
 import com.atoz.user.entity.Authority;

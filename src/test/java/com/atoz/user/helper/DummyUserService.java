@@ -1,4 +1,4 @@
-package com.atoz.user.help;
+package com.atoz.user.helper;
 
 import com.atoz.user.UserService;
 import com.atoz.user.dto.UserResponseDTO;

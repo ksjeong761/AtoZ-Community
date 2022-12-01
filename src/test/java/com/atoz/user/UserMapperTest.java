@@ -15,6 +15,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @TestPropertySource(locations = "/application-test.yaml")
@@ -52,9 +53,9 @@ class UserMapperTest {
 
         sut.addUser(newUser);
         sut.addAuthority(newUser);
+
+
         Optional<UserEntity> addedUser = sut.findById(newUser.getUserId());
-
-
         assertThat(addedUser.isPresent()).isTrue();
         assertThat(addedUser.get().getUserId()).isEqualTo(newUser.getUserId());
     }
@@ -71,7 +72,7 @@ class UserMapperTest {
         });
 
 
-        assertThat(thrown).isInstanceOf(DataAccessException.class);
+        assertInstanceOf(DataAccessException.class, thrown);
     }
 
     @Test
@@ -82,8 +83,8 @@ class UserMapperTest {
         Optional<UserEntity> foundUser = sut.findById(targetUserId);
 
 
-        assertThat(foundUser.isPresent()).isTrue();
-        assertThat(foundUser.get().getUserId()).isEqualTo(targetUserId);
+        assertTrue(foundUser.isPresent());
+        assertEquals(foundUser.get().getUserId(), targetUserId);
     }
 
     @Test
@@ -94,6 +95,6 @@ class UserMapperTest {
         Optional<UserEntity> foundUser = sut.findById(targetUserId);
 
 
-        assertThat(foundUser.isEmpty()).isTrue();
+        assertTrue(foundUser.isEmpty());
     }
 }

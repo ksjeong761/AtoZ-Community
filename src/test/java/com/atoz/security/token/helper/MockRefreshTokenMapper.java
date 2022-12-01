@@ -1,11 +1,11 @@
-package com.atoz.security.authentication.help;
+package com.atoz.security.token.helper;
 
 import com.atoz.security.token.RefreshTokenMapper;
 import com.atoz.security.token.RefreshTokenEntity;
 
 import java.util.*;
 
-public class StubRefreshTokenMapper implements RefreshTokenMapper {
+public class MockRefreshTokenMapper implements RefreshTokenMapper {
     private static final Map<String, RefreshTokenEntity> tokens = new HashMap<>();
 
     @Override

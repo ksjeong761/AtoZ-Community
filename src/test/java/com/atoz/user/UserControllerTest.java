@@ -1,7 +1,7 @@
 package com.atoz.user;
 
 import com.atoz.error.GlobalExceptionAdvice;
-import com.atoz.user.help.DummyUserService;
+import com.atoz.user.helper.DummyUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

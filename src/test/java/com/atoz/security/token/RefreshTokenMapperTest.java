@@ -7,12 +7,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.TestPropertySource;
 
 import java.util.Optional;
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestPropertySource(locations = "/application-test.yaml")
 @MybatisTest
@@ -25,8 +27,6 @@ class RefreshTokenMapperTest {
     private UserMapper userMapper;
 
     private UserEntity signedUpUser;
-
-    private RefreshTokenEntity savedToken;
 
     @BeforeEach
     void setUp() {
@@ -41,8 +41,7 @@ class RefreshTokenMapperTest {
         userMapper.addUser(signedUpUser);
         userMapper.addAuthority(signedUpUser);
 
-
-        savedToken = RefreshTokenEntity.builder()
+        RefreshTokenEntity savedToken = RefreshTokenEntity.builder()
                 .tokenKey(signedUpUser.getUserId())
                 .tokenValue("testRefreshToken")
                 .build();
@@ -50,7 +49,7 @@ class RefreshTokenMapperTest {
     }
 
     @Test
-    void saveToken_리프레시토큰을_저장할수있다() {
+    void saveToken_회원가입_되어있다면_리프레시토큰을_저장할_수_있다() {
         UserEntity newUser = UserEntity.builder()
                 .userId("newUserId")
                 .password("newPassword")
@@ -68,23 +67,39 @@ class RefreshTokenMapperTest {
 
 
         sut.saveToken(refreshTokenEntity);
+
+
         Optional<RefreshTokenEntity> foundRefreshToken = sut.findTokenByKey(refreshTokenEntity.getTokenKey());
-
-
-        assertThat(foundRefreshToken.isPresent()).isTrue();
-        assertThat(foundRefreshToken.get().getTokenKey()).isEqualTo(refreshTokenEntity.getTokenKey());
-        assertThat(foundRefreshToken.get().getTokenValue()).isEqualTo(refreshTokenEntity.getTokenValue());
+        assertTrue(foundRefreshToken.isPresent());
+        assertEquals(foundRefreshToken.get().getTokenKey(), refreshTokenEntity.getTokenKey());
+        assertEquals(foundRefreshToken.get().getTokenValue(), refreshTokenEntity.getTokenValue());
     }
 
     @Test
-    void findByKey_리프레시토큰이_없는경우_null을_반환한다() {
+    void saveToken_회원가입_되어있지_않다면_리프레시토큰을_저장할_때_예외가_발생한다() {
+        RefreshTokenEntity refreshTokenEntity = RefreshTokenEntity.builder()
+                .tokenKey("newUserId")
+                .tokenValue("newRefreshToken")
+                .build();
+
+
+        Throwable thrown = catchThrowable(() -> {
+            sut.saveToken(refreshTokenEntity);
+        });
+
+
+        assertInstanceOf(DataIntegrityViolationException.class, thrown);
+    }
+
+    @Test
+    void findByKey_리프레시토큰이_없으면_토큰을_찾을_때_null을_반환한다() {
         String wrongUserId = "wrongUserId";
 
 
         Optional<RefreshTokenEntity> foundRefreshToken = sut.findTokenByKey(wrongUserId);
 
 
-        assertThat(foundRefreshToken.isEmpty()).isTrue();
+        assertTrue(foundRefreshToken.isEmpty());
     }
 
     @Test
@@ -96,12 +111,12 @@ class RefreshTokenMapperTest {
 
 
         sut.updateToken(updateRequest);
+
+
         Optional<RefreshTokenEntity> updatedTokenEntity = sut.findTokenByKey(signedUpUser.getUserId());
-
-
-        assertThat(updatedTokenEntity.isPresent()).isTrue();
-        assertThat(updatedTokenEntity.get().getTokenKey()).isEqualTo(updateRequest.getTokenKey());
-        assertThat(updatedTokenEntity.get().getTokenValue()).isEqualTo(updateRequest.getTokenValue());
+        assertTrue(updatedTokenEntity.isPresent());
+        assertEquals(updatedTokenEntity.get().getTokenKey(), updateRequest.getTokenKey());
+        assertEquals(updatedTokenEntity.get().getTokenValue(), updateRequest.getTokenValue());
     }
 
     @Test
@@ -110,9 +125,9 @@ class RefreshTokenMapperTest {
 
 
         sut.deleteToken(targetUserId);
+
+
         Optional<RefreshTokenEntity> deletedTokenEntity = sut.findTokenByKey(signedUpUser.getUserId());
-
-
-        assertThat(deletedTokenEntity.isEmpty()).isTrue();
+        assertTrue(deletedTokenEntity.isEmpty());
     }
 }

@@ -1,4 +1,4 @@
-package com.atoz.user.help;
+package com.atoz.user.helper;
 
 import com.atoz.user.entity.Authority;
 import com.atoz.user.entity.UserEntity;
@@ -11,18 +11,6 @@ public class SpyUserMapper implements UserMapper {
 
     private final List<UserEntity> users = new ArrayList<>();
     private final List<Authority> authorities = new ArrayList<>();
-
-    public SpyUserMapper() {
-        UserEntity signedUpUser = UserEntity.builder()
-                .userId("testUserId")
-                .password("testPassword")
-                .nickname("testNickname")
-                .email("test@test.com")
-                .authorities(Set.of(Authority.ROLE_USER))
-                .build();
-        users.add(signedUpUser);
-        authorities.addAll(signedUpUser.getAuthorities());
-    }
 
     @Override
     public void addUser(UserEntity userEntity) {

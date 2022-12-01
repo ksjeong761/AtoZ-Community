@@ -1,8 +1,10 @@
 package com.atoz.user;
 
+import com.atoz.user.dto.UserResponseDTO;
 import com.atoz.user.entity.Authority;
 import com.atoz.user.entity.UserEntity;
-import com.atoz.user.help.SpyUserMapper;
+import com.atoz.user.helper.SpyUserMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,19 +13,20 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class UserDetailsServiceTest {
+@Slf4j
+class UserServiceImplTest {
 
-    private final UserMapper userMapper = new SpyUserMapper();
-    private final UserDetailsService sut = new UserServiceImpl(userMapper);
+    private final SpyUserMapper userMapper = new SpyUserMapper();
+    private final UserServiceImpl sut = new UserServiceImpl(userMapper);
 
     private UserEntity signedUpUser;
 
     @BeforeEach
     void setUp() {
-         signedUpUser = UserEntity.builder()
+        signedUpUser = UserEntity.builder()
                 .userId("testUserId")
                 .password("testPassword")
                 .email("test@test.com")
@@ -34,6 +37,24 @@ public class UserDetailsServiceTest {
     }
 
     @Test
+    void signup_회원가입하면_가입된_회원정보가_반환된다() {
+        UserEntity userEntity = UserEntity.builder()
+                .userId("testUserId")
+                .password("testPassword")
+                .email("test@test.com")
+                .nickname("testNickname")
+                .authorities(Set.of(Authority.ROLE_USER))
+                .build();
+
+
+        UserResponseDTO response = sut.signup(userEntity);
+
+
+        assertNotNull(response);
+        assertEquals(response.getUserId(), userEntity.getUserId());
+    }
+
+    @Test
     void loadUserByUsername_가입된_회원정보를_조회할수있다() {
         String username = signedUpUser.getUserId();
 
@@ -41,8 +62,8 @@ public class UserDetailsServiceTest {
         UserDetails userDetails = sut.loadUserByUsername(username);
 
 
-        assertThat(userDetails).isNotNull();
-        assertThat(userDetails.getUsername()).isEqualTo(signedUpUser.getUserId());
+        assertNotNull(userDetails);
+        assertEquals(userDetails.getUsername(), signedUpUser.getUserId());
     }
 
     @Test
@@ -55,6 +76,6 @@ public class UserDetailsServiceTest {
         });
 
 
-        assertThat(thrown).isInstanceOf(UsernameNotFoundException.class);
+        assertInstanceOf(UsernameNotFoundException.class, thrown);
     }
 }

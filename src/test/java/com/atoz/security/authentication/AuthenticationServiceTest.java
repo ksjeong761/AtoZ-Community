@@ -1,9 +1,9 @@
 package com.atoz.security.authentication;
 
-import com.atoz.security.authentication.help.StubAuthenticationManager;
-import com.atoz.security.authentication.help.StubAuthorizationProvider;
-import com.atoz.security.authentication.help.StubRefreshTokenMapper;
-import com.atoz.security.authentication.help.StubTokenProvider;
+import com.atoz.security.authentication.helper.StubAuthenticationManager;
+import com.atoz.security.authorization.helper.StubAuthorizationProvider;
+import com.atoz.security.token.helper.MockRefreshTokenMapper;
+import com.atoz.security.token.helper.StubTokenProvider;
 import com.atoz.security.authentication.dto.TokenRequestDTO;
 import com.atoz.security.token.RefreshTokenEntity;
 import com.atoz.security.authentication.dto.TokenResponseDTO;
@@ -12,7 +12,7 @@ import com.atoz.security.token.RefreshTokenMapper;
 import com.atoz.user.UserMapper;
 import com.atoz.user.entity.Authority;
 import com.atoz.user.entity.UserEntity;
-import com.atoz.user.help.SpyUserMapper;
+import com.atoz.user.helper.SpyUserMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,11 +20,13 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AuthenticationServiceTest {
 
     private final UserMapper userMapper = new SpyUserMapper();
-    private final RefreshTokenMapper refreshTokenMapper = new StubRefreshTokenMapper();
+    private final RefreshTokenMapper refreshTokenMapper = new MockRefreshTokenMapper();
     private final AuthenticationService sut = new AuthenticationServiceImpl(
             new StubAuthenticationManager(),
             userMapper,
@@ -69,7 +71,7 @@ class AuthenticationServiceTest {
         TokenResponseDTO providedToken = sut.signin(presentedIdPassword);
 
 
-        assertThat(providedToken).isNotNull();
+        assertNotNull(providedToken);
         assertThat(providedToken.getAccessToken()).isNotBlank();
         assertThat(providedToken.getRefreshToken()).isNotBlank();
     }
@@ -80,10 +82,10 @@ class AuthenticationServiceTest {
 
 
         sut.signout(signoutRequest);
+
+
         Optional<RefreshTokenEntity> foundToken = refreshTokenMapper.findTokenByKey(signedUpUser.getUserId());
-
-
-        assertThat(foundToken.isEmpty()).isTrue();
+        assertTrue(foundToken.isEmpty());
     }
 
     @Test
@@ -94,7 +96,7 @@ class AuthenticationServiceTest {
         TokenResponseDTO reissuedToken = sut.refresh(refreshRequest);
 
 
-        assertThat(reissuedToken).isNotNull();
+        assertNotNull(reissuedToken);
         assertThat(reissuedToken.getAccessToken()).isNotBlank();
         assertThat(reissuedToken.getRefreshToken()).isNotBlank();
     }

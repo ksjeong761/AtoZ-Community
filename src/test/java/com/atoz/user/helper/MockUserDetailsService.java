@@ -1,6 +1,5 @@
-package com.atoz.security.authentication.help;
+package com.atoz.user.helper;
 
-import com.atoz.user.entity.Authority;
 import com.atoz.user.entity.UserEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -11,17 +10,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class StubUserDetailsService implements UserDetailsService {
+public class MockUserDetailsService implements UserDetailsService {
 
-    UserEntity signedUpUser = UserEntity.builder()
-            .userId("testUserId")
-            .password("testPassword")
-            .nickname("testNickname")
-            .email("test@test.com")
-            .authorities(Set.of(Authority.ROLE_USER))
-            .build();
+    private final List<UserEntity> users;
 
-    private final List<UserEntity> users = List.of(signedUpUser);
+    public MockUserDetailsService(List<UserEntity> users) {
+        this.users = users;
+    }
+
 
     @Override
     public UserDetails loadUserByUsername(String targetUserId) throws UsernameNotFoundException {
