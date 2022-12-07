@@ -1,7 +1,6 @@
 package com.atoz.user;
 
-import com.atoz.user.dto.SignupDTO;
-import com.atoz.user.dto.UserResponseDTO;
+import com.atoz.user.dto.*;
 import com.atoz.user.entity.Authority;
 import com.atoz.user.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
@@ -32,5 +31,25 @@ public class UserController {
                 .build();
 
         return userService.signup(userEntity);
+    }
+
+    @PatchMapping
+    public void update(@Validated @RequestBody UserUpdateDTO updateDTO) {
+        userService.update(updateDTO);
+    }
+
+    @PatchMapping("/password")
+    public void changePassword(@Validated @RequestBody ChangePasswordDTO changePasswordDTO) {
+        ChangePasswordDTO encodedPassword = changePasswordDTO.builder()
+                .userId(changePasswordDTO.getUserId())
+                .password(passwordEncoder.encode(changePasswordDTO.getPassword()))
+                .build();
+
+        userService.changePassword(encodedPassword);
+    }
+
+    @DeleteMapping
+    public void delete(@Validated @RequestBody UserDeleteDTO deleteDTO) {
+        userService.delete(deleteDTO.getUserId());
     }
 }

@@ -1,6 +1,8 @@
 package com.atoz.user;
 
+import com.atoz.user.dto.ChangePasswordDTO;
 import com.atoz.user.dto.UserResponseDTO;
+import com.atoz.user.dto.UserUpdateDTO;
 import com.atoz.user.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         userMapper.addAuthority(userEntity);
 
         return userEntity.toResponseDto();
+    }
+
+    @Override
+    public void update(UserUpdateDTO updateDTO) {
+
+    }
+
+    @Override
+    public void changePassword(ChangePasswordDTO changePasswordDTO) {
+
+    }
+
+    @Override
+    public void delete(String userId) {
+
     }
 
     @Override
