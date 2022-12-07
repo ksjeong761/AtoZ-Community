@@ -13,10 +13,10 @@ import java.security.Key;
 import java.util.Date;
 import java.util.Set;
 
+import static com.atoz.security.SecurityConstants.AUTHORITIES_KEY;
+
 @Component
 public class TokenProviderImpl implements TokenProvider {
-
-    private static final String AUTHORITIES_KEY = "auth";
 
     @Value("${jwt.secret:b3VyLXByb2plY3QtbmFtZS1BdG9aLWxpa2UtYmxpbmQtZm9yLWdlbmVyYXRpb24tb3VyLXByb2plY3QtbGlrZS1ibGluZC1nZW5lcmF0aW9u}")
     private String secretKey = "b3VyLXByb2plY3QtbmFtZS1BdG9aLWxpa2UtYmxpbmQtZm9yLWdlbmVyYXRpb24tb3VyLXByb2plY3QtbGlrZS1ibGluZC1nZW5lcmF0aW9u";

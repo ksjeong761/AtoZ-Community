@@ -19,11 +19,11 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static com.atoz.security.SecurityConstants.AUTHORITIES_KEY;
+
 @RequiredArgsConstructor
 @Component
 public class JwtAuthorizationProvider implements AuthorizationProvider {
-
-    private static final String AUTHORITIES_KEY = "auth";
 
     private final TokenParser tokenParser;
     private final RefreshTokenMapper refreshTokenMapper;

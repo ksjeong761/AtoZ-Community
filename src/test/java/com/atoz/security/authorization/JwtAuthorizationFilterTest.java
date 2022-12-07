@@ -17,14 +17,13 @@ import javax.servlet.ServletException;
 import java.io.IOException;
 import java.util.Set;
 
+import static com.atoz.security.SecurityConstants.AUTHORIZATION_HEADER;
+import static com.atoz.security.SecurityConstants.BEARER_PREFIX;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 public class JwtAuthorizationFilterTest {
-
-    private final String AUTHORIZATION_HEADER = "Authorization";
-    private final String BEARER_PREFIX = "Bearer ";
 
     private final JwtAuthorizationFilter sut = new JwtAuthorizationFilter(new StubAuthorizationProvider());
     private MockHttpServletRequest request;

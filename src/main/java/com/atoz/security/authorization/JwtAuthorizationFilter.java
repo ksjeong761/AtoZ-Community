@@ -12,12 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.atoz.security.SecurityConstants.AUTHORIZATION_HEADER;
+import static com.atoz.security.SecurityConstants.BEARER_PREFIX;
+
 @RequiredArgsConstructor
 @Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
-
-    private static final String AUTHORIZATION_HEADER = "Authorization";
-    private static final String BEARER_PREFIX = "Bearer ";
 
     private final AuthorizationProvider authorizationProvider;
 
