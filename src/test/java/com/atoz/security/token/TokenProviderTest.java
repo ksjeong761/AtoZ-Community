@@ -20,10 +20,7 @@ public class TokenProviderTest {
     long accessTime = 30 * 60 * 1000L;
     long refreshTime = 7 * 24 * 60 * 60 * 1000L;
 
-    private final TokenProvider sut = new TokenProviderImpl(
-            secretKey,
-            accessTime,
-            refreshTime);
+    private final TokenProvider sut = new TokenProviderImpl();
 
     @Test
     void createAccessToken_비밀키로_암호화_된_액세스_토큰을_생성한다() {

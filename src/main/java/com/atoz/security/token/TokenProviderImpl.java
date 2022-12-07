@@ -18,18 +18,16 @@ public class TokenProviderImpl implements TokenProvider {
 
     private static final String AUTHORITIES_KEY = "auth";
 
-    private final Key secretKey;
-    private final long ACCESS_TOKEN_EXPIRE_TIME;
-    private final long REFRESH_TOKEN_EXPIRE_TIME;
+    @Value("${jwt.secret:b3VyLXByb2plY3QtbmFtZS1BdG9aLWxpa2UtYmxpbmQtZm9yLWdlbmVyYXRpb24tb3VyLXByb2plY3QtbGlrZS1ibGluZC1nZW5lcmF0aW9u}")
+    private String secretKey = "b3VyLXByb2plY3QtbmFtZS1BdG9aLWxpa2UtYmxpbmQtZm9yLWdlbmVyYXRpb24tb3VyLXByb2plY3QtbGlrZS1ibGluZC1nZW5lcmF0aW9u";
+    @Value("${jwt.access-token-expire-time:1800000}")
+    private long ACCESS_TOKEN_EXPIRE_TIME = 30 * 60 * 1000L;
+    @Value("${jwt.refresh-token-expire-time:604800000}")
+    private long REFRESH_TOKEN_EXPIRE_TIME = 7 * 24 * 60 * 60 * 1000L;
 
-    public TokenProviderImpl(
-            @Value("${jwt.secret}") String secretKey,
-            @Value("${jwt.access-token-expire-time}") long accessTime,
-            @Value("${jwt.refresh-token-expire-time}") long refreshTime) {
+    private Key generateSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        this.secretKey = Keys.hmacShaKeyFor(keyBytes);
-        this.ACCESS_TOKEN_EXPIRE_TIME = accessTime;
-        this.REFRESH_TOKEN_EXPIRE_TIME = refreshTime;
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     private String createToken(String userId, Set<Authority> authorities, long expirationPeriod) {
@@ -43,7 +41,7 @@ public class TokenProviderImpl implements TokenProvider {
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(expirationDate)
-                .signWith(secretKey, SignatureAlgorithm.HS512)
+                .signWith(generateSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
 

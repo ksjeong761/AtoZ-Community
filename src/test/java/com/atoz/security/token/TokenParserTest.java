@@ -21,15 +21,13 @@ public class TokenParserTest {
 
     private Key signingKey;
 
-    private TokenParser sut;
+    private TokenParser sut = new TokenParser();
 
     @BeforeEach
     void setUp() {
         String secretKey = "b3VyLXByb2plY3QtbmFtZS1BdG9aLWxpa2UtYmxpbmQtZm9yLWdlbmVyYXRpb24tb3VyLXByb2plY3QtbGlrZS1ibGluZC1nZW5lcmF0aW9u";
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         signingKey = Keys.hmacShaKeyFor(keyBytes);
-
-        sut = new TokenParser(secretKey);
     }
 
     @Test

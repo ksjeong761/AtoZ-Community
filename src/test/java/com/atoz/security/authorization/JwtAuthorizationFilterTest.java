@@ -42,10 +42,7 @@ public class JwtAuthorizationFilterTest {
                 .email("test@test.com")
                 .authorities(Set.of(Authority.ROLE_USER))
                 .build();
-        tokenProvider = new TokenProviderImpl(
-                "b3VyLXByb2plY3QtbmFtZS1BdG9aLWxpa2UtYmxpbmQtZm9yLWdlbmVyYXRpb24tb3VyLXByb2plY3QtbGlrZS1ibGluZC1nZW5lcmF0aW9u",
-                1800000L,
-                604800000L);
+        tokenProvider = new TokenProviderImpl();
 
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();

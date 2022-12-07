@@ -19,9 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class JwtAuthorizationProviderTest {
 
-    private final String secretKey = "b3VyLXByb2plY3QtbmFtZS1BdG9aLWxpa2UtYmxpbmQtZm9yLWdlbmVyYXRpb24tb3VyLXByb2plY3QtbGlrZS1ibGluZC1nZW5lcmF0aW9u";
-    private final TokenParser tokenParser = new TokenParser(secretKey);
-    private final TokenProvider tokenProvider = new TokenProviderImpl(secretKey, 1800000L, 604800000L);
+    private final TokenParser tokenParser = new TokenParser();
+    private final TokenProvider tokenProvider = new TokenProviderImpl();
 
     private UserEntity signedUpUser;
 

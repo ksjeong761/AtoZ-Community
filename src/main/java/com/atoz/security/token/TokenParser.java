@@ -14,17 +14,18 @@ import java.security.Key;
 @Component
 public class TokenParser {
 
-    private final Key signingKey;
+    @Value("${jwt.secret:b3VyLXByb2plY3QtbmFtZS1BdG9aLWxpa2UtYmxpbmQtZm9yLWdlbmVyYXRpb24tb3VyLXByb2plY3QtbGlrZS1ibGluZC1nZW5lcmF0aW9u}")
+    private String secretKey = "b3VyLXByb2plY3QtbmFtZS1BdG9aLWxpa2UtYmxpbmQtZm9yLWdlbmVyYXRpb24tb3VyLXByb2plY3QtbGlrZS1ibGluZC1nZW5lcmF0aW9u";
 
-    public TokenParser(@Value("${jwt.secret}") String secretKey) {
+    private Key generateSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        this.signingKey = Keys.hmacShaKeyFor(keyBytes);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     public Claims parseClaims(String jwt) {
         try {
             return Jwts.parserBuilder()
-                    .setSigningKey(signingKey)
+                    .setSigningKey(generateSigningKey())
                     .build()
                     .parseClaimsJws(jwt)
                     .getBody();
