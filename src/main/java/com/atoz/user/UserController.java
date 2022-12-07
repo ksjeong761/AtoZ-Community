@@ -49,7 +49,7 @@ public class UserController {
     }
 
     @DeleteMapping
-    public void delete(@Validated @RequestBody UserDeleteDTO deleteDTO) {
-        userService.delete(deleteDTO.getUserId());
+    public void delete(@Validated @RequestBody UserDeleteDTO userDeleteDTO) {
+        userService.delete(userDeleteDTO.getUserId());
     }
 }
