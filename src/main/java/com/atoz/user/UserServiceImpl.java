@@ -31,18 +31,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void update(UserUpdateDTO updateDTO) {
-
+    @Transactional
+    public void update(UserUpdateDTO userUpdateDTO) {
+        userMapper.updateUser(userUpdateDTO);
     }
 
     @Override
+    @Transactional
     public void changePassword(ChangePasswordDTO changePasswordDTO) {
-
+        userMapper.changePassword(changePasswordDTO);
     }
 
     @Override
+    @Transactional
     public void delete(String userId) {
-
+        userMapper.deleteUser(userId);
     }
 
     @Override

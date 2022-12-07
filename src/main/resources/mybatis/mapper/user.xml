@@ -42,4 +42,24 @@
         FROM users
         WHERE user_id = #{user_id}
     </select>
+
+    <update id="updateUser" parameterType="com.atoz.user.dto.UserUpdateDTO">
+        UPDATE users
+        SET
+        nickname = #{nickname},
+        email = #{email}
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="changePassword" parameterType="com.atoz.user.dto.ChangePasswordDTO">
+        UPDATE users
+        SET
+        password = #{password}
+        WHERE user_id = #{userId}
+    </update>
+
+    <delete id="deleteUser" parameterType="java.lang.String">
+        DELETE FROM users
+        WHERE user_id = #{userId}
+    </delete>
 </mapper>

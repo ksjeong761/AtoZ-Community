@@ -34,8 +34,8 @@ public class UserController {
     }
 
     @PatchMapping
-    public void update(@Validated @RequestBody UserUpdateDTO updateDTO) {
-        userService.update(updateDTO);
+    public void update(@Validated @RequestBody UserUpdateDTO userUpdateDTO) {
+        userService.update(userUpdateDTO);
     }
 
     @PatchMapping("/password")

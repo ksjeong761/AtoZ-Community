@@ -1,5 +1,7 @@
 package com.atoz.user.helper;
 
+import com.atoz.user.dto.ChangePasswordDTO;
+import com.atoz.user.dto.UserUpdateDTO;
 import com.atoz.user.entity.Authority;
 import com.atoz.user.entity.UserEntity;
 import com.atoz.user.UserMapper;
@@ -32,6 +34,21 @@ public class SpyUserMapper implements UserMapper {
             }
         }
         return Optional.empty();
+    }
+
+    @Override
+    public void updateUser(UserUpdateDTO userUpdateDTO) {
+
+    }
+
+    @Override
+    public void changePassword(ChangePasswordDTO changePasswordDTO) {
+
+    }
+
+    @Override
+    public void deleteUser(String userId) {
+
     }
 
     public int getCallCount_findById() {
