@@ -1,6 +1,6 @@
 package com.atoz.security.authentication;
 
-import com.atoz.security.authentication.helper.DummyAuthenticationService;
+import com.atoz.security.authentication.helper.StubAuthenticationService;
 import com.atoz.error.GlobalExceptionAdvice;
 import com.atoz.security.authentication.dto.SigninDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,7 +27,7 @@ class AuthenticationControllerTest {
 
     @BeforeEach
     public void beforeEach() {
-        sut = MockMvcBuilders.standaloneSetup(new AuthenticationController(new DummyAuthenticationService()))
+        sut = MockMvcBuilders.standaloneSetup(new AuthenticationController(new StubAuthenticationService()))
                 .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
                 .setControllerAdvice(GlobalExceptionAdvice.class)
                 .build();

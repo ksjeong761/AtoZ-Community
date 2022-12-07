@@ -1,7 +1,7 @@
 package com.atoz.user;
 
 import com.atoz.error.GlobalExceptionAdvice;
-import com.atoz.user.helper.DummyUserService;
+import com.atoz.user.helper.StubUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ class UserControllerTest {
     @BeforeEach
     public void beforeEach() {
         this.sut = MockMvcBuilders
-                .standaloneSetup(new UserController(new Argon2PasswordEncoder(), new DummyUserService()))
+                .standaloneSetup(new UserController(new Argon2PasswordEncoder(), new StubUserService()))
                 .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
                 .setControllerAdvice(GlobalExceptionAdvice.class)
                 .build();

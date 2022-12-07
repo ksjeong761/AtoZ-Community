@@ -5,7 +5,7 @@ import com.atoz.security.authentication.dto.TokenResponseDTO;
 import com.atoz.security.authentication.AuthenticationService;
 import com.atoz.security.authentication.dto.SigninDTO;
 
-public class DummyAuthenticationService implements AuthenticationService {
+public class StubAuthenticationService implements AuthenticationService {
 
     @Override
     public TokenResponseDTO signin(SigninDTO signinDTO) {
