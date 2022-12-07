@@ -3,7 +3,6 @@ package com.atoz.user;
 import com.atoz.user.entity.Authority;
 import com.atoz.user.entity.UserEntity;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,21 +23,6 @@ class UserMapperTest {
 
     @Autowired
     private UserMapper sut;
-
-    private UserEntity signedUpUser;
-
-    @BeforeEach
-    private void setUp() {
-        signedUpUser = UserEntity.builder()
-                .userId("testUserId")
-                .password("testPassword")
-                .nickname("testNickname")
-                .email("test@test.com")
-                .authorities(Set.of(Authority.ROLE_USER))
-                .build();
-        sut.addUser(signedUpUser);
-        sut.addAuthority(signedUpUser);
-    }
 
     @Test
     void addUser_회원가입에_성공해야한다() {
@@ -62,13 +46,19 @@ class UserMapperTest {
 
     @Test
     void addUser_이미_가입되어있다면_회원가입에_실패해야한다() {
-        UserEntity duplicatedUser = UserEntity.builder()
+        UserEntity signedUpUser = UserEntity.builder()
                 .userId("testUserId")
+                .password("testPassword")
+                .nickname("testNickname")
+                .email("test@test.com")
+                .authorities(Set.of(Authority.ROLE_USER))
                 .build();
+        sut.addUser(signedUpUser);
+        sut.addAuthority(signedUpUser);
 
 
         Throwable thrown = catchThrowable(() -> {
-            sut.addUser(duplicatedUser);
+            sut.addUser(signedUpUser);
         });
 
 
@@ -77,14 +67,22 @@ class UserMapperTest {
 
     @Test
     void findById_사용자정보를_조회할수있다() {
-        String targetUserId = signedUpUser.getUserId();
+        UserEntity signedUpUser = UserEntity.builder()
+                .userId("testUserId")
+                .password("testPassword")
+                .nickname("testNickname")
+                .email("test@test.com")
+                .authorities(Set.of(Authority.ROLE_USER))
+                .build();
+        sut.addUser(signedUpUser);
+        sut.addAuthority(signedUpUser);
 
 
-        Optional<UserEntity> foundUser = sut.findById(targetUserId);
+        Optional<UserEntity> foundUser = sut.findById(signedUpUser.getUserId());
 
 
         assertTrue(foundUser.isPresent());
-        assertEquals(foundUser.get().getUserId(), targetUserId);
+        assertEquals(foundUser.get().getUserId(), signedUpUser.getUserId());
     }
 
     @Test

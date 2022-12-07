@@ -36,8 +36,6 @@ class AuthenticationServiceTest {
 
     private UserEntity signedUpUser;
 
-    private TokenResponseDTO signedInUser;
-
     @BeforeEach
     private void setUp() {
         signedUpUser = UserEntity.builder()
@@ -48,12 +46,6 @@ class AuthenticationServiceTest {
                 .authorities(Set.of(Authority.ROLE_USER))
                 .build();
         userMapper.addUser(signedUpUser);
-
-        SigninDTO signinDTO = SigninDTO.builder()
-                .userId(signedUpUser.getUserId())
-                .password(signedUpUser.getPassword())
-                .build();
-        signedInUser = sut.signin(signinDTO);
     }
 
     @Test
@@ -74,7 +66,12 @@ class AuthenticationServiceTest {
 
     @Test
     void signout_로그아웃하면_리프레시토큰이_삭제되어야한다() {
-        TokenRequestDTO signoutRequest = new TokenRequestDTO(signedInUser.getAccessToken(), signedInUser.getRefreshToken());
+        SigninDTO signinDTO = SigninDTO.builder()
+                .userId(signedUpUser.getUserId())
+                .password(signedUpUser.getPassword())
+                .build();
+        TokenResponseDTO tokens = sut.signin(signinDTO);
+        TokenRequestDTO signoutRequest = new TokenRequestDTO(tokens.getAccessToken(), tokens.getRefreshToken());
 
 
         sut.signout(signoutRequest);
@@ -86,7 +83,12 @@ class AuthenticationServiceTest {
 
     @Test
     void refresh_토큰을_재발급_받을수있다() {
-        TokenRequestDTO refreshRequest = new TokenRequestDTO(signedInUser.getAccessToken(), signedInUser.getRefreshToken());
+        SigninDTO signinDTO = SigninDTO.builder()
+                .userId(signedUpUser.getUserId())
+                .password(signedUpUser.getPassword())
+                .build();
+        TokenResponseDTO tokens = sut.signin(signinDTO);
+        TokenRequestDTO refreshRequest = new TokenRequestDTO(tokens.getAccessToken(), tokens.getRefreshToken());
 
 
         TokenResponseDTO reissuedToken = sut.refresh(refreshRequest);
