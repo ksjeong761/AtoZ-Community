@@ -25,9 +25,9 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
+
     private final AuthenticationManager authenticationManager;
     private final UserMapper userMapper;
-
     private final RefreshTokenMapper refreshTokenMapper;
     private final TokenProvider tokenProvider;
     private final AuthorizationProvider authorizationProvider;
@@ -35,54 +35,39 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional
     public TokenResponseDTO signin(SigninDTO signinDTO) {
-        // 사용자 인증을 받는다.
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signinDTO.getUserId(), signinDTO.getPassword()));
 
-        // 토큰을 발급한다.
-        return provideToken(authentication);
+        return updateTokens(authentication);
     }
 
     @Override
     @Transactional
     public void signout(TokenRequestDTO tokenRequestDTO) {
-        // 인가를 받는다.
         String accessToken = tokenRequestDTO.getAccessToken();
         String refreshToken = tokenRequestDTO.getRefreshToken();
         Authentication authentication = authorizationProvider.authorize(accessToken, refreshToken);
 
-        // 리프레시 토큰을 삭제한다.
         refreshTokenMapper.deleteToken(authentication.getName());
     }
 
     @Override
     @Transactional
     public TokenResponseDTO refresh(TokenRequestDTO tokenRequestDTO) {
-        // 인가를 받는다.
         String accessToken = tokenRequestDTO.getAccessToken();
         String refreshToken = tokenRequestDTO.getRefreshToken();
         Authentication authentication = authorizationProvider.authorize(accessToken, refreshToken);
 
-        // 토큰을 발급한다.
-        return provideToken(authentication);
+        return updateTokens(authentication);
     }
 
-    /**
-     * 리프레시 토큰을 최신화하면서
-     * 액세스 토큰과 리프레시 토큰을 발급한다.
-     */
-    private TokenResponseDTO provideToken(Authentication authentication) {
-        // 사용자 아이디와 권한 정보를 통해
+    private TokenResponseDTO updateTokens(Authentication authentication) {
         String userId = authentication.getName();
         Set<Authority> authorities = findUserById(userId).getAuthorities();
-
-        // 액세스 토큰, 리프레시 토큰을 만든다.
         String accessToken = tokenProvider.createAccessToken(userId, authorities);
         String refreshToken = tokenProvider.createRefreshToken(userId, authorities);
 
-        // 리프레시 토큰을 최신화하고
         saveOrUpdateRefreshToken(userId, refreshToken);
 
-        // 토큰을 발급한다.
         return TokenResponseDTO.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)

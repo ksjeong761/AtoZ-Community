@@ -29,7 +29,6 @@ public class JwtAuthorizationProvider implements AuthorizationProvider {
     private final RefreshTokenMapper refreshTokenMapper;
     private final UserDetailsService userDetailsService;
 
-    // 사용자 아이디에 해당하는 리프레시 토큰이 서버에 저장되어 있다면 유효한 토큰이다.
     public Authentication authorize(String jwt) {
         Claims claims = tokenParser.parseClaims(jwt);
         String userId = claims.getSubject();

@@ -28,9 +28,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userEntity.toResponseDto();
     }
 
-    /**
-     * 사용자 정보가 있다면 UserDetails로 변환하여 인증에 사용한다.
-     */
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {

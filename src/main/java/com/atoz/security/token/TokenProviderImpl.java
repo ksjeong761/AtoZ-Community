@@ -32,15 +32,10 @@ public class TokenProviderImpl implements TokenProvider {
         this.REFRESH_TOKEN_EXPIRE_TIME = refreshTime;
     }
 
-    /**
-     * 권한 정보를 지닌 JWT 토큰을 생성한다.
-     */
     private String createToken(String userId, Set<Authority> authorities, long expirationPeriod) {
-        // 사용자 권한 정보를 토큰에 저장한다.
         Claims claims = Jwts.claims().setSubject(userId);
         claims.put(AUTHORITIES_KEY, authorities);
 
-        // 토큰 만료 시간을 토큰에 저장한다.
         Date now = new Date();
         Date expirationDate = new Date(now.getTime() + expirationPeriod);
 

@@ -21,9 +21,6 @@ public class TokenParser {
         this.signingKey = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    /**
-     * 토큰을 검증하면서 파싱한다.
-     */
     public Claims parseClaims(String jwt) {
         try {
             return Jwts.parserBuilder()

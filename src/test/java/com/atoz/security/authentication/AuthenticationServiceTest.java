@@ -56,10 +56,6 @@ class AuthenticationServiceTest {
         signedInUser = sut.signin(signinDTO);
     }
 
-    /**
-     * 로그인 실패는 AuthenticationManager에서 예외를 던져서 처리하므로
-     * 해당 클래스에 책임이 없기에 토큰이 잘 발급되는지만 확인합니다.
-     */
     @Test
     void signin_로그인하면_토큰이_발급되어야한다() {
         SigninDTO presentedIdPassword = SigninDTO.builder()

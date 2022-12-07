@@ -30,17 +30,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return;
         }
 
-        // 요청받은 토큰이 유효한지 확인한다.
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         if (bearerToken != null && bearerToken.startsWith(BEARER_PREFIX)) {
             String jwt = bearerToken.substring(7);
             Authentication authentication = authorizationProvider.authorize(jwt);
 
-            // 유효하다면 사용자 정보를 저장해둔다.
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
-        // 다음 필터로 작업을 넘긴다.
         filterChain.doFilter(request, response);
     }
 }
