@@ -1,5 +1,7 @@
 package com.atoz.user;
 
+import com.atoz.security.token.RefreshTokenMapper;
+import com.atoz.security.token.helper.MockRefreshTokenMapper;
 import com.atoz.user.dto.UserResponseDTO;
 import com.atoz.user.entity.Authority;
 import com.atoz.user.entity.UserEntity;
@@ -20,7 +22,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserServiceImplTest {
 
     private final SpyUserMapper userMapper = new SpyUserMapper();
-    private final UserServiceImpl sut = new UserServiceImpl(userMapper);
+    private final RefreshTokenMapper refreshTokenMapper = new MockRefreshTokenMapper();
+
+    private final UserServiceImpl sut = new UserServiceImpl(userMapper, refreshTokenMapper);
 
     private UserEntity signedUpUser;
 

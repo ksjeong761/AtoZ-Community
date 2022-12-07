@@ -21,8 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class AuthenticationServiceTest {
 
@@ -62,6 +61,21 @@ class AuthenticationServiceTest {
         assertNotNull(providedToken);
         assertThat(providedToken.getAccessToken()).isNotBlank();
         assertThat(providedToken.getRefreshToken()).isNotBlank();
+    }
+
+    @Test
+    void signin_두_번_로그인하면_토큰이_재발급되어야_한다() {
+        SigninDTO presentedIdPassword = SigninDTO.builder()
+                .userId(signedUpUser.getUserId())
+                .password(signedUpUser.getPassword())
+                .build();
+
+
+        TokenResponseDTO providedToken = sut.signin(presentedIdPassword);
+        TokenResponseDTO newToken = sut.signin(presentedIdPassword);
+
+
+        assertNotEquals(providedToken, newToken);
     }
 
     @Test

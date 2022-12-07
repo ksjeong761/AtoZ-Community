@@ -1,5 +1,6 @@
 package com.atoz.user;
 
+import com.atoz.security.token.RefreshTokenMapper;
 import com.atoz.user.dto.ChangePasswordDTO;
 import com.atoz.user.dto.UserResponseDTO;
 import com.atoz.user.dto.UserUpdateDTO;
@@ -20,6 +21,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserMapper userMapper;
+    private final RefreshTokenMapper refreshTokenMapper;
 
     @Override
     @Transactional
@@ -40,12 +42,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional
     public void changePassword(ChangePasswordDTO changePasswordDTO) {
         userMapper.changePassword(changePasswordDTO);
+
+        refreshTokenMapper.deleteToken(changePasswordDTO.getUserId());
     }
 
     @Override
     @Transactional
     public void delete(String userId) {
         userMapper.deleteUser(userId);
+
+        refreshTokenMapper.deleteToken(userId);
     }
 
     @Override
