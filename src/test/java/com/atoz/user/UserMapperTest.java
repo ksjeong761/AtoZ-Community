@@ -1,5 +1,7 @@
 package com.atoz.user;
 
+import com.atoz.user.dto.ChangePasswordDTO;
+import com.atoz.user.dto.UserUpdateDTO;
 import com.atoz.user.entity.Authority;
 import com.atoz.user.entity.UserEntity;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +27,7 @@ class UserMapperTest {
     private UserMapper sut;
 
     @Test
-    void addUser_회원가입에_성공해야한다() {
+    void addUser_사용자_정보가_저장된다() {
         UserEntity newUser = UserEntity.builder()
                 .userId("newUserId")
                 .password("newPassword")
@@ -45,7 +47,7 @@ class UserMapperTest {
     }
 
     @Test
-    void addUser_이미_가입되어있다면_회원가입에_실패해야한다() {
+    void addUser_중복된_사용자를_저장하면_예외가_발생한다() {
         UserEntity signedUpUser = UserEntity.builder()
                 .userId("testUserId")
                 .password("testPassword")
@@ -66,7 +68,7 @@ class UserMapperTest {
     }
 
     @Test
-    void findById_사용자정보를_조회할수있다() {
+    void findById_사용자_정보가_조회된다() {
         UserEntity signedUpUser = UserEntity.builder()
                 .userId("testUserId")
                 .password("testPassword")
@@ -86,13 +88,113 @@ class UserMapperTest {
     }
 
     @Test
-    void findById_가입되지않은_사용자정보를_조회할수없다() {
+    void findById_존재하지_않는_사용자_정보를_조회하면_null이_반환된다() {
         String targetUserId = "wrongUserId";
 
 
         Optional<UserEntity> foundUser = sut.findById(targetUserId);
 
 
+        assertTrue(foundUser.isEmpty());
+    }
+
+    @Test
+    void changePassword_비밀번호가_변경된다() {
+        UserEntity signedUpUser = UserEntity.builder()
+                .userId("testUserId")
+                .password("testPassword")
+                .nickname("testNickname")
+                .email("test@test.com")
+                .authorities(Set.of(Authority.ROLE_USER))
+                .build();
+        sut.addUser(signedUpUser);
+        sut.addAuthority(signedUpUser);
+
+        ChangePasswordDTO changePasswordDTO = ChangePasswordDTO.builder()
+                .userId(signedUpUser.getUserId())
+                .password("changedPassword")
+                .build();
+
+
+        sut.changePassword(changePasswordDTO);
+
+
+        Optional<UserEntity> updatedUser = sut.findById(signedUpUser.getUserId());
+        assertTrue(updatedUser.isPresent());
+        assertEquals(updatedUser.get().getPassword(), changePasswordDTO.getPassword());
+    }
+
+    @Test
+    void updateUser_닉네임이_변경된다() {
+        UserEntity signedUpUser = UserEntity.builder()
+                .userId("testUserId")
+                .password("testPassword")
+                .nickname("testNickname")
+                .email("test@test.com")
+                .authorities(Set.of(Authority.ROLE_USER))
+                .build();
+        sut.addUser(signedUpUser);
+        sut.addAuthority(signedUpUser);
+
+        UserUpdateDTO updateDTO = UserUpdateDTO.builder()
+                .userId(signedUpUser.getUserId())
+                .nickname("updatedNickname")
+                .email(signedUpUser.getEmail())
+                .build();
+
+
+        sut.updateUser(updateDTO);
+
+
+        Optional<UserEntity> updatedUser = sut.findById(signedUpUser.getUserId());
+        assertTrue(updatedUser.isPresent());
+        assertEquals(updatedUser.get().getNickname(), updateDTO.getNickname());
+    }
+
+    @Test
+    void updateUser_이메일이_변경된다() {
+        UserEntity signedUpUser = UserEntity.builder()
+                .userId("testUserId")
+                .password("testPassword")
+                .nickname("testNickname")
+                .email("test@test.com")
+                .authorities(Set.of(Authority.ROLE_USER))
+                .build();
+        sut.addUser(signedUpUser);
+        sut.addAuthority(signedUpUser);
+
+        UserUpdateDTO updateDTO = UserUpdateDTO.builder()
+                .userId(signedUpUser.getUserId())
+                .nickname(signedUpUser.getNickname())
+                .email("updated@test.com")
+                .build();
+
+
+        sut.updateUser(updateDTO);
+
+
+        Optional<UserEntity> updatedUser = sut.findById(signedUpUser.getUserId());
+        assertTrue(updatedUser.isPresent());
+        assertEquals(updatedUser.get().getEmail(), updateDTO.getEmail());
+    }
+
+    @Test
+    void deleteUser_사용자_정보가_삭제된다() {
+        UserEntity signedUpUser = UserEntity.builder()
+                .userId("testUserId")
+                .password("testPassword")
+                .nickname("testNickname")
+                .email("test@test.com")
+                .authorities(Set.of(Authority.ROLE_USER))
+                .build();
+        sut.addUser(signedUpUser);
+        sut.addAuthority(signedUpUser);
+
+
+        sut.deleteUser(signedUpUser.getUserId());
+
+
+        Optional<UserEntity> foundUser = sut.findById(signedUpUser.getUserId());
         assertTrue(foundUser.isEmpty());
     }
 }
