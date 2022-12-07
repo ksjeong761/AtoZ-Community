@@ -1,9 +1,10 @@
 package com.atoz.security.authentication;
 
+import com.atoz.security.authentication.dto.SignoutDTO;
 import com.atoz.security.authentication.helper.StubAuthenticationManager;
 import com.atoz.security.authorization.helper.StubAuthorizationProvider;
 import com.atoz.security.token.helper.MockRefreshTokenMapper;
-import com.atoz.security.token.helper.StubTokenProvider;
+import com.atoz.security.token.helper.StubTokenManager;
 import com.atoz.security.authentication.dto.TokenRequestDTO;
 import com.atoz.security.token.RefreshTokenEntity;
 import com.atoz.security.authentication.dto.TokenResponseDTO;
@@ -31,8 +32,7 @@ class AuthenticationServiceTest {
             new StubAuthenticationManager(),
             userMapper,
             refreshTokenMapper,
-            new StubTokenProvider(),
-            new StubAuthorizationProvider());
+            new StubTokenManager());
 
     private UserEntity signedUpUser;
 
@@ -70,11 +70,14 @@ class AuthenticationServiceTest {
                 .userId(signedUpUser.getUserId())
                 .password(signedUpUser.getPassword())
                 .build();
-        TokenResponseDTO tokens = sut.signin(signinDTO);
-        TokenRequestDTO signoutRequest = new TokenRequestDTO(tokens.getAccessToken(), tokens.getRefreshToken());
+        sut.signin(signinDTO);
+
+        SignoutDTO signoutDTO = SignoutDTO.builder()
+                .userId(signedUpUser.getUserId())
+                .build();
 
 
-        sut.signout(signoutRequest);
+        sut.signout(signoutDTO);
 
 
         Optional<RefreshTokenEntity> foundToken = refreshTokenMapper.findTokenByKey(signedUpUser.getUserId());

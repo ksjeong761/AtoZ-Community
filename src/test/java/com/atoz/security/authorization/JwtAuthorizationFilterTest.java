@@ -1,8 +1,8 @@
 package com.atoz.security.authorization;
 
 import com.atoz.security.authorization.helper.StubAuthorizationProvider;
-import com.atoz.security.token.TokenProvider;
-import com.atoz.security.token.TokenProviderImpl;
+import com.atoz.security.token.TokenManager;
+import com.atoz.security.token.TokenManagerImpl;
 import com.atoz.user.entity.Authority;
 import com.atoz.user.entity.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +30,7 @@ public class JwtAuthorizationFilterTest {
     private MockHttpServletResponse response;
     private MockFilterChain filterChain;
     private UserEntity userEntity;
-    private TokenProvider tokenProvider;
+    private TokenManager tokenManager;
 
     @BeforeEach
     void setUp() {
@@ -41,7 +41,7 @@ public class JwtAuthorizationFilterTest {
                 .email("test@test.com")
                 .authorities(Set.of(Authority.ROLE_USER))
                 .build();
-        tokenProvider = new TokenProviderImpl();
+        tokenManager = new TokenManagerImpl();
 
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
@@ -50,7 +50,7 @@ public class JwtAuthorizationFilterTest {
 
     @Test
     void doFilterInternal_인가된_사용자_정보가_SecurityContextHolder에_저장된다() throws ServletException, IOException {
-        String jwt = tokenProvider.createAccessToken(userEntity.getUserId(), userEntity.getAuthorities());
+        String jwt = tokenManager.createAccessToken(userEntity.getUserId(), userEntity.getAuthorities());
         request.addHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + jwt);
 
 

@@ -1,8 +1,8 @@
 package com.atoz.security.authentication;
 
-import com.atoz.security.authorization.AuthorizationProvider;
+import com.atoz.security.authentication.dto.SignoutDTO;
 import com.atoz.user.entity.Authority;
-import com.atoz.security.token.TokenProvider;
+import com.atoz.security.token.TokenManager;
 import com.atoz.security.authentication.dto.TokenRequestDTO;
 import com.atoz.security.token.RefreshTokenEntity;
 import com.atoz.security.token.RefreshTokenMapper;
@@ -29,42 +29,38 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final UserMapper userMapper;
     private final RefreshTokenMapper refreshTokenMapper;
-    private final TokenProvider tokenProvider;
-    private final AuthorizationProvider authorizationProvider;
+    private final TokenManager tokenManager;
 
     @Override
     @Transactional
     public TokenResponseDTO signin(SigninDTO signinDTO) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signinDTO.getUserId(), signinDTO.getPassword()));
+        Authentication authentication = new UsernamePasswordAuthenticationToken(signinDTO.getUserId(), signinDTO.getPassword());
+        authenticationManager.authenticate(authentication);
 
-        return updateTokens(authentication);
+        return updateTokens(signinDTO.getUserId());
     }
 
     @Override
     @Transactional
-    public void signout(TokenRequestDTO tokenRequestDTO) {
-        String accessToken = tokenRequestDTO.getAccessToken();
-        String refreshToken = tokenRequestDTO.getRefreshToken();
-        Authentication authentication = authorizationProvider.authorize(accessToken, refreshToken);
-
-        refreshTokenMapper.deleteToken(authentication.getName());
+    public void signout(SignoutDTO signoutDTO) {
+        refreshTokenMapper.deleteToken(signoutDTO.getUserId());
     }
 
     @Override
     @Transactional
     public TokenResponseDTO refresh(TokenRequestDTO tokenRequestDTO) {
-        String accessToken = tokenRequestDTO.getAccessToken();
-        String refreshToken = tokenRequestDTO.getRefreshToken();
-        Authentication authentication = authorizationProvider.authorize(accessToken, refreshToken);
+        tokenManager.validateToken(tokenRequestDTO.getAccessToken());
+        tokenManager.validateToken(tokenRequestDTO.getRefreshToken());
 
-        return updateTokens(authentication);
+        String userId = tokenManager.parseUserId(tokenRequestDTO.getRefreshToken());
+        return updateTokens(userId);
     }
 
-    private TokenResponseDTO updateTokens(Authentication authentication) {
-        String userId = authentication.getName();
+    private TokenResponseDTO updateTokens(String userId) {
         Set<Authority> authorities = findUserById(userId).getAuthorities();
-        String accessToken = tokenProvider.createAccessToken(userId, authorities);
-        String refreshToken = tokenProvider.createRefreshToken(userId, authorities);
+
+        String accessToken = tokenManager.createAccessToken(userId, authorities);
+        String refreshToken = tokenManager.createRefreshToken(userId, authorities);
 
         saveOrUpdateRefreshToken(userId, refreshToken);
 

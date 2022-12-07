@@ -1,5 +1,6 @@
 package com.atoz.security.authentication.helper;
 
+import com.atoz.security.authentication.dto.SignoutDTO;
 import com.atoz.security.authentication.dto.TokenRequestDTO;
 import com.atoz.security.authentication.dto.TokenResponseDTO;
 import com.atoz.security.authentication.AuthenticationService;
@@ -13,7 +14,7 @@ public class StubAuthenticationService implements AuthenticationService {
     }
 
     @Override
-    public void signout(TokenRequestDTO tokenRequestDTO) { }
+    public void signout(SignoutDTO signoutDTO) { }
 
     @Override
     public TokenResponseDTO refresh(TokenRequestDTO tokenRequestDTO) {

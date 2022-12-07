@@ -19,8 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class JwtAuthorizationProviderTest {
 
-    private final TokenParser tokenParser = new TokenParser();
-    private final TokenProvider tokenProvider = new TokenProviderImpl();
+    private final TokenManager tokenManager = new TokenManagerImpl();
 
     private UserEntity signedUpUser;
 
@@ -39,14 +38,14 @@ public class JwtAuthorizationProviderTest {
         UserDetailsService userDetailsService = new MockUserDetailsService(List.of(signedUpUser));
 
         sut = new JwtAuthorizationProvider(
-                tokenParser,
+                tokenManager,
                 refreshTokenMapper,
                 userDetailsService);
     }
 
     @Test
     void authorize_토큰이_유효하면_사용자_정보가_담긴_객체가_반환된다() {
-        String refreshToken = tokenProvider.createRefreshToken(signedUpUser.getUserId(), signedUpUser.getAuthorities());
+        String refreshToken = tokenManager.createRefreshToken(signedUpUser.getUserId(), signedUpUser.getAuthorities());
         refreshTokenMapper.saveToken(new RefreshTokenEntity(signedUpUser.getUserId(), refreshToken));
 
 
