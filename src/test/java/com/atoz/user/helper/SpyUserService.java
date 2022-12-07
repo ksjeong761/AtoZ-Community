@@ -6,10 +6,14 @@ import com.atoz.user.dto.UserResponseDTO;
 import com.atoz.user.dto.UserUpdateDTO;
 import com.atoz.user.entity.UserEntity;
 
-public class StubUserService implements UserService {
+public class SpyUserService implements UserService {
+
+    public String encodedPassword;
 
     @Override
     public UserResponseDTO signup(UserEntity userEntity) {
+        encodedPassword = userEntity.getPassword();
+
         return null;
     }
 
@@ -20,7 +24,7 @@ public class StubUserService implements UserService {
 
     @Override
     public void changePassword(ChangePasswordDTO changePasswordDTO) {
-
+        encodedPassword = changePasswordDTO.getPassword();
     }
 
     @Override
