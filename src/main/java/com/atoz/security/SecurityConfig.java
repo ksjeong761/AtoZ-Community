@@ -36,12 +36,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        String idForEncode = "argon2";
-
-        Map<String, PasswordEncoder> encoders = new HashMap<>();
-        encoders.put(idForEncode, new Argon2PasswordEncoder());
-
-        return new DelegatingPasswordEncoder(idForEncode, encoders);
+        return new Argon2PasswordEncoder();
     }
 
     @Bean
