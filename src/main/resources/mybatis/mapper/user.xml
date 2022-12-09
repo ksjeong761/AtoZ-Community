@@ -43,7 +43,7 @@
         WHERE user_id = #{user_id}
     </select>
 
-    <update id="updateUser" parameterType="com.atoz.user.dto.UserUpdateDTO">
+    <update id="updateUser" parameterType="com.atoz.user.dto.UpdateUserDTO">
         UPDATE users
         SET
         nickname = #{nickname},

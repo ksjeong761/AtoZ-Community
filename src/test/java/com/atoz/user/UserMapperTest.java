@@ -1,7 +1,7 @@
 package com.atoz.user;
 
 import com.atoz.user.dto.ChangePasswordDTO;
-import com.atoz.user.dto.UserUpdateDTO;
+import com.atoz.user.dto.UpdateUserDTO;
 import com.atoz.user.entity.Authority;
 import com.atoz.user.entity.UserEntity;
 import lombok.extern.slf4j.Slf4j;
@@ -136,7 +136,7 @@ class UserMapperTest {
         sut.addUser(signedUpUser);
         sut.addAuthority(signedUpUser);
 
-        UserUpdateDTO updateDTO = UserUpdateDTO.builder()
+        UpdateUserDTO updateDTO = UpdateUserDTO.builder()
                 .userId(signedUpUser.getUserId())
                 .nickname("updatedNickname")
                 .email(signedUpUser.getEmail())
@@ -163,7 +163,7 @@ class UserMapperTest {
         sut.addUser(signedUpUser);
         sut.addAuthority(signedUpUser);
 
-        UserUpdateDTO updateDTO = UserUpdateDTO.builder()
+        UpdateUserDTO updateDTO = UpdateUserDTO.builder()
                 .userId(signedUpUser.getUserId())
                 .nickname(signedUpUser.getNickname())
                 .email("updated@test.com")

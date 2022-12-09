@@ -1,7 +1,7 @@
 package com.atoz.user.helper;
 
 import com.atoz.user.dto.ChangePasswordDTO;
-import com.atoz.user.dto.UserUpdateDTO;
+import com.atoz.user.dto.UpdateUserDTO;
 import com.atoz.user.entity.Authority;
 import com.atoz.user.entity.UserEntity;
 import com.atoz.user.UserMapper;
@@ -39,16 +39,16 @@ public class SpyUserMapper implements UserMapper {
     }
 
     @Override
-    public void updateUser(UserUpdateDTO userUpdateDTO) {
-        UserEntity before = findById(userUpdateDTO.getUserId()).get();
+    public void updateUser(UpdateUserDTO updateUserDTO) {
+        UserEntity before = findById(updateUserDTO.getUserId()).get();
         UserEntity after = UserEntity.builder()
-                .userId(userUpdateDTO.getUserId())
+                .userId(updateUserDTO.getUserId())
                 .password(before.getPassword())
-                .nickname(userUpdateDTO.getNickname())
+                .nickname(updateUserDTO.getNickname())
                 .authorities(before.getAuthorities())
                 .build();
 
-        users.put(userUpdateDTO.getUserId(), after);
+        users.put(updateUserDTO.getUserId(), after);
     }
 
     @Override

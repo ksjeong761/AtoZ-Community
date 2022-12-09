@@ -1,7 +1,7 @@
 package com.atoz.user;
 
 import com.atoz.user.dto.ChangePasswordDTO;
-import com.atoz.user.dto.UserUpdateDTO;
+import com.atoz.user.dto.UpdateUserDTO;
 import com.atoz.user.entity.UserEntity;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -16,7 +16,7 @@ public interface UserMapper {
 
     Optional<UserEntity> findById(String userId);
 
-    void updateUser(UserUpdateDTO userUpdateDTO);
+    void updateUser(UpdateUserDTO updateUserDTO);
 
     void changePassword(ChangePasswordDTO changePasswordDTO);
 

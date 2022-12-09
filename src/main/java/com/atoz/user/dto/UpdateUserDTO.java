@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserUpdateDTO {
+public class UpdateUserDTO {
 
     @NotNull(message = "아이디를 반드시 입력해주세요.")
     @Size(min = 1, max = 20, message = "1 ~ 20자 사이의 아이디를 입력해주세요.")

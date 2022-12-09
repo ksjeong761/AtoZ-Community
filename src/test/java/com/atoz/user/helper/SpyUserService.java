@@ -3,7 +3,7 @@ package com.atoz.user.helper;
 import com.atoz.user.UserService;
 import com.atoz.user.dto.ChangePasswordDTO;
 import com.atoz.user.dto.UserResponseDTO;
-import com.atoz.user.dto.UserUpdateDTO;
+import com.atoz.user.dto.UpdateUserDTO;
 import com.atoz.user.entity.UserEntity;
 
 public class SpyUserService implements UserService {
@@ -18,7 +18,7 @@ public class SpyUserService implements UserService {
     }
 
     @Override
-    public void update(UserUpdateDTO userUpdateDTO) {
+    public void update(UpdateUserDTO updateUserDTO) {
 
     }
 

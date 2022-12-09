@@ -4,7 +4,6 @@ import com.atoz.security.token.RefreshTokenEntity;
 import com.atoz.security.token.RefreshTokenMapper;
 import com.atoz.security.token.helper.MockRefreshTokenMapper;
 import com.atoz.user.dto.ChangePasswordDTO;
-import com.atoz.user.dto.UserDeleteDTO;
 import com.atoz.user.dto.UserResponseDTO;
 import com.atoz.user.entity.Authority;
 import com.atoz.user.entity.UserEntity;
@@ -13,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Optional;

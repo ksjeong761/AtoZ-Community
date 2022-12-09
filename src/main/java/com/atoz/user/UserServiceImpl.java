@@ -3,10 +3,9 @@ package com.atoz.user;
 import com.atoz.security.token.RefreshTokenMapper;
 import com.atoz.user.dto.ChangePasswordDTO;
 import com.atoz.user.dto.UserResponseDTO;
-import com.atoz.user.dto.UserUpdateDTO;
+import com.atoz.user.dto.UpdateUserDTO;
 import com.atoz.user.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-@Slf4j
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
 
@@ -34,8 +32,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public void update(UserUpdateDTO userUpdateDTO) {
-        userMapper.updateUser(userUpdateDTO);
+    public void update(UpdateUserDTO updateUserDTO) {
+        userMapper.updateUser(updateUserDTO);
     }
 
     @Override
