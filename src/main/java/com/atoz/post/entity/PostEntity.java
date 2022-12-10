@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @ToString
 public class PostEntity {
-    private String postId;
+    private int postId;
     private String userId;
 
     private String title;
