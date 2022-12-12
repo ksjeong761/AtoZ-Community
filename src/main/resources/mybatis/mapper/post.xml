@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.atoz.post.PostMapper">
+
+    <insert id="addPost" parameterType="com.atoz.post.dto.PostDto">
+        INSERT INTO posts (user_id, title, content)
+        VALUES (#{userId}, #{title}, #{content})
+    </insert>
+
+    <select id="findById" resultType="com.atoz.post.dto.PostDto" parameterType="com.atoz.post.dto.request.OpenPostRequestDto">
+        SELECT
+            post_id AS postId,
+            user_id AS userId,
+            title,
+            content,
+            like_count AS likeCount,
+            view_count AS viewCount,
+            comments,
+            created_at AS createdAt,
+            updated_at AS updatedAt
+        FROM posts
+        WHERE post_id = #{postId} AND user_id = #{userId}
+    </select>
+
+    <update id="updatePost" parameterType="com.atoz.post.dto.PostDto">
+        UPDATE posts
+        SET
+            title = #{title},
+            content = #{content}
+        WHERE post_id = #{postId} AND user_id = #{userId}
+    </update>
+
+    <delete id="deletePost" parameterType="com.atoz.post.dto.PostDto">
+        DELETE FROM posts
+        WHERE post_id = #{postId} AND user_id = #{userId}
+    </delete>
+</mapper>
