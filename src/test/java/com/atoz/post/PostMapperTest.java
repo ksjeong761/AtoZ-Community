@@ -45,7 +45,7 @@ public class PostMapperTest {
     @Test
     void addPost_게시글이_저장된다() {
         LocalDateTime addedTime = LocalDateTime.now();
-        PostDto addedPost = PostDto.builder()
+        PostDto addPostDto = PostDto.builder()
                 .postId(1)
                 .userId(signedUpUser.getUserId())
                 .title("testTitle")
@@ -58,32 +58,20 @@ public class PostMapperTest {
                 .build();
 
 
-        sut.addPost(addedPost);
+        sut.addPost(addPostDto);
 
 
-        PostDto foundPost = sut.findById(addedPost);
-        assertNotNull(foundPost);
-        assertEquals(addedPost.getTitle(), foundPost.getTitle());
-        assertEquals(addedPost.getContent(), foundPost.getContent());
+        PostDto addResult = sut.findById(addPostDto);
+        assertNotNull(addResult);
+        assertEquals(addPostDto.getTitle(), addResult.getTitle());
+        assertEquals(addPostDto.getContent(), addResult.getContent());
     }
 
     @Test
     void updatePost_게시글이_수정된다() {
-        LocalDateTime addedTime = LocalDateTime.now();
-        PostDto addedPost = PostDto.builder()
-                .userId(signedUpUser.getUserId())
-                .title("testTitle")
-                .content("testContent")
-                .likeCount(0)
-                .viewCount(0)
-                .comments("")
-                .createdAt(addedTime)
-                .updatedAt(addedTime)
-                .build();
-        sut.addPost(addedPost);
-
+        addPost();
         LocalDateTime updatedTime = LocalDateTime.now();
-        PostDto updatedPost = PostDto.builder()
+        PostDto updatePostDto = PostDto.builder()
                 .postId(1)
                 .userId(signedUpUser.getUserId())
                 .title("newTitle")
@@ -92,19 +80,51 @@ public class PostMapperTest {
                 .build();
 
 
-        sut.updatePost(updatedPost);
+        sut.updatePost(updatePostDto);
 
 
-        PostDto foundPost = sut.findById(updatedPost);
-        assertNotNull(foundPost);
-        assertEquals(updatedPost.getTitle(), foundPost.getTitle());
-        assertEquals(updatedPost.getContent(), foundPost.getContent());
+        PostDto updateResult = sut.findById(updatePostDto);
+        assertNotNull(updateResult);
+        assertEquals(updatePostDto.getTitle(), updateResult.getTitle());
+        assertEquals(updatePostDto.getContent(), updateResult.getContent());
     }
 
     @Test
     void deletePost_게시글이_삭제된다() {
+        addPost();
+        PostDto deletePostDto = PostDto.builder()
+                .postId(1)
+                .userId(signedUpUser.getUserId())
+                .build();
+
+
+        sut.deletePost(deletePostDto);
+
+
+        PostDto deleteResult = sut.findById(deletePostDto);
+        assertNull(deleteResult);
+    }
+
+    @Test
+    void findById_게시글이_조회된다() {
+        addPost();
+        PostDto findPostDto = PostDto.builder()
+                .postId(1)
+                .userId(signedUpUser.getUserId())
+                .build();
+
+
+        PostDto findResult = sut.findById(findPostDto);
+
+
+        assertNotNull(findResult);
+        assertEquals(findPostDto.getPostId(), findResult.getPostId());
+        assertEquals(findPostDto.getUserId(), findResult.getUserId());
+    }
+
+    private void addPost() {
         LocalDateTime addedTime = LocalDateTime.now();
-        PostDto addedPost = PostDto.builder()
+        PostDto addPostDto = PostDto.builder()
                 .userId(signedUpUser.getUserId())
                 .title("testTitle")
                 .content("testContent")
@@ -114,29 +134,7 @@ public class PostMapperTest {
                 .createdAt(addedTime)
                 .updatedAt(addedTime)
                 .build();
-        sut.addPost(addedPost);
 
-        PostDto deletedPost = PostDto.builder()
-                .postId(1)
-                .userId(signedUpUser.getUserId())
-                .build();
-
-
-        sut.deletePost(deletedPost);
-
-
-        PostDto foundPost = sut.findById(deletedPost);
-        assertNull(foundPost);
-    }
-
-    @Test
-    void findById_게시글이_조회된다() {
-        PostDto post = PostDto.builder()
-                .postId(1)
-                .userId(signedUpUser.getUserId())
-                .build();
-
-
-        sut.findById(post);
+        sut.addPost(addPostDto);
     }
 }

@@ -5,6 +5,7 @@ import com.atoz.post.dto.request.AddPostRequestDto;
 import com.atoz.post.dto.request.DeletePostRequestDto;
 import com.atoz.post.dto.request.OpenPostRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
+import com.atoz.post.dto.response.PostResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -68,7 +69,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDto findById(OpenPostRequestDto openPostRequestDto) {
+    public PostResponseDto findById(OpenPostRequestDto openPostRequestDto) {
         String userId = loadUserIdFromContext();
 
         PostDto post = PostDto.builder()
@@ -76,7 +77,7 @@ public class PostServiceImpl implements PostService {
                 .userId(userId)
                 .build();
 
-        return postMapper.findById(post);
+        return postMapper.findById(post).toPostResponseDto();
     }
 
     private String loadUserIdFromContext() {

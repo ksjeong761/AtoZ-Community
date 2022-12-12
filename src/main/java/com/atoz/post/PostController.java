@@ -5,6 +5,7 @@ import com.atoz.post.dto.request.AddPostRequestDto;
 import com.atoz.post.dto.request.DeletePostRequestDto;
 import com.atoz.post.dto.request.OpenPostRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
+import com.atoz.post.dto.response.PostResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ public class PostController {
 
     private final PostService postService;
 
-    @PutMapping
+    @PostMapping
     public void addPost(@Validated @RequestBody AddPostRequestDto addPostRequestDto) {
         postService.addPost(addPostRequestDto);
     }
@@ -32,7 +33,7 @@ public class PostController {
     }
 
     @GetMapping
-    public PostDto openPost(@Validated @RequestBody OpenPostRequestDto openPostRequestDto) {
+    public PostResponseDto openPost(@Validated @RequestBody OpenPostRequestDto openPostRequestDto) {
         return postService.findById(openPostRequestDto);
     }
 }

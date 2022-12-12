@@ -6,6 +6,7 @@ import com.atoz.post.dto.request.DeletePostRequestDto;
 import com.atoz.post.dto.request.OpenPostRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
 import com.atoz.post.dto.PostDto;
+import com.atoz.post.dto.response.PostResponseDto;
 
 public class StubPostService implements PostService {
     @Override
@@ -24,7 +25,7 @@ public class StubPostService implements PostService {
     }
 
     @Override
-    public PostDto findById(OpenPostRequestDto openPostRequestDto) {
+    public PostResponseDto findById(OpenPostRequestDto openPostRequestDto) {
         return null;
     }
 }

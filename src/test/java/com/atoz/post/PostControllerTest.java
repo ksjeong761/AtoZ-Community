@@ -1,6 +1,10 @@
 package com.atoz.post;
 
 import com.atoz.error.GlobalExceptionAdvice;
+import com.atoz.post.dto.request.AddPostRequestDto;
+import com.atoz.post.dto.request.DeletePostRequestDto;
+import com.atoz.post.dto.request.OpenPostRequestDto;
+import com.atoz.post.dto.request.UpdatePostRequestDto;
 import com.atoz.post.helper.StubPostService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,15 +15,13 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class PostControllerTest {
 
-    MockMvc sut;
+    private MockMvc sut;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
@@ -33,14 +35,15 @@ public class PostControllerTest {
 
     @Test
     void addPost_게시글_추가_요청에_성공한다() throws Exception {
-        Map<String, String> addRequest = new HashMap<>();
-        addRequest.put("title", "testTitle");
-        addRequest.put("content", "testContent");
+        AddPostRequestDto addPostRequestDto = AddPostRequestDto.builder()
+                .title("testTitle")
+                .content("testContent")
+                .build();
 
 
-        ResultActions resultActions = sut.perform(put("/post")
+        ResultActions resultActions = sut.perform(post("/post")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(addRequest)));
+                .content(objectMapper.writeValueAsString(addPostRequestDto)));
 
 
         resultActions.andExpect(status().isOk());
@@ -48,15 +51,16 @@ public class PostControllerTest {
 
     @Test
     void updatePost_게시글_수정_요청에_성공한다() throws Exception {
-        Map<String, String> updateRequest = new HashMap<>();
-        updateRequest.put("postId", "1");
-        updateRequest.put("title", "newTitle");
-        updateRequest.put("content", "newContent");
+        UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
+                .postId(1)
+                .title("newTitle")
+                .content("newContent")
+                .build();
 
 
         ResultActions resultActions = sut.perform(patch("/post")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updateRequest)));
+                .content(objectMapper.writeValueAsString(updatePostRequestDto)));
 
 
         resultActions.andExpect(status().isOk());
@@ -64,13 +68,14 @@ public class PostControllerTest {
 
     @Test
     void deletePost_게시글_삭제_요청에_성공한다() throws Exception {
-        Map<String, String> deleteRequest = new HashMap<>();
-        deleteRequest.put("postId", "1");
+        DeletePostRequestDto deletePostRequestDto = DeletePostRequestDto.builder()
+                .postId(1)
+                .build();
 
 
         ResultActions resultActions = sut.perform(delete("/post")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(deleteRequest)));
+                .content(objectMapper.writeValueAsString(deletePostRequestDto)));
 
 
         resultActions.andExpect(status().isOk());
@@ -78,13 +83,14 @@ public class PostControllerTest {
 
     @Test
     void openPost_게시글_열기_요청에_성공한다() throws Exception {
-        Map<String, String> openRequest = new HashMap<>();
-        openRequest.put("postId", "1");
+        OpenPostRequestDto openPostRequestDto = OpenPostRequestDto.builder()
+                .postId(1)
+                .build();
 
 
         ResultActions resultActions = sut.perform(get("/post")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(openRequest)));
+                .content(objectMapper.writeValueAsString(openPostRequestDto)));
 
 
         resultActions.andExpect(status().isOk());

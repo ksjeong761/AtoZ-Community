@@ -1,5 +1,6 @@
 package com.atoz.post.dto;
 
+import com.atoz.post.dto.response.PostResponseDto;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -22,4 +23,18 @@ public class PostDto {
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    public PostResponseDto toPostResponseDto() {
+        return PostResponseDto.builder()
+                .postId(getPostId())
+                .userId(getUserId())
+                .title(getTitle())
+                .content(getContent())
+                .likeCount(getLikeCount())
+                .viewCount(getViewCount())
+                .comments(getComments())
+                .createdAt(getCreatedAt())
+                .updatedAt(getUpdatedAt())
+                .build();
+    }
 }

@@ -5,6 +5,7 @@ import com.atoz.post.dto.request.AddPostRequestDto;
 import com.atoz.post.dto.request.DeletePostRequestDto;
 import com.atoz.post.dto.request.OpenPostRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
+import com.atoz.post.dto.response.PostResponseDto;
 
 public interface PostService {
 
@@ -14,5 +15,5 @@ public interface PostService {
 
     void deletePost(DeletePostRequestDto deletePostRequestDto);
 
-    PostDto findById(OpenPostRequestDto openPostRequestDto);
+    PostResponseDto findById(OpenPostRequestDto openPostRequestDto);
 }
