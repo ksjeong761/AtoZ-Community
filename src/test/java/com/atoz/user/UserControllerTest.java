@@ -1,12 +1,14 @@
 package com.atoz.user;
 
 import com.atoz.error.GlobalExceptionAdvice;
+import com.atoz.user.dto.request.ChangePasswordRequestDto;
+import com.atoz.user.dto.request.DeleteUserRequestDto;
+import com.atoz.user.dto.request.SignupRequestDto;
+import com.atoz.user.dto.request.UpdateUserRequestDto;
 import com.atoz.user.helper.SpyUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
 class UserControllerTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -34,7 +35,7 @@ class UserControllerTest {
     public void beforeEach() {
         userService = new SpyUserService();
 
-        this.sut = MockMvcBuilders
+        sut = MockMvcBuilders
                 .standaloneSetup(new UserController(new Argon2PasswordEncoder(), userService))
                 .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
                 .setControllerAdvice(GlobalExceptionAdvice.class)
@@ -43,16 +44,17 @@ class UserControllerTest {
 
     @Test
     void signup_회원가입_요청에_성공한다() throws Exception {
-        Map<String, String> signupRequest = new HashMap<>();
-        signupRequest.put("userId", "12345678901234567890");
-        signupRequest.put("nickname", "testNickname");
-        signupRequest.put("password", "testPassword");
-        signupRequest.put("email", "test@test.com");
+        SignupRequestDto signupRequestDto = SignupRequestDto.builder()
+                .userId("testUserId")
+                .password("testPassword")
+                .nickname("testNickname")
+                .email("test@test.com")
+                .build();
 
 
         ResultActions resultActions = sut.perform(post("/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(signupRequest)));
+                        .content(objectMapper.writeValueAsString(signupRequestDto)));
 
 
         resultActions.andExpect(status().isOk());
@@ -60,36 +62,36 @@ class UserControllerTest {
 
     @Test
     void signup_회원가입_요청시_비밀번호가_인코딩된다() throws Exception {
-        Map<String, String> signupRequest = new HashMap<>();
-        signupRequest.put("userId", "12345678901234567890");
-        signupRequest.put("nickname", "testNickname");
-        signupRequest.put("password", "testPassword");
-        signupRequest.put("email", "test@test.com");
+        SignupRequestDto signupRequestDto = SignupRequestDto.builder()
+                .userId("testUserId")
+                .password("testPassword")
+                .nickname("testNickname")
+                .email("test@test.com")
+                .build();
 
 
         ResultActions resultActions = sut.perform(post("/user/signup")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(signupRequest)));
+                .content(objectMapper.writeValueAsString(signupRequestDto)));
 
 
         PasswordEncoder passwordEncoder = new Argon2PasswordEncoder();
-        String encodedPassword = userService.encodedPassword;
-
         resultActions.andExpect(status().isOk());
-        assertTrue(passwordEncoder.matches(signupRequest.get("password"), encodedPassword));
+        assertTrue(passwordEncoder.matches(signupRequestDto.getPassword(), userService.encodedPassword));
     }
 
     @Test
     void signup_아이디가_누락되면_회원가입_요청에_실패한다() throws Exception {
-        Map<String, String> signupRequest = new HashMap<>();
-        signupRequest.put("nickname", "testNickname");
-        signupRequest.put("password", "testPassword");
-        signupRequest.put("email", "test@test.com");
+        SignupRequestDto signupRequestDto = SignupRequestDto.builder()
+                .password("testPassword")
+                .nickname("testNickname")
+                .email("test@test.com")
+                .build();
 
 
         ResultActions resultActions = sut.perform(post("/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(signupRequest)));
+                        .content(objectMapper.writeValueAsString(signupRequestDto)));
 
 
         resultActions.andExpect(status().isBadRequest());
@@ -97,15 +99,16 @@ class UserControllerTest {
 
     @Test
     void signup_닉네임이_누락되면_회원가입_요청에_실패한다() throws Exception {
-        Map<String, String> signupRequest = new HashMap<>();
-        signupRequest.put("userId", "12345678901234567890");
-        signupRequest.put("password", "testPassword");
-        signupRequest.put("email", "test@test.com");
+        SignupRequestDto signupRequestDto = SignupRequestDto.builder()
+                .userId("testUserId")
+                .password("testPassword")
+                .email("test@test.com")
+                .build();
 
 
         ResultActions resultActions = sut.perform(post("/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(signupRequest)));
+                        .content(objectMapper.writeValueAsString(signupRequestDto)));
 
 
         resultActions.andExpect(status().isBadRequest());
@@ -113,15 +116,16 @@ class UserControllerTest {
 
     @Test
     void signup_비밀번호가_누락되면_회원가입_요청에_실패한다() throws Exception {
-        Map<String, String> signupRequest = new HashMap<>();
-        signupRequest.put("userId", "12345678901234567890");
-        signupRequest.put("nickname", "testNickname");
-        signupRequest.put("email", "test@test.com");
+        SignupRequestDto signupRequestDto = SignupRequestDto.builder()
+                .userId("testUserId")
+                .nickname("testNickname")
+                .email("test@test.com")
+                .build();
 
 
         ResultActions resultActions = sut.perform(post("/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(signupRequest)));
+                        .content(objectMapper.writeValueAsString(signupRequestDto)));
 
 
         resultActions.andExpect(status().isBadRequest());
@@ -129,15 +133,16 @@ class UserControllerTest {
 
     @Test
     void signup_이메일이_누락되면_회원가입_요청에_실패한다() throws Exception {
-        Map<String, String> signupRequest = new HashMap<>();
-        signupRequest.put("userId", "12345678901234567890");
-        signupRequest.put("nickname", "testNickname");
-        signupRequest.put("password", "testPassword");
+        SignupRequestDto signupRequestDto = SignupRequestDto.builder()
+                .userId("testUserId")
+                .password("testPassword")
+                .nickname("testNickname")
+                .build();
 
 
         ResultActions resultActions = sut.perform(post("/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(signupRequest)));
+                        .content(objectMapper.writeValueAsString(signupRequestDto)));
 
 
         resultActions.andExpect(status().isBadRequest());
@@ -145,16 +150,17 @@ class UserControllerTest {
 
     @Test
     void signup_아이디가_규칙에_맞지_않으면_회원가입_요청에_실패한다() throws Exception {
-        Map<String, String> signupRequest = new HashMap<>();
-        signupRequest.put("userId", "12345678901234567890X");
-        signupRequest.put("nickname", "testNickname");
-        signupRequest.put("password", "testPassword");
-        signupRequest.put("email", "test@test.com");
+        SignupRequestDto signupRequestDto = SignupRequestDto.builder()
+                .userId("12345678901234567890_")
+                .password("testPassword")
+                .nickname("testNickname")
+                .email("test@test.com")
+                .build();
 
 
         ResultActions resultActions = sut.perform(post("/user/signup")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(signupRequest)));
+                .content(objectMapper.writeValueAsString(signupRequestDto)));
 
 
         resultActions.andExpect(status().isBadRequest());
@@ -162,16 +168,17 @@ class UserControllerTest {
 
     @Test
     void signup_닉네임이_규칙에_맞지_않으면_회원가입_요청에_실패한다() throws Exception {
-        Map<String, String> signupRequest = new HashMap<>();
-        signupRequest.put("userId", "12345678901234567890");
-        signupRequest.put("nickname", "");
-        signupRequest.put("password", "testPassword");
-        signupRequest.put("email", "test@test.com");
+        SignupRequestDto signupRequestDto = SignupRequestDto.builder()
+                .userId("testUserId")
+                .password("testPassword")
+                .nickname("")
+                .email("test@test.com")
+                .build();
 
 
         ResultActions resultActions = sut.perform(post("/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(signupRequest)));
+                        .content(objectMapper.writeValueAsString(signupRequestDto)));
 
 
         resultActions.andExpect(status().isBadRequest());
@@ -179,16 +186,17 @@ class UserControllerTest {
 
     @Test
     void signup_비밀번호가_규칙에_맞지_않으면_회원가입_요청에_실패한다() throws Exception {
-        Map<String, String> signupRequest = new HashMap<>();
-        signupRequest.put("userId", "12345678901234567890");
-        signupRequest.put("nickname", "testNickname");
-        signupRequest.put("password", "");
-        signupRequest.put("email", "test@test.com");
+        SignupRequestDto signupRequestDto = SignupRequestDto.builder()
+                .userId("testUserId")
+                .password("")
+                .nickname("testNickname")
+                .email("test@test.com")
+                .build();
 
 
         ResultActions resultActions = sut.perform(post("/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(signupRequest)));
+                        .content(objectMapper.writeValueAsString(signupRequestDto)));
 
 
         resultActions.andExpect(status().isBadRequest());
@@ -196,16 +204,17 @@ class UserControllerTest {
 
     @Test
     void signup_이메일이_규칙에_맞지_않으면_회원가입_요청에_실패한다() throws Exception {
-        Map<String, String> signupRequest = new HashMap<>();
-        signupRequest.put("userId", "12345678901234567890");
-        signupRequest.put("nickname", "testNickname");
-        signupRequest.put("password", "testPassword");
-        signupRequest.put("email", "not email");
+        SignupRequestDto signupRequestDto = SignupRequestDto.builder()
+                .userId("testUserId")
+                .password("testPassword")
+                .nickname("testNickname")
+                .email("not email")
+                .build();
 
 
         ResultActions resultActions = sut.perform(post("/user/signup")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(signupRequest)));
+                        .content(objectMapper.writeValueAsString(signupRequestDto)));
 
 
         resultActions.andExpect(status().isBadRequest());
@@ -213,15 +222,16 @@ class UserControllerTest {
 
     @Test
     void update_사용자_정보_변경_요청에_성공한다() throws Exception {
-        Map<String, String> updateRequest = new HashMap<>();
-        updateRequest.put("userId", "testUserId");
-        updateRequest.put("nickname", "testNickname");
-        updateRequest.put("email", "test@test.com");
+        UpdateUserRequestDto updateUserRequestDto = UpdateUserRequestDto.builder()
+                .userId("testUserId")
+                .nickname("testNickname")
+                .email("test@test.com")
+                .build();
 
 
         ResultActions resultActions = sut.perform(patch("/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updateRequest)));
+                .content(objectMapper.writeValueAsString(updateUserRequestDto)));
 
 
         resultActions.andExpect(status().isOk());
@@ -229,32 +239,32 @@ class UserControllerTest {
 
     @Test
     void changePassword_비밀번호_변경_요청시_비밀번호가_인코딩된다() throws Exception {
-        Map<String, String> changePasswordRequest = new HashMap<>();
-        changePasswordRequest.put("userId", "12345678901234567890");
-        changePasswordRequest.put("password", "testPassword");
+        ChangePasswordRequestDto changePasswordRequestDto = ChangePasswordRequestDto.builder()
+                .userId("testUserId")
+                .password("testPassword")
+                .build();
 
 
         ResultActions resultActions = sut.perform(patch("/user/password")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(changePasswordRequest)));
+                .content(objectMapper.writeValueAsString(changePasswordRequestDto)));
 
 
         PasswordEncoder passwordEncoder = new Argon2PasswordEncoder();
-        String encodedPassword = userService.encodedPassword;
-
         resultActions.andExpect(status().isOk());
-        assertTrue(passwordEncoder.matches(changePasswordRequest.get("password"), encodedPassword));
+        assertTrue(passwordEncoder.matches(changePasswordRequestDto.getPassword(), userService.encodedPassword));
     }
 
     @Test
     void delete_회원탈퇴_요청에_성공한다() throws Exception {
-        Map<String, String> deleteRequest = new HashMap<>();
-        deleteRequest.put("userId", "testUserId");
+        DeleteUserRequestDto deleteUserRequestDto = DeleteUserRequestDto.builder()
+                .userId("testUserId")
+                .build();
 
 
         ResultActions resultActions = sut.perform(delete("/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(deleteRequest)));
+                .content(objectMapper.writeValueAsString(deleteUserRequestDto)));
 
 
         resultActions.andExpect(status().isOk());

@@ -27,7 +27,7 @@ class UserMapperTest {
 
     @Test
     void addUser_사용자_정보가_저장된다() {
-        UserDto newUser = UserDto.builder()
+        UserDto userDto = UserDto.builder()
                 .userId("newUserId")
                 .password("newPassword")
                 .nickname("newNickname")
@@ -36,13 +36,13 @@ class UserMapperTest {
                 .build();
 
 
-        sut.addUser(newUser);
-        sut.addAuthority(newUser);
+        sut.addUser(userDto);
+        sut.addAuthority(userDto);
 
 
-        Optional<UserDto> addedUser = sut.findById(newUser.getUserId());
+        Optional<UserDto> addedUser = sut.findById(userDto.getUserId());
         assertThat(addedUser.isPresent()).isTrue();
-        assertThat(addedUser.get().getUserId()).isEqualTo(newUser.getUserId());
+        assertEquals(userDto.getUserId(), addedUser.get().getUserId());
     }
 
     @Test
@@ -68,22 +68,15 @@ class UserMapperTest {
 
     @Test
     void findById_사용자_정보가_조회된다() {
-        UserDto signedUpUser = UserDto.builder()
-                .userId("testUserId")
-                .password("testPassword")
-                .nickname("testNickname")
-                .email("test@test.com")
-                .authorities(Set.of(Authority.ROLE_USER))
-                .build();
-        sut.addUser(signedUpUser);
-        sut.addAuthority(signedUpUser);
+        String userId = "testUserId";
+        addUser(userId);
 
 
-        Optional<UserDto> foundUser = sut.findById(signedUpUser.getUserId());
+        Optional<UserDto> foundUser = sut.findById(userId);
 
 
         assertTrue(foundUser.isPresent());
-        assertEquals(foundUser.get().getUserId(), signedUpUser.getUserId());
+        assertEquals(userId, foundUser.get().getUserId());
     }
 
     @Test
@@ -99,18 +92,11 @@ class UserMapperTest {
 
     @Test
     void changePassword_비밀번호가_변경된다() {
-        UserDto signedUpUser = UserDto.builder()
-                .userId("testUserId")
-                .password("testPassword")
-                .nickname("testNickname")
-                .email("test@test.com")
-                .authorities(Set.of(Authority.ROLE_USER))
-                .build();
-        sut.addUser(signedUpUser);
-        sut.addAuthority(signedUpUser);
+        String userId = "testUserId";
+        addUser(userId);
 
         ChangePasswordRequestDto changePasswordRequestDto = ChangePasswordRequestDto.builder()
-                .userId(signedUpUser.getUserId())
+                .userId(userId)
                 .password("changedPassword")
                 .build();
 
@@ -118,53 +104,39 @@ class UserMapperTest {
         sut.changePassword(changePasswordRequestDto);
 
 
-        Optional<UserDto> updatedUser = sut.findById(signedUpUser.getUserId());
+        Optional<UserDto> updatedUser = sut.findById(userId);
         assertTrue(updatedUser.isPresent());
-        assertEquals(updatedUser.get().getPassword(), changePasswordRequestDto.getPassword());
+        assertEquals(changePasswordRequestDto.getPassword(), updatedUser.get().getPassword());
     }
 
     @Test
     void updateUser_닉네임이_변경된다() {
-        UserDto signedUpUser = UserDto.builder()
-                .userId("testUserId")
-                .password("testPassword")
-                .nickname("testNickname")
-                .email("test@test.com")
-                .authorities(Set.of(Authority.ROLE_USER))
-                .build();
-        sut.addUser(signedUpUser);
-        sut.addAuthority(signedUpUser);
+        String userId = "testUserId";
+        addUser(userId);
 
         UpdateUserRequestDto updateUserRequestDto = UpdateUserRequestDto.builder()
-                .userId(signedUpUser.getUserId())
+                .userId(userId)
                 .nickname("updatedNickname")
-                .email(signedUpUser.getEmail())
+                .email("")
                 .build();
 
 
         sut.updateUser(updateUserRequestDto);
 
 
-        Optional<UserDto> updatedUser = sut.findById(signedUpUser.getUserId());
+        Optional<UserDto> updatedUser = sut.findById(userId);
         assertTrue(updatedUser.isPresent());
-        assertEquals(updatedUser.get().getNickname(), updateUserRequestDto.getNickname());
+        assertEquals(updateUserRequestDto.getNickname(), updatedUser.get().getNickname());
     }
 
     @Test
     void updateUser_이메일이_변경된다() {
-        UserDto signedUpUser = UserDto.builder()
-                .userId("testUserId")
-                .password("testPassword")
-                .nickname("testNickname")
-                .email("test@test.com")
-                .authorities(Set.of(Authority.ROLE_USER))
-                .build();
-        sut.addUser(signedUpUser);
-        sut.addAuthority(signedUpUser);
+        String userId = "testUserId";
+        addUser(userId);
 
         UpdateUserRequestDto updateUserRequestDto = UpdateUserRequestDto.builder()
-                .userId(signedUpUser.getUserId())
-                .nickname(signedUpUser.getNickname())
+                .userId(userId)
+                .nickname("")
                 .email("updated@test.com")
                 .build();
 
@@ -172,28 +144,33 @@ class UserMapperTest {
         sut.updateUser(updateUserRequestDto);
 
 
-        Optional<UserDto> updatedUser = sut.findById(signedUpUser.getUserId());
+        Optional<UserDto> updatedUser = sut.findById(userId);
         assertTrue(updatedUser.isPresent());
-        assertEquals(updatedUser.get().getEmail(), updateUserRequestDto.getEmail());
+        assertEquals(updateUserRequestDto.getEmail(), updatedUser.get().getEmail());
     }
 
     @Test
     void deleteUser_사용자_정보가_삭제된다() {
-        UserDto signedUpUser = UserDto.builder()
-                .userId("testUserId")
+        String userId = "testUserId";
+        addUser(userId);
+
+
+        sut.deleteUser(userId);
+
+
+        Optional<UserDto> foundUser = sut.findById(userId);
+        assertTrue(foundUser.isEmpty());
+    }
+
+    private void addUser(String userId) {
+        UserDto userDto = UserDto.builder()
+                .userId(userId)
                 .password("testPassword")
                 .nickname("testNickname")
                 .email("test@test.com")
                 .authorities(Set.of(Authority.ROLE_USER))
                 .build();
-        sut.addUser(signedUpUser);
-        sut.addAuthority(signedUpUser);
-
-
-        sut.deleteUser(signedUpUser.getUserId());
-
-
-        Optional<UserDto> foundUser = sut.findById(signedUpUser.getUserId());
-        assertTrue(foundUser.isEmpty());
+        sut.addUser(userDto);
+        sut.addAuthority(userDto);
     }
 }

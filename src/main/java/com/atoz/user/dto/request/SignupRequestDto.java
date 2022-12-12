@@ -1,6 +1,7 @@
 package com.atoz.user.dto.request;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class SignupRequestDto {

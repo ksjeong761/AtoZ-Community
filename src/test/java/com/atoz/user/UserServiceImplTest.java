@@ -56,20 +56,17 @@ class UserServiceImplTest {
 
 
         assertNotNull(response);
-        assertEquals(response.getUserId(), userDto.getUserId());
+        assertEquals(userDto.getUserId(), response.getUserId());
     }
 
     @Test
-    void changePassword_비밀번호를_변경하면_리프레시_토큰이_만료된다() {
+    void changePassword_비밀번호를_변경하면_리프레시_토큰이_삭제된다() {
+        saveToken();
+
         ChangePasswordRequestDto changePasswordRequestDto = ChangePasswordRequestDto.builder()
                 .userId(signedUpUser.getUserId())
                 .password("newPassword")
                 .build();
-        RefreshTokenDto refreshToken = RefreshTokenDto.builder()
-                .tokenKey(signedUpUser.getUserId())
-                .tokenValue("refreshToken")
-                .build();
-        refreshTokenMapper.saveToken(refreshToken);
 
 
         sut.changePassword(changePasswordRequestDto);
@@ -80,12 +77,8 @@ class UserServiceImplTest {
     }
 
     @Test
-    void delete_회원탈퇴하면_리프레시_토큰이_만료된다() {
-        RefreshTokenDto refreshToken = RefreshTokenDto.builder()
-                .tokenKey(signedUpUser.getUserId())
-                .tokenValue("refreshToken")
-                .build();
-        refreshTokenMapper.saveToken(refreshToken);
+    void delete_회원탈퇴하면_리프레시_토큰이_삭제된다() {
+        saveToken();
 
 
         sut.delete(signedUpUser.getUserId());
@@ -104,7 +97,7 @@ class UserServiceImplTest {
 
 
         assertNotNull(userDetails);
-        assertEquals(userDetails.getUsername(), signedUpUser.getUserId());
+        assertEquals(signedUpUser.getUserId(), userDetails.getUsername());
     }
 
     @Test
@@ -118,5 +111,13 @@ class UserServiceImplTest {
 
 
         assertInstanceOf(UsernameNotFoundException.class, thrown);
+    }
+
+    private void saveToken() {
+        RefreshTokenDto refreshToken = RefreshTokenDto.builder()
+                .tokenKey(signedUpUser.getUserId())
+                .tokenValue("refreshToken")
+                .build();
+        refreshTokenMapper.saveToken(refreshToken);
     }
 }
