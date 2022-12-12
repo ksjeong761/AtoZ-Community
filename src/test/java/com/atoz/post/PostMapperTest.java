@@ -44,17 +44,11 @@ public class PostMapperTest {
 
     @Test
     void addPost_게시글이_저장된다() {
-        LocalDateTime addedTime = LocalDateTime.now();
         PostDto addPostDto = PostDto.builder()
                 .postId(1)
                 .userId(signedUpUser.getUserId())
                 .title("testTitle")
                 .content("testContent")
-                .likeCount(0)
-                .viewCount(0)
-                .comments("")
-                .createdAt(addedTime)
-                .updatedAt(addedTime)
                 .build();
 
 
@@ -68,15 +62,33 @@ public class PostMapperTest {
     }
 
     @Test
+    void addPost_게시글을_추가한_시각이_저장된다() {
+        PostDto addPostDto = PostDto.builder()
+                .postId(1)
+                .userId(signedUpUser.getUserId())
+                .title("testTitle")
+                .content("testContent")
+                .build();
+
+
+        sut.addPost(addPostDto);
+
+
+        PostDto addResult = sut.findById(addPostDto);
+        LocalDateTime now = LocalDateTime.now();
+        assertEquals(now.getDayOfMonth(), addResult.getCreatedAt().getDayOfMonth());
+        assertEquals(now.getHour(), addResult.getCreatedAt().getHour());
+        assertEquals(now.getMinute(), addResult.getCreatedAt().getMinute());
+    }
+
+    @Test
     void updatePost_게시글이_수정된다() {
         addPost();
-        LocalDateTime updatedTime = LocalDateTime.now();
         PostDto updatePostDto = PostDto.builder()
                 .postId(1)
                 .userId(signedUpUser.getUserId())
                 .title("newTitle")
                 .content("newContent")
-                .updatedAt(updatedTime)
                 .build();
 
 
@@ -87,6 +99,26 @@ public class PostMapperTest {
         assertNotNull(updateResult);
         assertEquals(updatePostDto.getTitle(), updateResult.getTitle());
         assertEquals(updatePostDto.getContent(), updateResult.getContent());
+    }
+
+    @Test
+    void updatePost_게시글을_수정한_시각이_저장된다() {
+        addPost();
+        PostDto updatePostDto = PostDto.builder()
+                .postId(1)
+                .userId(signedUpUser.getUserId())
+                .title("newTitle")
+                .content("newContent")
+                .build();
+
+        sut.updatePost(updatePostDto);
+
+
+        PostDto updateResult = sut.findById(updatePostDto);
+        LocalDateTime now = LocalDateTime.now();
+        assertEquals(now.getDayOfMonth(), updateResult.getUpdatedAt().getDayOfMonth());
+        assertEquals(now.getHour(), updateResult.getUpdatedAt().getHour());
+        assertEquals(now.getMinute(), updateResult.getUpdatedAt().getMinute());
     }
 
     @Test
@@ -123,16 +155,10 @@ public class PostMapperTest {
     }
 
     private void addPost() {
-        LocalDateTime addedTime = LocalDateTime.now();
         PostDto addPostDto = PostDto.builder()
                 .userId(signedUpUser.getUserId())
                 .title("testTitle")
                 .content("testContent")
-                .likeCount(0)
-                .viewCount(0)
-                .comments("")
-                .createdAt(addedTime)
-                .updatedAt(addedTime)
                 .build();
 
         sut.addPost(addPostDto);

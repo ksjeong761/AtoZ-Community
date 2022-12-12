@@ -6,8 +6,8 @@
 <mapper namespace="com.atoz.post.PostMapper">
 
     <insert id="addPost" parameterType="com.atoz.post.dto.PostDto">
-        INSERT INTO posts (user_id, title, content, like_count, view_count, comments, created_at, updated_at)
-        VALUES (#{userId}, #{title}, #{content}, #{likeCount}, #{viewCount}, #{comments}, #{createdAt}, #{updatedAt})
+        INSERT INTO posts (user_id, title, content)
+        VALUES (#{userId}, #{title}, #{content})
     </insert>
 
     <select id="findById" resultType="com.atoz.post.dto.PostDto" parameterType="com.atoz.post.dto.request.OpenPostRequestDto">
@@ -29,8 +29,7 @@
         UPDATE posts
         SET
             title = #{title},
-            content = #{content},
-            updated_at = #{updatedAt}
+            content = #{content}
         WHERE post_id = #{postId} AND user_id = #{userId}
     </update>
 

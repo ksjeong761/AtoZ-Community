@@ -12,8 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -23,18 +21,10 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void addPost(AddPostRequestDto addPostRequestDto) {
-        String userId = loadUserIdFromContext();
-        LocalDateTime now = LocalDateTime.now();
-
         PostDto post = PostDto.builder()
-                .userId(userId)
+                .userId(loadUserIdFromContext())
                 .title(addPostRequestDto.getTitle())
                 .content(addPostRequestDto.getContent())
-                .likeCount(0)
-                .viewCount(0)
-                .comments("")
-                .createdAt(now)
-                .updatedAt(now)
                 .build();
 
         postMapper.addPost(post);
@@ -42,15 +32,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void updatePost(UpdatePostRequestDto updatePostRequestDto) {
-        String userId = loadUserIdFromContext();
-        LocalDateTime now = LocalDateTime.now();
-
         PostDto post = PostDto.builder()
                 .postId(updatePostRequestDto.getPostId())
-                .userId(userId)
+                .userId(loadUserIdFromContext())
                 .title(updatePostRequestDto.getTitle())
                 .content(updatePostRequestDto.getContent())
-                .updatedAt(now)
                 .build();
 
         postMapper.updatePost(post);
@@ -58,11 +44,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deletePost(DeletePostRequestDto deletePostRequestDto) {
-        String userId = loadUserIdFromContext();
-
         PostDto post = PostDto.builder()
                 .postId(deletePostRequestDto.getPostId())
-                .userId(userId)
+                .userId(loadUserIdFromContext())
                 .build();
 
         postMapper.deletePost(post);
@@ -70,11 +54,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostResponseDto findById(OpenPostRequestDto openPostRequestDto) {
-        String userId = loadUserIdFromContext();
-
         PostDto post = PostDto.builder()
                 .postId(openPostRequestDto.getPostId())
-                .userId(userId)
+                .userId(loadUserIdFromContext())
                 .build();
 
         return postMapper.findById(post).toPostResponseDto();

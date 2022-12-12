@@ -14,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -56,24 +55,6 @@ public class PostServiceTest {
     }
 
     @Test
-    void addPost_게시글을_추가한_시간이_저장된다() {
-        LocalDateTime now = LocalDateTime.now();
-        AddPostRequestDto addPostRequestDto = AddPostRequestDto.builder()
-                .title("testTitle")
-                .content("testContent")
-                .build();
-
-
-        sut.addPost(addPostRequestDto);
-
-
-        PostDto receivedPostDto = postMapper.receivedPostDto;
-        assertNotNull(receivedPostDto);
-        assertTrue(now.isEqual(receivedPostDto.getCreatedAt()));
-    }
-
-
-    @Test
     void updatePost_게시글을_수정한_사용자_아이디가_저장된다() {
         UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
                 .postId(1)
@@ -88,23 +69,5 @@ public class PostServiceTest {
         PostDto receivedPostDto = postMapper.receivedPostDto;
         assertNotNull(receivedPostDto);
         assertEquals(userId, receivedPostDto.getUserId());
-    }
-
-    @Test
-    void updatePost_게시글을_수정한_시간이_저장된다() {
-        LocalDateTime now = LocalDateTime.now();
-        UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
-                .postId(1)
-                .title("testTitle")
-                .content("testContent")
-                .build();
-
-
-        sut.updatePost(updatePostRequestDto);
-
-
-        PostDto receivedPostDto = postMapper.receivedPostDto;
-        assertNotNull(receivedPostDto);
-        assertTrue(now.isEqual(receivedPostDto.getUpdatedAt()));
     }
 }
