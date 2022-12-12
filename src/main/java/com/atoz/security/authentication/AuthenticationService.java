@@ -1,15 +1,15 @@
 package com.atoz.security.authentication;
 
-import com.atoz.security.authentication.dto.SignoutDTO;
-import com.atoz.security.authentication.dto.TokenRequestDTO;
-import com.atoz.security.authentication.dto.TokenResponseDTO;
-import com.atoz.security.authentication.dto.SigninDTO;
+import com.atoz.security.authentication.dto.request.SignoutRequestDto;
+import com.atoz.security.authentication.dto.request.TokenRequestDto;
+import com.atoz.security.authentication.dto.response.TokenResponseDto;
+import com.atoz.security.authentication.dto.request.SigninRequestDto;
 
 public interface AuthenticationService {
 
-    TokenResponseDTO signin(SigninDTO signinDTO);
+    TokenResponseDto signin(SigninRequestDto signinRequestDto);
 
-    void signout(SignoutDTO signoutDTO);
+    void signout(SignoutRequestDto signoutRequestDto);
 
-    TokenResponseDTO refresh(TokenRequestDTO tokenRequestDTO);
+    TokenResponseDto refresh(TokenRequestDto tokenRequestDto);
 }

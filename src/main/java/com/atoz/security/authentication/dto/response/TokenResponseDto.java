@@ -1,4 +1,4 @@
-package com.atoz.security.authentication.dto;
+package com.atoz.security.authentication.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenResponseDTO {
+public class TokenResponseDto {
     private String accessToken;
     private String refreshToken;
 }

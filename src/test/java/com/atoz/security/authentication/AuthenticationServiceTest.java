@@ -1,18 +1,17 @@
 package com.atoz.security.authentication;
 
-import com.atoz.security.authentication.dto.SignoutDTO;
+import com.atoz.security.authentication.dto.request.SignoutRequestDto;
 import com.atoz.security.authentication.helper.StubAuthenticationManager;
-import com.atoz.security.authorization.helper.StubAuthorizationProvider;
 import com.atoz.security.token.helper.MockRefreshTokenMapper;
 import com.atoz.security.token.helper.StubTokenManager;
-import com.atoz.security.authentication.dto.TokenRequestDTO;
-import com.atoz.security.token.RefreshTokenEntity;
-import com.atoz.security.authentication.dto.TokenResponseDTO;
-import com.atoz.security.authentication.dto.SigninDTO;
+import com.atoz.security.authentication.dto.request.TokenRequestDto;
+import com.atoz.security.token.dto.RefreshTokenDto;
+import com.atoz.security.authentication.dto.response.TokenResponseDto;
+import com.atoz.security.authentication.dto.request.SigninRequestDto;
 import com.atoz.security.token.RefreshTokenMapper;
 import com.atoz.user.UserMapper;
-import com.atoz.user.entity.Authority;
-import com.atoz.user.entity.UserEntity;
+import com.atoz.user.Authority;
+import com.atoz.user.dto.UserDto;
 import com.atoz.user.helper.SpyUserMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,8 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class AuthenticationServiceTest {
 
@@ -34,11 +32,11 @@ class AuthenticationServiceTest {
             refreshTokenMapper,
             new StubTokenManager());
 
-    private UserEntity signedUpUser;
+    private UserDto signedUpUser;
 
     @BeforeEach
     private void setUp() {
-        signedUpUser = UserEntity.builder()
+        signedUpUser = UserDto.builder()
                 .userId("testUserId")
                 .password("testPassword")
                 .nickname("testNickname")
@@ -50,13 +48,13 @@ class AuthenticationServiceTest {
 
     @Test
     void signin_로그인하면_토큰이_발급되어야한다() {
-        SigninDTO presentedIdPassword = SigninDTO.builder()
+        SigninRequestDto presentedIdPassword = SigninRequestDto.builder()
                 .userId(signedUpUser.getUserId())
                 .password(signedUpUser.getPassword())
                 .build();
 
 
-        TokenResponseDTO providedToken = sut.signin(presentedIdPassword);
+        TokenResponseDto providedToken = sut.signin(presentedIdPassword);
 
 
         assertNotNull(providedToken);
@@ -65,36 +63,51 @@ class AuthenticationServiceTest {
     }
 
     @Test
-    void signout_로그아웃하면_리프레시토큰이_삭제되어야한다() {
-        SigninDTO signinDTO = SigninDTO.builder()
+    void signin_두_번_로그인하면_토큰이_재발급되어야_한다() {
+        SigninRequestDto presentedIdPassword = SigninRequestDto.builder()
                 .userId(signedUpUser.getUserId())
                 .password(signedUpUser.getPassword())
                 .build();
-        sut.signin(signinDTO);
 
-        SignoutDTO signoutDTO = SignoutDTO.builder()
+
+        TokenResponseDto providedToken = sut.signin(presentedIdPassword);
+        TokenResponseDto newToken = sut.signin(presentedIdPassword);
+
+
+        assertNotEquals(providedToken, newToken);
+    }
+
+    @Test
+    void signout_로그아웃하면_리프레시토큰이_삭제되어야한다() {
+        SigninRequestDto signinRequestDto = SigninRequestDto.builder()
+                .userId(signedUpUser.getUserId())
+                .password(signedUpUser.getPassword())
+                .build();
+        sut.signin(signinRequestDto);
+
+        SignoutRequestDto signoutRequestDto = SignoutRequestDto.builder()
                 .userId(signedUpUser.getUserId())
                 .build();
 
 
-        sut.signout(signoutDTO);
+        sut.signout(signoutRequestDto);
 
 
-        Optional<RefreshTokenEntity> foundToken = refreshTokenMapper.findTokenByKey(signedUpUser.getUserId());
+        Optional<RefreshTokenDto> foundToken = refreshTokenMapper.findTokenByKey(signedUpUser.getUserId());
         assertTrue(foundToken.isEmpty());
     }
 
     @Test
     void refresh_토큰을_재발급_받을수있다() {
-        SigninDTO signinDTO = SigninDTO.builder()
+        SigninRequestDto signinRequestDto = SigninRequestDto.builder()
                 .userId(signedUpUser.getUserId())
                 .password(signedUpUser.getPassword())
                 .build();
-        TokenResponseDTO tokens = sut.signin(signinDTO);
-        TokenRequestDTO refreshRequest = new TokenRequestDTO(tokens.getAccessToken(), tokens.getRefreshToken());
+        TokenResponseDto tokens = sut.signin(signinRequestDto);
+        TokenRequestDto refreshRequest = new TokenRequestDto(tokens.getAccessToken(), tokens.getRefreshToken());
 
 
-        TokenResponseDTO reissuedToken = sut.refresh(refreshRequest);
+        TokenResponseDto reissuedToken = sut.refresh(refreshRequest);
 
 
         assertNotNull(reissuedToken);

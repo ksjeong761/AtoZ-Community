@@ -1,40 +1,71 @@
 package com.atoz.user.helper;
 
-import com.atoz.user.entity.Authority;
-import com.atoz.user.entity.UserEntity;
+import com.atoz.user.dto.request.ChangePasswordRequestDto;
+import com.atoz.user.dto.request.UpdateUserRequestDto;
+import com.atoz.user.Authority;
+import com.atoz.user.dto.UserDto;
 import com.atoz.user.UserMapper;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.*;
 
 public class SpyUserMapper implements UserMapper {
-    private int callCount_findById = 0;
+    public int callCount_findById = 0;
 
-    private final List<UserEntity> users = new ArrayList<>();
-    private final List<Authority> authorities = new ArrayList<>();
+    private final Map<String, UserDto> users = new HashMap<>();
+    private final Map<String, Set<Authority>> authorities = new HashMap<>();
 
     @Override
-    public void addUser(UserEntity userEntity) {
-        users.add(userEntity);
+    public void addUser(UserDto userDto) {
+        users.put(userDto.getUserId(), userDto);
     }
 
     @Override
-    public void addAuthority(UserEntity userEntity) {
-        authorities.addAll(userEntity.getAuthorities());
+    public void addAuthority(UserDto userDto) {
+        authorities.put(userDto.getUserId(), userDto.getAuthorities());
     }
 
     @Override
-    public Optional<UserEntity> findById(String targetUserId) {
-        this.callCount_findById++;
+    public Optional<UserDto> findById(String targetUserId) {
+        callCount_findById++;
 
-        for (var user : users) {
-            if (user.getUserId().equals(targetUserId)) {
-                return Optional.of(user);
-            }
+        var user = users.getOrDefault(targetUserId, null);
+        Optional<UserDto> foundUser = Optional.ofNullable(user);
+        if (foundUser.isEmpty()) {
+            throw new UsernameNotFoundException("해당 유저가 존재하지 않습니다.");
         }
-        return Optional.empty();
+
+        return foundUser;
     }
 
-    public int getCallCount_findById() {
-        return callCount_findById;
+    @Override
+    public void updateUser(UpdateUserRequestDto updateUserRequestDto) {
+        UserDto before = findById(updateUserRequestDto.getUserId()).get();
+        UserDto after = UserDto.builder()
+                .userId(updateUserRequestDto.getUserId())
+                .password(before.getPassword())
+                .nickname(updateUserRequestDto.getNickname())
+                .authorities(before.getAuthorities())
+                .build();
+
+        users.put(updateUserRequestDto.getUserId(), after);
+    }
+
+    @Override
+    public void changePassword(ChangePasswordRequestDto changePasswordRequestDto) {
+        UserDto before = findById(changePasswordRequestDto.getUserId()).get();
+        UserDto after = UserDto.builder()
+                .userId(changePasswordRequestDto.getUserId())
+                .password(before.getPassword())
+                .nickname(before.getNickname())
+                .authorities(before.getAuthorities())
+                .build();
+
+        users.put(changePasswordRequestDto.getUserId(), after);
+    }
+
+    @Override
+    public void deleteUser(String targetUserId) {
+        users.remove(targetUserId);
     }
 }

@@ -1,9 +1,17 @@
 package com.atoz.user;
 
-import com.atoz.user.dto.UserResponseDTO;
-import com.atoz.user.entity.UserEntity;
+import com.atoz.user.dto.request.ChangePasswordRequestDto;
+import com.atoz.user.dto.response.UserResponseDto;
+import com.atoz.user.dto.request.UpdateUserRequestDto;
+import com.atoz.user.dto.UserDto;
 
 public interface UserService {
 
-    UserResponseDTO signup(UserEntity userEntity);
+    UserResponseDto signup(UserDto userDto);
+
+    void update(UpdateUserRequestDto updateUserRequestDto);
+
+    void changePassword(ChangePasswordRequestDto changePasswordRequestDto);
+
+    void delete(String userId);
 }

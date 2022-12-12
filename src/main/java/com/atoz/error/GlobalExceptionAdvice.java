@@ -1,7 +1,7 @@
 package com.atoz.error;
 
-import com.atoz.error.dto.ErrorResponseDTO;
-import com.atoz.error.dto.MultipleErrorResponseDTO;
+import com.atoz.error.dto.ErrorResponseDto;
+import com.atoz.error.dto.MultipleErrorResponseDto;
 import com.atoz.error.exception.InvalidTokenException;
 import com.atoz.error.exception.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class GlobalExceptionAdvice {
 
     @ExceptionHandler
-    public ResponseEntity<MultipleErrorResponseDTO> handleBeanValidationFailure(MethodArgumentNotValidException ex) {
+    public ResponseEntity<MultipleErrorResponseDto> handleBeanValidationFailure(MethodArgumentNotValidException ex) {
         List<String> errorMessages = ex.getBindingResult()
                 .getAllErrors()
                 .stream()
@@ -31,36 +31,36 @@ public class GlobalExceptionAdvice {
                 .collect(Collectors.toList());
 
         return ResponseEntity.badRequest()
-                .body(new MultipleErrorResponseDTO(errorMessages));
+                .body(new MultipleErrorResponseDto(errorMessages));
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponseDTO> handleUsernameNotFound(UsernameNotFoundException ex) {
+    public ResponseEntity<ErrorResponseDto> handleUsernameNotFound(UsernameNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(new ErrorResponseDTO(ex.getMessage()));
+                .body(new ErrorResponseDto(ex.getMessage()));
     }
 
     // 패스워드가 불일치할 때 401 응답
     @ExceptionHandler
-    public ResponseEntity<ErrorResponseDTO> handleIncorrectPassword(BadCredentialsException ex) {
+    public ResponseEntity<ErrorResponseDto> handleIncorrectPassword(BadCredentialsException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(new ErrorResponseDTO(ex.getMessage()));
+                .body(new ErrorResponseDto(ex.getMessage()));
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponseDTO> handleInvalidToken(InvalidTokenException ex) {
+    public ResponseEntity<ErrorResponseDto> handleInvalidToken(InvalidTokenException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(new ErrorResponseDTO(ex.getMessage()));
+                .body(new ErrorResponseDto(ex.getMessage()));
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponseDTO> handleUnauthorized(UnauthorizedException ex) {
+    public ResponseEntity<ErrorResponseDto> handleUnauthorized(UnauthorizedException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(new ErrorResponseDTO(ex.getMessage()));
+                .body(new ErrorResponseDto(ex.getMessage()));
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponseDTO> handleDatabaseAccessFailure(DataAccessException ex) {
+    public ResponseEntity<ErrorResponseDto> handleDatabaseAccessFailure(DataAccessException ex) {
         String errorMessage = "";
 
         Throwable rootCause = ex.getRootCause();
@@ -69,12 +69,12 @@ public class GlobalExceptionAdvice {
         }
 
         return ResponseEntity.internalServerError()
-                .body(new ErrorResponseDTO(errorMessage));
+                .body(new ErrorResponseDto(errorMessage));
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponseDTO> handleAuthenticationFailure(InternalAuthenticationServiceException ex) {
+    public ResponseEntity<ErrorResponseDto> handleAuthenticationFailure(InternalAuthenticationServiceException ex) {
         return ResponseEntity.internalServerError()
-                .body(new ErrorResponseDTO(ex.getMessage()));
+                .body(new ErrorResponseDto(ex.getMessage()));
     }
 }

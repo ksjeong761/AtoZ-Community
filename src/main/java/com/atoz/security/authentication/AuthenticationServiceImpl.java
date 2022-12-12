@@ -1,14 +1,14 @@
 package com.atoz.security.authentication;
 
-import com.atoz.security.authentication.dto.SignoutDTO;
-import com.atoz.user.entity.Authority;
+import com.atoz.security.authentication.dto.request.SignoutRequestDto;
+import com.atoz.user.Authority;
 import com.atoz.security.token.TokenManager;
-import com.atoz.security.authentication.dto.TokenRequestDTO;
-import com.atoz.security.token.RefreshTokenEntity;
+import com.atoz.security.authentication.dto.request.TokenRequestDto;
+import com.atoz.security.token.dto.RefreshTokenDto;
 import com.atoz.security.token.RefreshTokenMapper;
-import com.atoz.security.authentication.dto.TokenResponseDTO;
-import com.atoz.security.authentication.dto.SigninDTO;
-import com.atoz.user.entity.UserEntity;
+import com.atoz.security.authentication.dto.response.TokenResponseDto;
+import com.atoz.security.authentication.dto.request.SigninRequestDto;
+import com.atoz.user.dto.UserDto;
 import com.atoz.user.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,30 +33,30 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     @Transactional
-    public TokenResponseDTO signin(SigninDTO signinDTO) {
-        Authentication authentication = new UsernamePasswordAuthenticationToken(signinDTO.getUserId(), signinDTO.getPassword());
+    public TokenResponseDto signin(SigninRequestDto signinRequestDto) {
+        Authentication authentication = new UsernamePasswordAuthenticationToken(signinRequestDto.getUserId(), signinRequestDto.getPassword());
         authenticationManager.authenticate(authentication);
 
-        return updateTokens(signinDTO.getUserId());
+        return updateTokens(signinRequestDto.getUserId());
     }
 
     @Override
     @Transactional
-    public void signout(SignoutDTO signoutDTO) {
-        refreshTokenMapper.deleteToken(signoutDTO.getUserId());
+    public void signout(SignoutRequestDto signoutRequestDto) {
+        refreshTokenMapper.deleteToken(signoutRequestDto.getUserId());
     }
 
     @Override
     @Transactional
-    public TokenResponseDTO refresh(TokenRequestDTO tokenRequestDTO) {
-        tokenManager.validateToken(tokenRequestDTO.getAccessToken());
-        tokenManager.validateToken(tokenRequestDTO.getRefreshToken());
+    public TokenResponseDto refresh(TokenRequestDto tokenRequestDto) {
+        tokenManager.validateToken(tokenRequestDto.getAccessToken());
+        tokenManager.validateToken(tokenRequestDto.getRefreshToken());
 
-        String userId = tokenManager.parseUserId(tokenRequestDTO.getRefreshToken());
+        String userId = tokenManager.parseUserId(tokenRequestDto.getRefreshToken());
         return updateTokens(userId);
     }
 
-    private TokenResponseDTO updateTokens(String userId) {
+    private TokenResponseDto updateTokens(String userId) {
         Set<Authority> authorities = findUserById(userId).getAuthorities();
 
         String accessToken = tokenManager.createAccessToken(userId, authorities);
@@ -64,28 +64,28 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         saveOrUpdateRefreshToken(userId, refreshToken);
 
-        return TokenResponseDTO.builder()
+        return TokenResponseDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
     }
 
-    private UserEntity findUserById(String userId) {
+    private UserDto findUserById(String userId) {
         return userMapper.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("해당 유저가 존재하지 않습니다."));
     }
 
     private void saveOrUpdateRefreshToken(String userId, String refreshToken) {
-        RefreshTokenEntity oldRefreshTokenEntity = refreshTokenMapper.findTokenByKey(userId).orElse(null);
-        RefreshTokenEntity newRefreshTokenEntity = RefreshTokenEntity.builder()
+        RefreshTokenDto oldRefreshTokenDto = refreshTokenMapper.findTokenByKey(userId).orElse(null);
+        RefreshTokenDto newRefreshTokenDto = RefreshTokenDto.builder()
                 .tokenKey(userId)
                 .tokenValue(refreshToken)
                 .build();
 
-        if (oldRefreshTokenEntity == null) {
-            refreshTokenMapper.saveToken(newRefreshTokenEntity);
+        if (oldRefreshTokenDto == null) {
+            refreshTokenMapper.saveToken(newRefreshTokenDto);
         } else {
-            refreshTokenMapper.updateToken(newRefreshTokenEntity);
+            refreshTokenMapper.updateToken(newRefreshTokenDto);
         }
     }
 }

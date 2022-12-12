@@ -1,23 +1,23 @@
 package com.atoz.security.authentication.helper;
 
-import com.atoz.security.authentication.dto.SignoutDTO;
-import com.atoz.security.authentication.dto.TokenRequestDTO;
-import com.atoz.security.authentication.dto.TokenResponseDTO;
+import com.atoz.security.authentication.dto.request.SignoutRequestDto;
+import com.atoz.security.authentication.dto.request.TokenRequestDto;
+import com.atoz.security.authentication.dto.response.TokenResponseDto;
 import com.atoz.security.authentication.AuthenticationService;
-import com.atoz.security.authentication.dto.SigninDTO;
+import com.atoz.security.authentication.dto.request.SigninRequestDto;
 
 public class StubAuthenticationService implements AuthenticationService {
 
     @Override
-    public TokenResponseDTO signin(SigninDTO signinDTO) {
+    public TokenResponseDto signin(SigninRequestDto signinRequestDto) {
         return null;
     }
 
     @Override
-    public void signout(SignoutDTO signoutDTO) { }
+    public void signout(SignoutRequestDto signoutRequestDto) { }
 
     @Override
-    public TokenResponseDTO refresh(TokenRequestDTO tokenRequestDTO) {
+    public TokenResponseDto refresh(TokenRequestDto tokenRequestDto) {
         return null;
     }
 }

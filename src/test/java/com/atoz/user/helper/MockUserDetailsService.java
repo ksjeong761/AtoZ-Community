@@ -1,6 +1,6 @@
 package com.atoz.user.helper;
 
-import com.atoz.user.entity.UserEntity;
+import com.atoz.user.dto.UserDto;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 
 public class MockUserDetailsService implements UserDetailsService {
 
-    private final List<UserEntity> users;
+    private final List<UserDto> users;
 
-    public MockUserDetailsService(List<UserEntity> users) {
+    public MockUserDetailsService(List<UserDto> users) {
         this.users = users;
     }
 

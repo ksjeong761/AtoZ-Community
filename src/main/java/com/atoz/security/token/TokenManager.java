@@ -1,6 +1,6 @@
 package com.atoz.security.token;
 
-import com.atoz.user.entity.Authority;
+import com.atoz.user.Authority;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.*;

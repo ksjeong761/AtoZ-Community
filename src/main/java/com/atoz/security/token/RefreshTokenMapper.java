@@ -1,16 +1,17 @@
 package com.atoz.security.token;
 
+import com.atoz.security.token.dto.RefreshTokenDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.Optional;
 
 @Mapper
 public interface RefreshTokenMapper {
-    void saveToken(RefreshTokenEntity refreshTokenEntity);
+    void saveToken(RefreshTokenDto refreshTokenDto);
 
-    void updateToken(RefreshTokenEntity refreshTokenEntity);
+    void updateToken(RefreshTokenDto refreshTokenDto);
 
-    Optional<RefreshTokenEntity> findTokenByKey(String tokenKey);
+    Optional<RefreshTokenDto> findTokenByKey(String tokenKey);
 
     void deleteToken(String tokenKey);
 }

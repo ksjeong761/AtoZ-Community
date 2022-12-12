@@ -1,10 +1,9 @@
 package com.atoz.security.authorization;
 
 import com.atoz.error.exception.InvalidTokenException;
-import com.atoz.security.token.RefreshTokenEntity;
+import com.atoz.security.token.dto.RefreshTokenDto;
 import com.atoz.security.token.RefreshTokenMapper;
 import com.atoz.security.token.TokenManager;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,8 +27,8 @@ public class JwtAuthorizationProvider implements AuthorizationProvider {
         tokenManager.validateToken(accessToken);
 
         String userId = tokenManager.parseUserId(accessToken);
-        Optional<RefreshTokenEntity> refreshTokenEntity = refreshTokenMapper.findTokenByKey(userId);
-        if (refreshTokenEntity.isEmpty()) {
+        Optional<RefreshTokenDto> refreshTokenDto = refreshTokenMapper.findTokenByKey(userId);
+        if (refreshTokenDto.isEmpty()) {
             throw new InvalidTokenException("로그아웃된 사용자입니다.");
         }
 

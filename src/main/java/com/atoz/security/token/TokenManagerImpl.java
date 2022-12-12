@@ -1,7 +1,7 @@
 package com.atoz.security.token;
 
 import com.atoz.error.exception.InvalidTokenException;
-import com.atoz.user.entity.Authority;
+import com.atoz.user.Authority;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;

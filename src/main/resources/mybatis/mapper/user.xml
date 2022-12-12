@@ -3,12 +3,12 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.atoz.user.UserMapper">
-    <insert id="addUser" parameterType="com.atoz.user.entity.UserEntity">
+    <insert id="addUser" parameterType="com.atoz.user.dto.UserDto">
         INSERT INTO users (user_id, password, nickname, email)
         VALUES (#{userId}, #{password}, #{nickname}, #{email});
     </insert>
 
-    <insert id="addAuthority" parameterType="com.atoz.user.entity.UserEntity">
+    <insert id="addAuthority" parameterType="com.atoz.user.dto.UserDto">
         INSERT INTO authority (user_id, authority_name)
         VALUES
         <foreach collection="authorities" item="authority" separator=",">
@@ -19,7 +19,7 @@
         </foreach>
     </insert>
 
-    <resultMap id="UserEntityResultMap" type="com.atoz.user.entity.UserEntity">
+    <resultMap id="UserDtoResultMap" type="com.atoz.user.dto.UserDto">
         <result property="userId" column="user_id"/>
         <result property="password" column="password"/>
         <result property="nickname" column="nickname"/>
@@ -27,13 +27,13 @@
         <collection property="authorities" column="user_id" select="AuthorityResultMap"/>
     </resultMap>
 
-    <select id="AuthorityResultMap" resultType="com.atoz.user.entity.Authority">
+    <select id="AuthorityResultMap" resultType="com.atoz.user.Authority">
         SELECT authority_name
         FROM authority
         WHERE user_id = #{user_id}
     </select>
 
-    <select id="findById" resultMap="UserEntityResultMap" parameterType="java.lang.String">
+    <select id="findById" resultMap="UserDtoResultMap" parameterType="java.lang.String">
         SELECT
             user_id,
             password,
@@ -42,4 +42,24 @@
         FROM users
         WHERE user_id = #{user_id}
     </select>
+
+    <update id="updateUser" parameterType="com.atoz.user.dto.request.UpdateUserRequestDto">
+        UPDATE users
+        SET
+        nickname = #{nickname},
+        email = #{email}
+        WHERE user_id = #{userId}
+    </update>
+
+    <update id="changePassword" parameterType="com.atoz.user.dto.request.ChangePasswordRequestDto">
+        UPDATE users
+        SET
+        password = #{password}
+        WHERE user_id = #{userId}
+    </update>
+
+    <delete id="deleteUser" parameterType="java.lang.String">
+        DELETE FROM users
+        WHERE user_id = #{userId}
+    </delete>
 </mapper>

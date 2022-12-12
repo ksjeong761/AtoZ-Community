@@ -1,4 +1,4 @@
-package com.atoz.user.entity;
+package com.atoz.user;
 
 public enum Authority {
     ROLE_USER,
