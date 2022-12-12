@@ -1,4 +1,4 @@
-package com.atoz.post.entity;
+package com.atoz.post.dto;
 
 import lombok.*;
 
@@ -8,8 +8,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-public class PostEntity {
+public class PostDto {
     private int postId;
     private String userId;
 

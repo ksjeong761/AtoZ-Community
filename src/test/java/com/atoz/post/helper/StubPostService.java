@@ -1,30 +1,30 @@
 package com.atoz.post.helper;
 
 import com.atoz.post.PostService;
-import com.atoz.post.dto.AddPostDTO;
-import com.atoz.post.dto.DeletePostDTO;
-import com.atoz.post.dto.OpenPostDTO;
-import com.atoz.post.dto.UpdatePostDTO;
-import com.atoz.post.entity.PostEntity;
+import com.atoz.post.dto.request.AddPostRequestDto;
+import com.atoz.post.dto.request.DeletePostRequestDto;
+import com.atoz.post.dto.request.OpenPostRequestDto;
+import com.atoz.post.dto.request.UpdatePostRequestDto;
+import com.atoz.post.dto.PostDto;
 
 public class StubPostService implements PostService {
     @Override
-    public void addPost(AddPostDTO addPostDTO) {
+    public void addPost(AddPostRequestDto addPostRequestDto) {
 
     }
 
     @Override
-    public void updatePost(UpdatePostDTO updatePostDTO) {
+    public void updatePost(UpdatePostRequestDto updatePostRequestDto) {
 
     }
 
     @Override
-    public void deletePost(DeletePostDTO deletePostDTO) {
+    public void deletePost(DeletePostRequestDto deletePostRequestDto) {
 
     }
 
     @Override
-    public PostEntity findById(OpenPostDTO openPostDTO) {
+    public PostDto findById(OpenPostRequestDto openPostRequestDto) {
         return null;
     }
 }

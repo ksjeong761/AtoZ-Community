@@ -1,18 +1,16 @@
 package com.atoz.post;
 
-import com.atoz.post.entity.PostEntity;
-import com.atoz.post.dto.DeletePostDTO;
-import com.atoz.post.dto.OpenPostDTO;
+import com.atoz.post.dto.PostDto;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface PostMapper {
 
-    void addPost(PostEntity postEntity);
+    void addPost(PostDto postDto);
 
-    void updatePost(PostEntity postEntity);
+    void updatePost(PostDto postDto);
 
-    void deletePost(PostEntity postEntity);
+    void deletePost(PostDto postDto);
 
-    PostEntity findById(PostEntity postEntity);
+    PostDto findById(PostDto postDto);
 }

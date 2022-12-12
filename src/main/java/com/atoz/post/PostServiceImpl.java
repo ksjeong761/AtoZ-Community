@@ -1,10 +1,10 @@
 package com.atoz.post;
 
-import com.atoz.post.entity.PostEntity;
-import com.atoz.post.dto.AddPostDTO;
-import com.atoz.post.dto.DeletePostDTO;
-import com.atoz.post.dto.OpenPostDTO;
-import com.atoz.post.dto.UpdatePostDTO;
+import com.atoz.post.dto.PostDto;
+import com.atoz.post.dto.request.AddPostRequestDto;
+import com.atoz.post.dto.request.DeletePostRequestDto;
+import com.atoz.post.dto.request.OpenPostRequestDto;
+import com.atoz.post.dto.request.UpdatePostRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,14 +21,14 @@ public class PostServiceImpl implements PostService {
     private final PostMapper postMapper;
 
     @Override
-    public void addPost(AddPostDTO addPostDTO) {
+    public void addPost(AddPostRequestDto addPostRequestDto) {
         String userId = loadUserIdFromContext();
         LocalDateTime now = LocalDateTime.now();
 
-        PostEntity post = PostEntity.builder()
+        PostDto post = PostDto.builder()
                 .userId(userId)
-                .title(addPostDTO.getTitle())
-                .content(addPostDTO.getContent())
+                .title(addPostRequestDto.getTitle())
+                .content(addPostRequestDto.getContent())
                 .likeCount(0)
                 .viewCount(0)
                 .comments("")
@@ -40,15 +40,15 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void updatePost(UpdatePostDTO updatePostDTO) {
+    public void updatePost(UpdatePostRequestDto updatePostRequestDto) {
         String userId = loadUserIdFromContext();
         LocalDateTime now = LocalDateTime.now();
 
-        PostEntity post = PostEntity.builder()
-                .postId(updatePostDTO.getPostId())
+        PostDto post = PostDto.builder()
+                .postId(updatePostRequestDto.getPostId())
                 .userId(userId)
-                .title(updatePostDTO.getTitle())
-                .content(updatePostDTO.getContent())
+                .title(updatePostRequestDto.getTitle())
+                .content(updatePostRequestDto.getContent())
                 .updatedAt(now)
                 .build();
 
@@ -56,11 +56,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void deletePost(DeletePostDTO deletePostDTO) {
+    public void deletePost(DeletePostRequestDto deletePostRequestDto) {
         String userId = loadUserIdFromContext();
 
-        PostEntity post = PostEntity.builder()
-                .postId(deletePostDTO.getPostId())
+        PostDto post = PostDto.builder()
+                .postId(deletePostRequestDto.getPostId())
                 .userId(userId)
                 .build();
 
@@ -68,11 +68,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostEntity findById(OpenPostDTO openPostDTO) {
+    public PostDto findById(OpenPostRequestDto openPostRequestDto) {
         String userId = loadUserIdFromContext();
 
-        PostEntity post = PostEntity.builder()
-                .postId(openPostDTO.getPostId())
+        PostDto post = PostDto.builder()
+                .postId(openPostRequestDto.getPostId())
                 .userId(userId)
                 .build();
 

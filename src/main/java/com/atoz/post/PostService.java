@@ -1,18 +1,18 @@
 package com.atoz.post;
 
-import com.atoz.post.entity.PostEntity;
-import com.atoz.post.dto.AddPostDTO;
-import com.atoz.post.dto.DeletePostDTO;
-import com.atoz.post.dto.OpenPostDTO;
-import com.atoz.post.dto.UpdatePostDTO;
+import com.atoz.post.dto.PostDto;
+import com.atoz.post.dto.request.AddPostRequestDto;
+import com.atoz.post.dto.request.DeletePostRequestDto;
+import com.atoz.post.dto.request.OpenPostRequestDto;
+import com.atoz.post.dto.request.UpdatePostRequestDto;
 
 public interface PostService {
 
-    void addPost(AddPostDTO addPostDTO);
+    void addPost(AddPostRequestDto addPostRequestDto);
 
-    void updatePost(UpdatePostDTO updatePostDTO);
+    void updatePost(UpdatePostRequestDto updatePostRequestDto);
 
-    void deletePost(DeletePostDTO deletePostDTO);
+    void deletePost(DeletePostRequestDto deletePostRequestDto);
 
-    PostEntity findById(OpenPostDTO openPostDTO);
+    PostDto findById(OpenPostRequestDto openPostRequestDto);
 }

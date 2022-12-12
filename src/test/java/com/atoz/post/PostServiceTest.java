@@ -1,8 +1,8 @@
 package com.atoz.post;
 
-import com.atoz.post.dto.AddPostDTO;
-import com.atoz.post.dto.UpdatePostDTO;
-import com.atoz.post.entity.PostEntity;
+import com.atoz.post.dto.request.AddPostRequestDto;
+import com.atoz.post.dto.request.UpdatePostRequestDto;
+import com.atoz.post.dto.PostDto;
 import com.atoz.post.helper.SpyPostMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,70 +41,70 @@ public class PostServiceTest {
 
     @Test
     void addPost_게시글을_추가한_사용자_아이디가_저장된다() {
-        AddPostDTO addPostDTO = AddPostDTO.builder()
+        AddPostRequestDto addPostRequestDto = AddPostRequestDto.builder()
                 .title("testTitle")
                 .content("testContent")
                 .build();
 
 
-        sut.addPost(addPostDTO);
+        sut.addPost(addPostRequestDto);
 
 
-        PostEntity receivedPostEntity = postMapper.receivedPostEntity;
-        assertNotNull(receivedPostEntity);
-        assertEquals(userId, receivedPostEntity.getUserId());
+        PostDto receivedPostDto = postMapper.receivedPostDto;
+        assertNotNull(receivedPostDto);
+        assertEquals(userId, receivedPostDto.getUserId());
     }
 
     @Test
     void addPost_게시글을_추가한_시간이_저장된다() {
         LocalDateTime now = LocalDateTime.now();
-        AddPostDTO addPostDTO = AddPostDTO.builder()
+        AddPostRequestDto addPostRequestDto = AddPostRequestDto.builder()
                 .title("testTitle")
                 .content("testContent")
                 .build();
 
 
-        sut.addPost(addPostDTO);
+        sut.addPost(addPostRequestDto);
 
 
-        PostEntity receivedPostEntity = postMapper.receivedPostEntity;
-        assertNotNull(receivedPostEntity);
-        assertTrue(now.isEqual(receivedPostEntity.getCreatedAt()));
+        PostDto receivedPostDto = postMapper.receivedPostDto;
+        assertNotNull(receivedPostDto);
+        assertTrue(now.isEqual(receivedPostDto.getCreatedAt()));
     }
 
 
     @Test
     void updatePost_게시글을_수정한_사용자_아이디가_저장된다() {
-        UpdatePostDTO updatePostDTO = UpdatePostDTO.builder()
+        UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
                 .postId(1)
                 .title("testTitle")
                 .content("testContent")
                 .build();
 
 
-        sut.updatePost(updatePostDTO);
+        sut.updatePost(updatePostRequestDto);
 
 
-        PostEntity receivedPostEntity = postMapper.receivedPostEntity;
-        assertNotNull(receivedPostEntity);
-        assertEquals(userId, receivedPostEntity.getUserId());
+        PostDto receivedPostDto = postMapper.receivedPostDto;
+        assertNotNull(receivedPostDto);
+        assertEquals(userId, receivedPostDto.getUserId());
     }
 
     @Test
     void updatePost_게시글을_수정한_시간이_저장된다() {
         LocalDateTime now = LocalDateTime.now();
-        UpdatePostDTO updatePostDTO = UpdatePostDTO.builder()
+        UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
                 .postId(1)
                 .title("testTitle")
                 .content("testContent")
                 .build();
 
 
-        sut.updatePost(updatePostDTO);
+        sut.updatePost(updatePostRequestDto);
 
 
-        PostEntity receivedPostEntity = postMapper.receivedPostEntity;
-        assertNotNull(receivedPostEntity);
-        assertTrue(now.isEqual(receivedPostEntity.getUpdatedAt()));
+        PostDto receivedPostDto = postMapper.receivedPostDto;
+        assertNotNull(receivedPostDto);
+        assertTrue(now.isEqual(receivedPostDto.getUpdatedAt()));
     }
 }

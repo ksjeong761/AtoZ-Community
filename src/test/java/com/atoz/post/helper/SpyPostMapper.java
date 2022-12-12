@@ -1,30 +1,30 @@
 package com.atoz.post.helper;
 
 import com.atoz.post.PostMapper;
-import com.atoz.post.entity.PostEntity;
+import com.atoz.post.dto.PostDto;
 
 public class SpyPostMapper implements PostMapper {
 
-    public PostEntity receivedPostEntity;
+    public PostDto receivedPostDto;
 
     @Override
-    public void addPost(PostEntity postEntity) {
-        receivedPostEntity = postEntity;
+    public void addPost(PostDto postDto) {
+        receivedPostDto = postDto;
     }
 
     @Override
-    public void updatePost(PostEntity postEntity) {
-        receivedPostEntity = postEntity;
+    public void updatePost(PostDto postDto) {
+        receivedPostDto = postDto;
     }
 
     @Override
-    public void deletePost(PostEntity postEntity) {
-        receivedPostEntity = postEntity;
+    public void deletePost(PostDto postDto) {
+        receivedPostDto = postDto;
     }
 
     @Override
-    public PostEntity findById(PostEntity postEntity) {
-        receivedPostEntity = postEntity;
+    public PostDto findById(PostDto postDto) {
+        receivedPostDto = postDto;
 
         return null;
     }

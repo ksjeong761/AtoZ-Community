@@ -1,10 +1,10 @@
 package com.atoz.post;
 
-import com.atoz.post.entity.PostEntity;
-import com.atoz.post.dto.AddPostDTO;
-import com.atoz.post.dto.DeletePostDTO;
-import com.atoz.post.dto.OpenPostDTO;
-import com.atoz.post.dto.UpdatePostDTO;
+import com.atoz.post.dto.PostDto;
+import com.atoz.post.dto.request.AddPostRequestDto;
+import com.atoz.post.dto.request.DeletePostRequestDto;
+import com.atoz.post.dto.request.OpenPostRequestDto;
+import com.atoz.post.dto.request.UpdatePostRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -17,22 +17,22 @@ public class PostController {
     private final PostService postService;
 
     @PutMapping
-    public void addPost(@Validated @RequestBody AddPostDTO addPostDTO) {
-        postService.addPost(addPostDTO);
+    public void addPost(@Validated @RequestBody AddPostRequestDto addPostRequestDto) {
+        postService.addPost(addPostRequestDto);
     }
 
     @PatchMapping
-    public void updatePost(@Validated @RequestBody UpdatePostDTO updatePostDTO) {
-        postService.updatePost(updatePostDTO);
+    public void updatePost(@Validated @RequestBody UpdatePostRequestDto updatePostRequestDto) {
+        postService.updatePost(updatePostRequestDto);
     }
 
     @DeleteMapping
-    public void deletePost(@Validated @RequestBody DeletePostDTO deletePostDTO) {
-        postService.deletePost(deletePostDTO);
+    public void deletePost(@Validated @RequestBody DeletePostRequestDto deletePostRequestDto) {
+        postService.deletePost(deletePostRequestDto);
     }
 
     @GetMapping
-    public PostEntity openPost(@Validated @RequestBody OpenPostDTO openPostDTO) {
-        return postService.findById(openPostDTO);
+    public PostDto openPost(@Validated @RequestBody OpenPostRequestDto openPostRequestDto) {
+        return postService.findById(openPostRequestDto);
     }
 }

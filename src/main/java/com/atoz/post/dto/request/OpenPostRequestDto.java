@@ -1,4 +1,4 @@
-package com.atoz.post.dto;
+package com.atoz.post.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OpenPostDTO {
+public class OpenPostRequestDto {
     private int postId;
 }

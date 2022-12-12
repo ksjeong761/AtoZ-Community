@@ -1,4 +1,4 @@
-package com.atoz.post.dto;
+package com.atoz.post.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdatePostDTO {
+public class DeletePostRequestDto {
     private int postId;
-    private String title;
-    private String content;
 }

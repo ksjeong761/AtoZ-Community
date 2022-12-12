@@ -1,6 +1,6 @@
 package com.atoz.post;
 
-import com.atoz.post.entity.PostEntity;
+import com.atoz.post.dto.PostDto;
 import com.atoz.user.UserMapper;
 import com.atoz.user.entity.Authority;
 import com.atoz.user.entity.UserEntity;
@@ -45,7 +45,7 @@ public class PostMapperTest {
     @Test
     void addPost_게시글이_저장된다() {
         LocalDateTime addedTime = LocalDateTime.now();
-        PostEntity addedPost = PostEntity.builder()
+        PostDto addedPost = PostDto.builder()
                 .postId(1)
                 .userId(signedUpUser.getUserId())
                 .title("testTitle")
@@ -61,7 +61,7 @@ public class PostMapperTest {
         sut.addPost(addedPost);
 
 
-        PostEntity foundPost = sut.findById(addedPost);
+        PostDto foundPost = sut.findById(addedPost);
         assertNotNull(foundPost);
         assertEquals(addedPost.getTitle(), foundPost.getTitle());
         assertEquals(addedPost.getContent(), foundPost.getContent());
@@ -70,7 +70,7 @@ public class PostMapperTest {
     @Test
     void updatePost_게시글이_수정된다() {
         LocalDateTime addedTime = LocalDateTime.now();
-        PostEntity addedPost = PostEntity.builder()
+        PostDto addedPost = PostDto.builder()
                 .userId(signedUpUser.getUserId())
                 .title("testTitle")
                 .content("testContent")
@@ -83,7 +83,7 @@ public class PostMapperTest {
         sut.addPost(addedPost);
 
         LocalDateTime updatedTime = LocalDateTime.now();
-        PostEntity updatedPost = PostEntity.builder()
+        PostDto updatedPost = PostDto.builder()
                 .postId(1)
                 .userId(signedUpUser.getUserId())
                 .title("newTitle")
@@ -95,7 +95,7 @@ public class PostMapperTest {
         sut.updatePost(updatedPost);
 
 
-        PostEntity foundPost = sut.findById(updatedPost);
+        PostDto foundPost = sut.findById(updatedPost);
         assertNotNull(foundPost);
         assertEquals(updatedPost.getTitle(), foundPost.getTitle());
         assertEquals(updatedPost.getContent(), foundPost.getContent());
@@ -104,7 +104,7 @@ public class PostMapperTest {
     @Test
     void deletePost_게시글이_삭제된다() {
         LocalDateTime addedTime = LocalDateTime.now();
-        PostEntity addedPost = PostEntity.builder()
+        PostDto addedPost = PostDto.builder()
                 .userId(signedUpUser.getUserId())
                 .title("testTitle")
                 .content("testContent")
@@ -116,7 +116,7 @@ public class PostMapperTest {
                 .build();
         sut.addPost(addedPost);
 
-        PostEntity deletedPost = PostEntity.builder()
+        PostDto deletedPost = PostDto.builder()
                 .postId(1)
                 .userId(signedUpUser.getUserId())
                 .build();
@@ -125,13 +125,13 @@ public class PostMapperTest {
         sut.deletePost(deletedPost);
 
 
-        PostEntity foundPost = sut.findById(deletedPost);
+        PostDto foundPost = sut.findById(deletedPost);
         assertNull(foundPost);
     }
 
     @Test
     void findById_게시글이_조회된다() {
-        PostEntity post = PostEntity.builder()
+        PostDto post = PostDto.builder()
                 .postId(1)
                 .userId(signedUpUser.getUserId())
                 .build();
