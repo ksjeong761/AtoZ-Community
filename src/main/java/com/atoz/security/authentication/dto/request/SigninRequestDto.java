@@ -1,4 +1,4 @@
-package com.atoz.security.authentication.dto;
+package com.atoz.security.authentication.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SigninDTO {
+public class SigninRequestDto {
 
     @NotNull(message = "아이디를 반드시 입력해주세요")
     private String userId;

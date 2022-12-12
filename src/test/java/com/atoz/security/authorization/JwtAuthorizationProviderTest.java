@@ -1,9 +1,10 @@
 package com.atoz.security.authorization;
 
 import com.atoz.security.token.*;
+import com.atoz.security.token.dto.RefreshTokenDto;
 import com.atoz.security.token.helper.MockRefreshTokenMapper;
-import com.atoz.user.entity.Authority;
-import com.atoz.user.entity.UserEntity;
+import com.atoz.user.Authority;
+import com.atoz.user.dto.UserDto;
 import com.atoz.user.helper.MockUserDetailsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,14 +22,14 @@ public class JwtAuthorizationProviderTest {
 
     private final TokenManager tokenManager = new TokenManagerImpl();
 
-    private UserEntity signedUpUser;
+    private UserDto signedUpUser;
 
     private AuthorizationProvider sut;
     private RefreshTokenMapper refreshTokenMapper = new MockRefreshTokenMapper();
 
     @BeforeEach
     void setUp() {
-        signedUpUser = UserEntity.builder()
+        signedUpUser = UserDto.builder()
                 .userId("testUserId")
                 .password("testPassword")
                 .email("test@test.com")
@@ -46,7 +47,7 @@ public class JwtAuthorizationProviderTest {
     @Test
     void authorize_토큰이_유효하면_사용자_정보가_담긴_객체가_반환된다() {
         String refreshToken = tokenManager.createRefreshToken(signedUpUser.getUserId(), signedUpUser.getAuthorities());
-        refreshTokenMapper.saveToken(new RefreshTokenEntity(signedUpUser.getUserId(), refreshToken));
+        refreshTokenMapper.saveToken(new RefreshTokenDto(signedUpUser.getUserId(), refreshToken));
 
 
         Authentication authentication = sut.authorize(refreshToken);

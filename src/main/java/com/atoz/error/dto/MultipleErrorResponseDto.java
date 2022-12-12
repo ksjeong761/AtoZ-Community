@@ -7,6 +7,6 @@ import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
-public class MultipleErrorResponseDTO {
+public class MultipleErrorResponseDto {
     private final List<String> errorMessages;
 }

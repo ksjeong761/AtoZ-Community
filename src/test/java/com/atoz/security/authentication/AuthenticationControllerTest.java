@@ -2,7 +2,7 @@ package com.atoz.security.authentication;
 
 import com.atoz.security.authentication.helper.StubAuthenticationService;
 import com.atoz.error.GlobalExceptionAdvice;
-import com.atoz.security.authentication.dto.SigninDTO;
+import com.atoz.security.authentication.dto.request.SigninRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ class AuthenticationControllerTest {
 
     @Test
     void signin_로그인에_성공한다() throws Exception {
-        SigninDTO testSigninDTO = SigninDTO.builder()
+        SigninRequestDto testSigninRequestDto = SigninRequestDto.builder()
                 .userId("testId")
                 .password("testPassword")
                 .build();
@@ -43,7 +43,7 @@ class AuthenticationControllerTest {
 
         ResultActions resultActions = sut.perform(post("/auth/signin")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(testSigninDTO)));
+                        .content(objectMapper.writeValueAsString(testSigninRequestDto)));
 
 
         resultActions.andExpect(status().isOk());
@@ -51,14 +51,14 @@ class AuthenticationControllerTest {
 
     @Test
     void signin_아이디를_입력하지않아_로그인에_실패한다() throws Exception {
-        SigninDTO testSigninDTO = SigninDTO.builder()
+        SigninRequestDto testSigninRequestDto = SigninRequestDto.builder()
                 .password("testPassword")
                 .build();
 
 
         ResultActions resultActions = sut.perform(post("/auth/signin")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(testSigninDTO)));
+                        .content(objectMapper.writeValueAsString(testSigninRequestDto)));
 
 
         resultActions.andExpect(status().isBadRequest());
@@ -66,14 +66,14 @@ class AuthenticationControllerTest {
 
     @Test
     void signin_패스워드를_입력하지않아_로그인에_실패한다() throws Exception {
-        SigninDTO testSigninDTO = SigninDTO.builder()
+        SigninRequestDto testSigninRequestDto = SigninRequestDto.builder()
                 .userId("testId")
                 .build();
 
 
         ResultActions resultActions = sut.perform(post("/auth/signin")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(testSigninDTO)));
+                        .content(objectMapper.writeValueAsString(testSigninRequestDto)));
 
 
         resultActions.andExpect(status().isBadRequest());
@@ -81,13 +81,13 @@ class AuthenticationControllerTest {
 
     @Test
     void signin_아이디와패스워드를_입력하지않아_로그인에_실패한다() throws Exception {
-        SigninDTO testSigninDTO = SigninDTO.builder()
+        SigninRequestDto testSigninRequestDto = SigninRequestDto.builder()
                 .build();
 
 
         ResultActions resultActions = sut.perform(post("/auth/signin")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(testSigninDTO)));
+                        .content(objectMapper.writeValueAsString(testSigninRequestDto)));
 
 
         resultActions.andExpect(status().isBadRequest());

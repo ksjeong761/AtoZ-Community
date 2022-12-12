@@ -1,10 +1,10 @@
-package com.atoz.security.authentication.dto;
+package com.atoz.security.authentication.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class AuthResponseDTO {
+public class AuthResponseDto {
     private final String message;
 }

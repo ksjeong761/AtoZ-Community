@@ -3,8 +3,8 @@ package com.atoz.security.authorization;
 import com.atoz.security.authorization.helper.StubAuthorizationProvider;
 import com.atoz.security.token.TokenManager;
 import com.atoz.security.token.TokenManagerImpl;
-import com.atoz.user.entity.Authority;
-import com.atoz.user.entity.UserEntity;
+import com.atoz.user.Authority;
+import com.atoz.user.dto.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockFilterChain;
@@ -29,12 +29,12 @@ public class JwtAuthorizationFilterTest {
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
     private MockFilterChain filterChain;
-    private UserEntity userEntity;
+    private UserDto userDto;
     private TokenManager tokenManager;
 
     @BeforeEach
     void setUp() {
-        userEntity = UserEntity.builder()
+        userDto = UserDto.builder()
                 .userId("testUserId")
                 .password("testPassword")
                 .nickname("testNickname")
@@ -50,7 +50,7 @@ public class JwtAuthorizationFilterTest {
 
     @Test
     void doFilterInternal_인가된_사용자_정보가_SecurityContextHolder에_저장된다() throws ServletException, IOException {
-        String jwt = tokenManager.createAccessToken(userEntity.getUserId(), userEntity.getAuthorities());
+        String jwt = tokenManager.createAccessToken(userDto.getUserId(), userDto.getAuthorities());
         request.addHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + jwt);
 
 

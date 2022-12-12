@@ -1,8 +1,9 @@
 package com.atoz.security.token;
 
+import com.atoz.security.token.dto.RefreshTokenDto;
 import com.atoz.user.UserMapper;
-import com.atoz.user.entity.Authority;
-import com.atoz.user.entity.UserEntity;
+import com.atoz.user.Authority;
+import com.atoz.user.dto.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
@@ -26,12 +27,12 @@ class RefreshTokenMapperTest {
     @Autowired
     private UserMapper userMapper;
 
-    private UserEntity signedUpUser;
+    private UserDto signedUpUser;
 
     @BeforeEach
     void setUp() {
         // 외래키 제약조건 때문에 회원가입이 되어 있어야 토큰을 조작할 수 있습니다.
-        signedUpUser = UserEntity.builder()
+        signedUpUser = UserDto.builder()
                 .userId("testUserId")
                 .password("testPassword")
                 .nickname("testNickname")
@@ -41,7 +42,7 @@ class RefreshTokenMapperTest {
         userMapper.addUser(signedUpUser);
         userMapper.addAuthority(signedUpUser);
 
-        RefreshTokenEntity savedToken = RefreshTokenEntity.builder()
+        RefreshTokenDto savedToken = RefreshTokenDto.builder()
                 .tokenKey(signedUpUser.getUserId())
                 .tokenValue("testRefreshToken")
                 .build();
@@ -50,7 +51,7 @@ class RefreshTokenMapperTest {
 
     @Test
     void saveToken_회원가입_되어있다면_리프레시토큰을_저장할_수_있다() {
-        UserEntity newUser = UserEntity.builder()
+        UserDto newUser = UserDto.builder()
                 .userId("newUserId")
                 .password("newPassword")
                 .nickname("newNickname")
@@ -60,31 +61,31 @@ class RefreshTokenMapperTest {
         userMapper.addUser(newUser);
         userMapper.addAuthority(newUser);
 
-        RefreshTokenEntity refreshTokenEntity = RefreshTokenEntity.builder()
+        RefreshTokenDto refreshTokenDto = RefreshTokenDto.builder()
                 .tokenKey(newUser.getUserId())
                 .tokenValue("newRefreshToken")
                 .build();
 
 
-        sut.saveToken(refreshTokenEntity);
+        sut.saveToken(refreshTokenDto);
 
 
-        Optional<RefreshTokenEntity> foundRefreshToken = sut.findTokenByKey(refreshTokenEntity.getTokenKey());
+        Optional<RefreshTokenDto> foundRefreshToken = sut.findTokenByKey(refreshTokenDto.getTokenKey());
         assertTrue(foundRefreshToken.isPresent());
-        assertEquals(foundRefreshToken.get().getTokenKey(), refreshTokenEntity.getTokenKey());
-        assertEquals(foundRefreshToken.get().getTokenValue(), refreshTokenEntity.getTokenValue());
+        assertEquals(foundRefreshToken.get().getTokenKey(), refreshTokenDto.getTokenKey());
+        assertEquals(foundRefreshToken.get().getTokenValue(), refreshTokenDto.getTokenValue());
     }
 
     @Test
     void saveToken_회원가입_되어있지_않다면_리프레시토큰을_저장할_때_예외가_발생한다() {
-        RefreshTokenEntity refreshTokenEntity = RefreshTokenEntity.builder()
+        RefreshTokenDto refreshTokenDto = RefreshTokenDto.builder()
                 .tokenKey("newUserId")
                 .tokenValue("newRefreshToken")
                 .build();
 
 
         Throwable thrown = catchThrowable(() -> {
-            sut.saveToken(refreshTokenEntity);
+            sut.saveToken(refreshTokenDto);
         });
 
 
@@ -96,7 +97,7 @@ class RefreshTokenMapperTest {
         String wrongUserId = "wrongUserId";
 
 
-        Optional<RefreshTokenEntity> foundRefreshToken = sut.findTokenByKey(wrongUserId);
+        Optional<RefreshTokenDto> foundRefreshToken = sut.findTokenByKey(wrongUserId);
 
 
         assertTrue(foundRefreshToken.isEmpty());
@@ -104,7 +105,7 @@ class RefreshTokenMapperTest {
 
     @Test
     void updateToken_저장된_리프레시토큰을_업데이트_할수있다() {
-        RefreshTokenEntity updateRequest = RefreshTokenEntity.builder()
+        RefreshTokenDto updateRequest = RefreshTokenDto.builder()
                 .tokenKey(signedUpUser.getUserId())
                 .tokenValue("updateRefreshToken")
                 .build();
@@ -113,10 +114,10 @@ class RefreshTokenMapperTest {
         sut.updateToken(updateRequest);
 
 
-        Optional<RefreshTokenEntity> updatedTokenEntity = sut.findTokenByKey(signedUpUser.getUserId());
-        assertTrue(updatedTokenEntity.isPresent());
-        assertEquals(updatedTokenEntity.get().getTokenKey(), updateRequest.getTokenKey());
-        assertEquals(updatedTokenEntity.get().getTokenValue(), updateRequest.getTokenValue());
+        Optional<RefreshTokenDto> updatedTokenDto = sut.findTokenByKey(signedUpUser.getUserId());
+        assertTrue(updatedTokenDto.isPresent());
+        assertEquals(updatedTokenDto.get().getTokenKey(), updateRequest.getTokenKey());
+        assertEquals(updatedTokenDto.get().getTokenValue(), updateRequest.getTokenValue());
     }
 
     @Test
@@ -127,7 +128,7 @@ class RefreshTokenMapperTest {
         sut.deleteToken(targetUserId);
 
 
-        Optional<RefreshTokenEntity> deletedTokenEntity = sut.findTokenByKey(signedUpUser.getUserId());
-        assertTrue(deletedTokenEntity.isEmpty());
+        Optional<RefreshTokenDto> deletedTokenDto = sut.findTokenByKey(signedUpUser.getUserId());
+        assertTrue(deletedTokenDto.isEmpty());
     }
 }

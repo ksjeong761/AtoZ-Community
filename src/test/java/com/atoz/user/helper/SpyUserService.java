@@ -1,30 +1,30 @@
 package com.atoz.user.helper;
 
 import com.atoz.user.UserService;
-import com.atoz.user.dto.ChangePasswordDTO;
-import com.atoz.user.dto.UserResponseDTO;
-import com.atoz.user.dto.UpdateUserDTO;
-import com.atoz.user.entity.UserEntity;
+import com.atoz.user.dto.request.ChangePasswordRequestDto;
+import com.atoz.user.dto.response.UserResponseDto;
+import com.atoz.user.dto.request.UpdateUserRequestDto;
+import com.atoz.user.dto.UserDto;
 
 public class SpyUserService implements UserService {
 
     public String encodedPassword;
 
     @Override
-    public UserResponseDTO signup(UserEntity userEntity) {
-        encodedPassword = userEntity.getPassword();
+    public UserResponseDto signup(UserDto userDto) {
+        encodedPassword = userDto.getPassword();
 
         return null;
     }
 
     @Override
-    public void update(UpdateUserDTO updateUserDTO) {
+    public void update(UpdateUserRequestDto updateUserRequestDto) {
 
     }
 
     @Override
-    public void changePassword(ChangePasswordDTO changePasswordDTO) {
-        encodedPassword = changePasswordDTO.getPassword();
+    public void changePassword(ChangePasswordRequestDto changePasswordRequestDto) {
+        encodedPassword = changePasswordRequestDto.getPassword();
     }
 
     @Override

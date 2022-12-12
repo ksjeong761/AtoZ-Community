@@ -1,6 +1,7 @@
-package com.atoz.user.entity;
+package com.atoz.user.dto;
 
-import com.atoz.user.dto.UserResponseDTO;
+import com.atoz.user.dto.response.UserResponseDto;
+import com.atoz.user.Authority;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +17,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserEntity {
+public class UserDto {
 
     private String userId;
 
@@ -42,8 +43,8 @@ public class UserEntity {
                 .build();
     }
 
-    public UserResponseDTO toResponseDto() {
-        return UserResponseDTO.builder()
+    public UserResponseDto toUserResponseDto() {
+        return UserResponseDto.builder()
                 .userId(getUserId())
                 .nickname(getNickname())
                 .email(getEmail())

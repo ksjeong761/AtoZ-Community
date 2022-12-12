@@ -1,9 +1,8 @@
 package com.atoz.user;
 
-import com.atoz.user.dto.ChangePasswordDTO;
-import com.atoz.user.dto.UpdateUserDTO;
-import com.atoz.user.entity.Authority;
-import com.atoz.user.entity.UserEntity;
+import com.atoz.user.dto.request.ChangePasswordRequestDto;
+import com.atoz.user.dto.request.UpdateUserRequestDto;
+import com.atoz.user.dto.UserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
@@ -28,7 +27,7 @@ class UserMapperTest {
 
     @Test
     void addUser_사용자_정보가_저장된다() {
-        UserEntity newUser = UserEntity.builder()
+        UserDto newUser = UserDto.builder()
                 .userId("newUserId")
                 .password("newPassword")
                 .nickname("newNickname")
@@ -41,14 +40,14 @@ class UserMapperTest {
         sut.addAuthority(newUser);
 
 
-        Optional<UserEntity> addedUser = sut.findById(newUser.getUserId());
+        Optional<UserDto> addedUser = sut.findById(newUser.getUserId());
         assertThat(addedUser.isPresent()).isTrue();
         assertThat(addedUser.get().getUserId()).isEqualTo(newUser.getUserId());
     }
 
     @Test
     void addUser_중복된_사용자를_저장하면_예외가_발생한다() {
-        UserEntity signedUpUser = UserEntity.builder()
+        UserDto signedUpUser = UserDto.builder()
                 .userId("testUserId")
                 .password("testPassword")
                 .nickname("testNickname")
@@ -69,7 +68,7 @@ class UserMapperTest {
 
     @Test
     void findById_사용자_정보가_조회된다() {
-        UserEntity signedUpUser = UserEntity.builder()
+        UserDto signedUpUser = UserDto.builder()
                 .userId("testUserId")
                 .password("testPassword")
                 .nickname("testNickname")
@@ -80,7 +79,7 @@ class UserMapperTest {
         sut.addAuthority(signedUpUser);
 
 
-        Optional<UserEntity> foundUser = sut.findById(signedUpUser.getUserId());
+        Optional<UserDto> foundUser = sut.findById(signedUpUser.getUserId());
 
 
         assertTrue(foundUser.isPresent());
@@ -92,7 +91,7 @@ class UserMapperTest {
         String targetUserId = "wrongUserId";
 
 
-        Optional<UserEntity> foundUser = sut.findById(targetUserId);
+        Optional<UserDto> foundUser = sut.findById(targetUserId);
 
 
         assertTrue(foundUser.isEmpty());
@@ -100,7 +99,7 @@ class UserMapperTest {
 
     @Test
     void changePassword_비밀번호가_변경된다() {
-        UserEntity signedUpUser = UserEntity.builder()
+        UserDto signedUpUser = UserDto.builder()
                 .userId("testUserId")
                 .password("testPassword")
                 .nickname("testNickname")
@@ -110,23 +109,23 @@ class UserMapperTest {
         sut.addUser(signedUpUser);
         sut.addAuthority(signedUpUser);
 
-        ChangePasswordDTO changePasswordDTO = ChangePasswordDTO.builder()
+        ChangePasswordRequestDto changePasswordRequestDto = ChangePasswordRequestDto.builder()
                 .userId(signedUpUser.getUserId())
                 .password("changedPassword")
                 .build();
 
 
-        sut.changePassword(changePasswordDTO);
+        sut.changePassword(changePasswordRequestDto);
 
 
-        Optional<UserEntity> updatedUser = sut.findById(signedUpUser.getUserId());
+        Optional<UserDto> updatedUser = sut.findById(signedUpUser.getUserId());
         assertTrue(updatedUser.isPresent());
-        assertEquals(updatedUser.get().getPassword(), changePasswordDTO.getPassword());
+        assertEquals(updatedUser.get().getPassword(), changePasswordRequestDto.getPassword());
     }
 
     @Test
     void updateUser_닉네임이_변경된다() {
-        UserEntity signedUpUser = UserEntity.builder()
+        UserDto signedUpUser = UserDto.builder()
                 .userId("testUserId")
                 .password("testPassword")
                 .nickname("testNickname")
@@ -136,24 +135,24 @@ class UserMapperTest {
         sut.addUser(signedUpUser);
         sut.addAuthority(signedUpUser);
 
-        UpdateUserDTO updateDTO = UpdateUserDTO.builder()
+        UpdateUserRequestDto updateUserRequestDto = UpdateUserRequestDto.builder()
                 .userId(signedUpUser.getUserId())
                 .nickname("updatedNickname")
                 .email(signedUpUser.getEmail())
                 .build();
 
 
-        sut.updateUser(updateDTO);
+        sut.updateUser(updateUserRequestDto);
 
 
-        Optional<UserEntity> updatedUser = sut.findById(signedUpUser.getUserId());
+        Optional<UserDto> updatedUser = sut.findById(signedUpUser.getUserId());
         assertTrue(updatedUser.isPresent());
-        assertEquals(updatedUser.get().getNickname(), updateDTO.getNickname());
+        assertEquals(updatedUser.get().getNickname(), updateUserRequestDto.getNickname());
     }
 
     @Test
     void updateUser_이메일이_변경된다() {
-        UserEntity signedUpUser = UserEntity.builder()
+        UserDto signedUpUser = UserDto.builder()
                 .userId("testUserId")
                 .password("testPassword")
                 .nickname("testNickname")
@@ -163,24 +162,24 @@ class UserMapperTest {
         sut.addUser(signedUpUser);
         sut.addAuthority(signedUpUser);
 
-        UpdateUserDTO updateDTO = UpdateUserDTO.builder()
+        UpdateUserRequestDto updateUserRequestDto = UpdateUserRequestDto.builder()
                 .userId(signedUpUser.getUserId())
                 .nickname(signedUpUser.getNickname())
                 .email("updated@test.com")
                 .build();
 
 
-        sut.updateUser(updateDTO);
+        sut.updateUser(updateUserRequestDto);
 
 
-        Optional<UserEntity> updatedUser = sut.findById(signedUpUser.getUserId());
+        Optional<UserDto> updatedUser = sut.findById(signedUpUser.getUserId());
         assertTrue(updatedUser.isPresent());
-        assertEquals(updatedUser.get().getEmail(), updateDTO.getEmail());
+        assertEquals(updatedUser.get().getEmail(), updateUserRequestDto.getEmail());
     }
 
     @Test
     void deleteUser_사용자_정보가_삭제된다() {
-        UserEntity signedUpUser = UserEntity.builder()
+        UserDto signedUpUser = UserDto.builder()
                 .userId("testUserId")
                 .password("testPassword")
                 .nickname("testNickname")
@@ -194,7 +193,7 @@ class UserMapperTest {
         sut.deleteUser(signedUpUser.getUserId());
 
 
-        Optional<UserEntity> foundUser = sut.findById(signedUpUser.getUserId());
+        Optional<UserDto> foundUser = sut.findById(signedUpUser.getUserId());
         assertTrue(foundUser.isEmpty());
     }
 }

@@ -1,25 +1,25 @@
 package com.atoz.security.token.helper;
 
 import com.atoz.security.token.RefreshTokenMapper;
-import com.atoz.security.token.RefreshTokenEntity;
+import com.atoz.security.token.dto.RefreshTokenDto;
 
 import java.util.*;
 
 public class MockRefreshTokenMapper implements RefreshTokenMapper {
-    private static final Map<String, RefreshTokenEntity> tokens = new HashMap<>();
+    private static final Map<String, RefreshTokenDto> tokens = new HashMap<>();
 
     @Override
-    public void saveToken(RefreshTokenEntity refreshTokenEntity) {
-        tokens.put(refreshTokenEntity.getTokenKey(), refreshTokenEntity);
+    public void saveToken(RefreshTokenDto refreshTokenDto) {
+        tokens.put(refreshTokenDto.getTokenKey(), refreshTokenDto);
     }
 
     @Override
-    public void updateToken(RefreshTokenEntity refreshTokenEntity) {
-        tokens.put(refreshTokenEntity.getTokenKey(), refreshTokenEntity);
+    public void updateToken(RefreshTokenDto refreshTokenDto) {
+        tokens.put(refreshTokenDto.getTokenKey(), refreshTokenDto);
     }
 
     @Override
-    public Optional<RefreshTokenEntity> findTokenByKey(String tokenKey) {
+    public Optional<RefreshTokenDto> findTokenByKey(String tokenKey) {
         return Optional.ofNullable(tokens.get(tokenKey));
     }
 

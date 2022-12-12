@@ -1,12 +1,11 @@
 package com.atoz.user;
 
-import com.atoz.security.token.RefreshTokenEntity;
+import com.atoz.security.token.dto.RefreshTokenDto;
 import com.atoz.security.token.RefreshTokenMapper;
 import com.atoz.security.token.helper.MockRefreshTokenMapper;
-import com.atoz.user.dto.ChangePasswordDTO;
-import com.atoz.user.dto.UserResponseDTO;
-import com.atoz.user.entity.Authority;
-import com.atoz.user.entity.UserEntity;
+import com.atoz.user.dto.request.ChangePasswordRequestDto;
+import com.atoz.user.dto.response.UserResponseDto;
+import com.atoz.user.dto.UserDto;
 import com.atoz.user.helper.SpyUserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,11 +27,11 @@ class UserServiceImplTest {
 
     private final UserServiceImpl sut = new UserServiceImpl(userMapper, refreshTokenMapper);
 
-    private UserEntity signedUpUser;
+    private UserDto signedUpUser;
 
     @BeforeEach
     void setUp() {
-        signedUpUser = UserEntity.builder()
+        signedUpUser = UserDto.builder()
                 .userId("testUserId")
                 .password("testPassword")
                 .email("test@test.com")
@@ -44,7 +43,7 @@ class UserServiceImplTest {
 
     @Test
     void signup_회원가입하면_가입된_회원_정보가_반환된다() {
-        UserEntity userEntity = UserEntity.builder()
+        UserDto userDto = UserDto.builder()
                 .userId("testUserId")
                 .password("testPassword")
                 .email("test@test.com")
@@ -53,36 +52,36 @@ class UserServiceImplTest {
                 .build();
 
 
-        UserResponseDTO response = sut.signup(userEntity);
+        UserResponseDto response = sut.signup(userDto);
 
 
         assertNotNull(response);
-        assertEquals(response.getUserId(), userEntity.getUserId());
+        assertEquals(response.getUserId(), userDto.getUserId());
     }
 
     @Test
     void changePassword_비밀번호를_변경하면_리프레시_토큰이_만료된다() {
-        ChangePasswordDTO changePasswordDTO = ChangePasswordDTO.builder()
+        ChangePasswordRequestDto changePasswordRequestDto = ChangePasswordRequestDto.builder()
                 .userId(signedUpUser.getUserId())
                 .password("newPassword")
                 .build();
-        RefreshTokenEntity refreshToken = RefreshTokenEntity.builder()
+        RefreshTokenDto refreshToken = RefreshTokenDto.builder()
                 .tokenKey(signedUpUser.getUserId())
                 .tokenValue("refreshToken")
                 .build();
         refreshTokenMapper.saveToken(refreshToken);
 
 
-        sut.changePassword(changePasswordDTO);
+        sut.changePassword(changePasswordRequestDto);
 
 
-        Optional<RefreshTokenEntity> foundToken = refreshTokenMapper.findTokenByKey(signedUpUser.getUserId());
+        Optional<RefreshTokenDto> foundToken = refreshTokenMapper.findTokenByKey(signedUpUser.getUserId());
         assertTrue(foundToken.isEmpty());
     }
 
     @Test
     void delete_회원탈퇴하면_리프레시_토큰이_만료된다() {
-        RefreshTokenEntity refreshToken = RefreshTokenEntity.builder()
+        RefreshTokenDto refreshToken = RefreshTokenDto.builder()
                 .tokenKey(signedUpUser.getUserId())
                 .tokenValue("refreshToken")
                 .build();
@@ -92,7 +91,7 @@ class UserServiceImplTest {
         sut.delete(signedUpUser.getUserId());
 
 
-        Optional<RefreshTokenEntity> foundToken = refreshTokenMapper.findTokenByKey(signedUpUser.getUserId());
+        Optional<RefreshTokenDto> foundToken = refreshTokenMapper.findTokenByKey(signedUpUser.getUserId());
         assertTrue(foundToken.isEmpty());
     }
 

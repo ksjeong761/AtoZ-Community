@@ -1,9 +1,9 @@
 package com.atoz.user.helper;
 
-import com.atoz.user.dto.ChangePasswordDTO;
-import com.atoz.user.dto.UpdateUserDTO;
-import com.atoz.user.entity.Authority;
-import com.atoz.user.entity.UserEntity;
+import com.atoz.user.dto.request.ChangePasswordRequestDto;
+import com.atoz.user.dto.request.UpdateUserRequestDto;
+import com.atoz.user.Authority;
+import com.atoz.user.dto.UserDto;
 import com.atoz.user.UserMapper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -12,25 +12,25 @@ import java.util.*;
 public class SpyUserMapper implements UserMapper {
     public int callCount_findById = 0;
 
-    private final Map<String, UserEntity> users = new HashMap<>();
+    private final Map<String, UserDto> users = new HashMap<>();
     private final Map<String, Set<Authority>> authorities = new HashMap<>();
 
     @Override
-    public void addUser(UserEntity userEntity) {
-        users.put(userEntity.getUserId(), userEntity);
+    public void addUser(UserDto userDto) {
+        users.put(userDto.getUserId(), userDto);
     }
 
     @Override
-    public void addAuthority(UserEntity userEntity) {
-        authorities.put(userEntity.getUserId(), userEntity.getAuthorities());
+    public void addAuthority(UserDto userDto) {
+        authorities.put(userDto.getUserId(), userDto.getAuthorities());
     }
 
     @Override
-    public Optional<UserEntity> findById(String targetUserId) {
+    public Optional<UserDto> findById(String targetUserId) {
         callCount_findById++;
 
         var user = users.getOrDefault(targetUserId, null);
-        Optional<UserEntity> foundUser = Optional.ofNullable(user);
+        Optional<UserDto> foundUser = Optional.ofNullable(user);
         if (foundUser.isEmpty()) {
             throw new UsernameNotFoundException("해당 유저가 존재하지 않습니다.");
         }
@@ -39,29 +39,29 @@ public class SpyUserMapper implements UserMapper {
     }
 
     @Override
-    public void updateUser(UpdateUserDTO updateUserDTO) {
-        UserEntity before = findById(updateUserDTO.getUserId()).get();
-        UserEntity after = UserEntity.builder()
-                .userId(updateUserDTO.getUserId())
+    public void updateUser(UpdateUserRequestDto updateUserRequestDto) {
+        UserDto before = findById(updateUserRequestDto.getUserId()).get();
+        UserDto after = UserDto.builder()
+                .userId(updateUserRequestDto.getUserId())
                 .password(before.getPassword())
-                .nickname(updateUserDTO.getNickname())
+                .nickname(updateUserRequestDto.getNickname())
                 .authorities(before.getAuthorities())
                 .build();
 
-        users.put(updateUserDTO.getUserId(), after);
+        users.put(updateUserRequestDto.getUserId(), after);
     }
 
     @Override
-    public void changePassword(ChangePasswordDTO changePasswordDTO) {
-        UserEntity before = findById(changePasswordDTO.getUserId()).get();
-        UserEntity after = UserEntity.builder()
-                .userId(changePasswordDTO.getUserId())
+    public void changePassword(ChangePasswordRequestDto changePasswordRequestDto) {
+        UserDto before = findById(changePasswordRequestDto.getUserId()).get();
+        UserDto after = UserDto.builder()
+                .userId(changePasswordRequestDto.getUserId())
                 .password(before.getPassword())
                 .nickname(before.getNickname())
                 .authorities(before.getAuthorities())
                 .build();
 
-        users.put(changePasswordDTO.getUserId(), after);
+        users.put(changePasswordRequestDto.getUserId(), after);
     }
 
     @Override

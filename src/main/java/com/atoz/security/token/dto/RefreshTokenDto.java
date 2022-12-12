@@ -1,4 +1,4 @@
-package com.atoz.security.token;
+package com.atoz.security.token.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RefreshTokenEntity {
+public class RefreshTokenDto {
     private String tokenKey;
     private String tokenValue;
 }

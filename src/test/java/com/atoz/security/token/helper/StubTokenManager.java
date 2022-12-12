@@ -1,7 +1,7 @@
 package com.atoz.security.token.helper;
 
 import com.atoz.security.token.TokenManager;
-import com.atoz.user.entity.Authority;
+import com.atoz.user.Authority;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;

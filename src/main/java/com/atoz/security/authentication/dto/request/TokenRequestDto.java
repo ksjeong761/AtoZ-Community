@@ -1,11 +1,11 @@
-package com.atoz.security.authentication.dto;
+package com.atoz.security.authentication.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class TokenRequestDTO {
+public class TokenRequestDto {
     private String accessToken;
     private String refreshToken;
 }
