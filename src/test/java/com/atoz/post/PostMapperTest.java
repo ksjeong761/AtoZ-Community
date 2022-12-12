@@ -1,9 +1,9 @@
 package com.atoz.post;
 
 import com.atoz.post.dto.PostDto;
+import com.atoz.user.Authority;
 import com.atoz.user.UserMapper;
-import com.atoz.user.entity.Authority;
-import com.atoz.user.entity.UserEntity;
+import com.atoz.user.dto.UserDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
@@ -26,12 +26,12 @@ public class PostMapperTest {
 
     @Autowired
     private UserMapper userMapper;
-    private UserEntity signedUpUser;
+    private UserDto signedUpUser;
 
     @BeforeEach
     void setUp() {
         // 외래키 제약조건 때문에 회원가입이 되어 있어야 게시글을 조작할 수 있습니다.
-        signedUpUser = UserEntity.builder()
+        signedUpUser = UserDto.builder()
                 .userId("testUserId")
                 .password("testPassword")
                 .nickname("testNickname")
@@ -84,6 +84,7 @@ public class PostMapperTest {
     @Test
     void updatePost_게시글이_수정된다() {
         addPost();
+
         PostDto updatePostDto = PostDto.builder()
                 .postId(1)
                 .userId(signedUpUser.getUserId())
@@ -104,6 +105,7 @@ public class PostMapperTest {
     @Test
     void updatePost_게시글을_수정한_시각이_저장된다() {
         addPost();
+
         PostDto updatePostDto = PostDto.builder()
                 .postId(1)
                 .userId(signedUpUser.getUserId())
@@ -125,6 +127,7 @@ public class PostMapperTest {
     @Test
     void deletePost_게시글이_삭제된다() {
         addPost();
+
         PostDto deletePostDto = PostDto.builder()
                 .postId(1)
                 .userId(signedUpUser.getUserId())
@@ -141,6 +144,7 @@ public class PostMapperTest {
     @Test
     void findById_게시글이_조회된다() {
         addPost();
+
         PostDto findPostDto = PostDto.builder()
                 .postId(1)
                 .userId(signedUpUser.getUserId())
