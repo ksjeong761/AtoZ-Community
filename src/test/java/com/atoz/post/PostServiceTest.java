@@ -4,41 +4,25 @@ import com.atoz.post.dto.request.AddPostRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
 import com.atoz.post.dto.PostDto;
 import com.atoz.post.helper.SpyPostMapper;
-import org.junit.jupiter.api.BeforeEach;
+import com.atoz.security.authentication.helper.CustomWithMockUser;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
-import java.util.List;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration
 public class PostServiceTest {
 
     private SpyPostMapper postMapper = new SpyPostMapper();
 
     private PostService sut = new PostServiceImpl(postMapper);
-    private String userId = "testUserId";
-
-    @BeforeEach
-    void setUp() {
-        Collection<? extends GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_FAKE"));
-        UserDetails principal = User.builder()
-                .username(userId)
-                .password("")
-                .authorities(authorities)
-                .build();
-        Authentication authentication = new UsernamePasswordAuthenticationToken(principal, "", authorities);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
+    private static final String USER_ID = "testUserId";
 
     @Test
+    @CustomWithMockUser
     void addPost_게시글을_추가한_사용자_아이디가_저장된다() {
         AddPostRequestDto addPostRequestDto = AddPostRequestDto.builder()
                 .title("testTitle")
@@ -51,10 +35,11 @@ public class PostServiceTest {
 
         PostDto receivedPostDto = postMapper.receivedPostDto;
         assertNotNull(receivedPostDto);
-        assertEquals(userId, receivedPostDto.getUserId());
+        assertEquals(USER_ID, receivedPostDto.getUserId());
     }
 
     @Test
+    @CustomWithMockUser
     void updatePost_게시글을_수정한_사용자_아이디가_저장된다() {
         UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
                 .postId(1)
@@ -68,6 +53,6 @@ public class PostServiceTest {
 
         PostDto receivedPostDto = postMapper.receivedPostDto;
         assertNotNull(receivedPostDto);
-        assertEquals(userId, receivedPostDto.getUserId());
+        assertEquals(USER_ID, receivedPostDto.getUserId());
     }
 }

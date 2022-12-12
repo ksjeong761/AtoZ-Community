@@ -111,6 +111,7 @@ public class PostMapperTest {
                 .content("newContent")
                 .build();
 
+
         sut.updatePost(updatePostDto);
 
 
