@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UpdatePostRequestDto {
     private int postId;
+    private String userId;
+
     private String title;
     private String content;
 }

@@ -35,13 +35,13 @@ public class UserController {
         return userService.signup(userDto);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') && @ownerAuthorizationProvider.isOwnResource(#updateUserRequestDto.getUserId())")
     @PatchMapping
     public void update(@Validated @RequestBody UpdateUserRequestDto updateUserRequestDto) {
         userService.update(updateUserRequestDto);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') && @ownerAuthorizationProvider.isOwnResource(#changePasswordRequestDto.getUserId())")
     @PatchMapping("/password")
     public void changePassword(@Validated @RequestBody ChangePasswordRequestDto changePasswordRequestDto) {
         ChangePasswordRequestDto encodedPassword = changePasswordRequestDto.builder()
@@ -52,7 +52,7 @@ public class UserController {
         userService.changePassword(encodedPassword);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') && @ownerAuthorizationProvider.isOwnResource(#deleteUserRequestDto.getUserId())")
     @DeleteMapping
     public void delete(@Validated @RequestBody DeleteUserRequestDto deleteUserRequestDto) {
         userService.delete(deleteUserRequestDto.getUserId());

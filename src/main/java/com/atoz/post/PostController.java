@@ -23,13 +23,13 @@ public class PostController {
         postService.addPost(addPostRequestDto);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') && @ownerAuthorizationProvider.isOwnResource(#updatePostRequestDto.getUserId())")
     @PatchMapping
     public void updatePost(@Validated @RequestBody UpdatePostRequestDto updatePostRequestDto) {
         postService.updatePost(updatePostRequestDto);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') && @ownerAuthorizationProvider.isOwnResource(#deletePostRequestDto.getUserId())")
     @DeleteMapping
     public void deletePost(@Validated @RequestBody DeletePostRequestDto deletePostRequestDto) {
         postService.deletePost(deletePostRequestDto);

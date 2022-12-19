@@ -34,7 +34,7 @@ public class PostServiceImpl implements PostService {
     public void updatePost(UpdatePostRequestDto updatePostRequestDto) {
         PostDto post = PostDto.builder()
                 .postId(updatePostRequestDto.getPostId())
-                .userId(loadUserIdFromContext())
+                .userId(updatePostRequestDto.getUserId())
                 .title(updatePostRequestDto.getTitle())
                 .content(updatePostRequestDto.getContent())
                 .build();
@@ -46,7 +46,7 @@ public class PostServiceImpl implements PostService {
     public void deletePost(DeletePostRequestDto deletePostRequestDto) {
         PostDto post = PostDto.builder()
                 .postId(deletePostRequestDto.getPostId())
-                .userId(loadUserIdFromContext())
+                .userId(deletePostRequestDto.getUserId())
                 .build();
 
         postMapper.deletePost(post);
@@ -56,7 +56,6 @@ public class PostServiceImpl implements PostService {
     public PostResponseDto findById(OpenPostRequestDto openPostRequestDto) {
         PostDto post = PostDto.builder()
                 .postId(openPostRequestDto.getPostId())
-                .userId(loadUserIdFromContext())
                 .build();
 
         return postMapper.findById(post).toPostResponseDto();

@@ -22,7 +22,7 @@
             created_at AS createdAt,
             updated_at AS updatedAt
         FROM posts
-        WHERE post_id = #{postId} AND user_id = #{userId}
+        WHERE post_id = #{postId}
     </select>
 
     <update id="updatePost" parameterType="com.atoz.post.dto.PostDto">
