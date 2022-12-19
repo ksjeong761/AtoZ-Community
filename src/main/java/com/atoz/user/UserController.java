@@ -7,6 +7,7 @@ import com.atoz.user.dto.request.UpdateUserRequestDto;
 import com.atoz.user.dto.response.UserResponseDto;
 import com.atoz.user.dto.UserDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -34,11 +35,13 @@ public class UserController {
         return userService.signup(userDto);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PatchMapping
     public void update(@Validated @RequestBody UpdateUserRequestDto updateUserRequestDto) {
         userService.update(updateUserRequestDto);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PatchMapping("/password")
     public void changePassword(@Validated @RequestBody ChangePasswordRequestDto changePasswordRequestDto) {
         ChangePasswordRequestDto encodedPassword = changePasswordRequestDto.builder()
@@ -49,6 +52,7 @@ public class UserController {
         userService.changePassword(encodedPassword);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @DeleteMapping
     public void delete(@Validated @RequestBody DeleteUserRequestDto deleteUserRequestDto) {
         userService.delete(deleteUserRequestDto.getUserId());

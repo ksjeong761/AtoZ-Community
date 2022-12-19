@@ -7,6 +7,7 @@ import com.atoz.security.authentication.dto.response.AuthResponseDto;
 import com.atoz.security.authentication.dto.response.TokenResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,7 @@ public class AuthenticationController {
         return authenticationService.signin(signinRequestDto);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/signout")
     public AuthResponseDto logout(@Validated @RequestBody SignoutRequestDto signoutRequestDto) {
         authenticationService.signout(signoutRequestDto);
@@ -30,6 +32,7 @@ public class AuthenticationController {
         return new AuthResponseDto("로그아웃 되었습니다.");
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/refresh")
     public TokenResponseDto refresh(@RequestBody TokenRequestDto tokenRequestDto) {
         return authenticationService.refresh(tokenRequestDto);

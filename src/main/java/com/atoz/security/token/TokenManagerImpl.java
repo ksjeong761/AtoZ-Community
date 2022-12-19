@@ -17,6 +17,7 @@ import org.springframework.util.StringUtils;
 import java.security.Key;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -91,17 +92,16 @@ public class TokenManagerImpl implements TokenManager {
     @Override
     public Collection<? extends GrantedAuthority> parseGrantedAuthorities(String jwt) {
         Claims claims = parseClaims(jwt);
-        Object authorities = claims.get(AUTHORITIES_KEY);
+        List<String> authorities = (List<String>)claims.get(AUTHORITIES_KEY);
 
         if (authorities == null) {
             throw new RuntimeException("토큰에 권한 정보가 존재하지 않습니다.");
         }
-        if (!StringUtils.hasText(authorities.toString())) {
+        if (authorities.isEmpty()) {
             throw new RuntimeException("사용자가 가진 권한이 없습니다.");
         }
 
-        return Stream.of(authorities)
-                .map(String::valueOf)
+        return authorities.stream()
                 .map(SimpleGrantedAuthority::new)
                 .toList();
     }
