@@ -1,6 +1,6 @@
 package com.atoz.security.token;
 
-import com.atoz.error.exception.InvalidTokenException;
+import com.atoz.error.exception.JwtAuthenticationException;
 import com.atoz.user.Authority;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -211,7 +211,7 @@ public class TokenManagerTest {
         });
 
 
-        assertInstanceOf(InvalidTokenException.class, thrown);
+        assertInstanceOf(JwtAuthenticationException.class, thrown);
         assertEquals("만료된 토큰입니다.", thrown.getMessage());
     }
 
@@ -225,7 +225,7 @@ public class TokenManagerTest {
         });
 
 
-        assertInstanceOf(InvalidTokenException.class, thrown);
+        assertInstanceOf(JwtAuthenticationException.class, thrown);
         assertEquals("잘못된 토큰입니다.", thrown.getMessage());
     }
 

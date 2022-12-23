@@ -1,4 +1,4 @@
-package com.atoz.security.authorization;
+package com.atoz.security.handler;
 
 import com.atoz.error.exception.UnauthorizedException;
 import org.springframework.security.access.AccessDeniedException;
@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Component
-public class JwtAccessDeniedHandler implements AccessDeniedHandler {
+public class DefaultAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) {

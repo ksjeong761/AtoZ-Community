@@ -24,9 +24,9 @@ public class AuthenticationController {
         return authenticationService.signin(signinRequestDto);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') && @ownerAuthorizationProvider.isOwner(#signoutRequestDto.getUserId())")
     @DeleteMapping("/signout")
-    public AuthResponseDto logout(@Validated @RequestBody SignoutRequestDto signoutRequestDto) {
+    public AuthResponseDto signout(@Validated @RequestBody SignoutRequestDto signoutRequestDto) {
         authenticationService.signout(signoutRequestDto);
 
         return new AuthResponseDto("로그아웃 되었습니다.");

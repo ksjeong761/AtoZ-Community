@@ -2,7 +2,7 @@ package com.atoz.error;
 
 import com.atoz.error.dto.ErrorResponseDto;
 import com.atoz.error.dto.MultipleErrorResponseDto;
-import com.atoz.error.exception.InvalidTokenException;
+import com.atoz.error.exception.JwtAuthenticationException;
 import com.atoz.error.exception.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -48,7 +48,7 @@ public class GlobalExceptionAdvice {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponseDto> handleInvalidToken(InvalidTokenException ex) {
+    public ResponseEntity<ErrorResponseDto> handleInvalidToken(JwtAuthenticationException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorResponseDto(ex.getMessage()));
     }

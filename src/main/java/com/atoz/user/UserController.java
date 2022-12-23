@@ -35,13 +35,13 @@ public class UserController {
         return userService.signup(userDto);
     }
 
-    @PreAuthorize("hasRole('USER') && @ownerAuthorizationProvider.isOwnResource(#updateUserRequestDto.getUserId())")
+    @PreAuthorize("hasRole('USER') && @ownerAuthorizationProvider.isOwner(#updateUserRequestDto.getUserId())")
     @PatchMapping
     public void update(@Validated @RequestBody UpdateUserRequestDto updateUserRequestDto) {
         userService.update(updateUserRequestDto);
     }
 
-    @PreAuthorize("hasRole('USER') && @ownerAuthorizationProvider.isOwnResource(#changePasswordRequestDto.getUserId())")
+    @PreAuthorize("hasRole('USER') && @ownerAuthorizationProvider.isOwner(#changePasswordRequestDto.getUserId())")
     @PatchMapping("/password")
     public void changePassword(@Validated @RequestBody ChangePasswordRequestDto changePasswordRequestDto) {
         ChangePasswordRequestDto encodedPassword = changePasswordRequestDto.builder()
@@ -52,7 +52,7 @@ public class UserController {
         userService.changePassword(encodedPassword);
     }
 
-    @PreAuthorize("hasRole('USER') && @ownerAuthorizationProvider.isOwnResource(#deleteUserRequestDto.getUserId())")
+    @PreAuthorize("hasRole('USER') && @ownerAuthorizationProvider.isOwner(#deleteUserRequestDto.getUserId())")
     @DeleteMapping
     public void delete(@Validated @RequestBody DeleteUserRequestDto deleteUserRequestDto) {
         userService.delete(deleteUserRequestDto.getUserId());

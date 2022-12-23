@@ -26,11 +26,7 @@ class AuthenticationServiceTest {
 
     private final UserMapper userMapper = new SpyUserMapper();
     private final RefreshTokenMapper refreshTokenMapper = new MockRefreshTokenMapper();
-    private final AuthenticationService sut = new AuthenticationServiceImpl(
-            new StubAuthenticationManager(),
-            userMapper,
-            refreshTokenMapper,
-            new StubTokenManager());
+    private AuthenticationService sut;
 
     private UserDto signedUpUser;
 
@@ -44,6 +40,12 @@ class AuthenticationServiceTest {
                 .authorities(Set.of(Authority.ROLE_USER))
                 .build();
         userMapper.addUser(signedUpUser);
+
+        sut = new AuthenticationServiceImpl(
+                new StubAuthenticationManager(),
+                userMapper,
+                refreshTokenMapper,
+                new StubTokenManager(signedUpUser.getUserId()));
     }
 
     @Test

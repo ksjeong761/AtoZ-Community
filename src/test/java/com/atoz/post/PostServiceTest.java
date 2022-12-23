@@ -1,7 +1,6 @@
 package com.atoz.post;
 
 import com.atoz.post.dto.request.AddPostRequestDto;
-import com.atoz.post.dto.request.UpdatePostRequestDto;
 import com.atoz.post.dto.PostDto;
 import com.atoz.post.helper.SpyPostMapper;
 import com.atoz.security.authentication.helper.CustomWithMockUser;

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class OwnerAuthorizationProvider {
 
-    public boolean isOwnResource(String resourceOwner) {
+    public boolean isOwner(String resourceOwner) {
         return resourceOwner.equals(loadUserIdFromContext());
     }
 
