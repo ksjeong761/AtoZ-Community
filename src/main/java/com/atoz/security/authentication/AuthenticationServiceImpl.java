@@ -1,6 +1,5 @@
 package com.atoz.security.authentication;
 
-import com.atoz.security.authentication.dto.request.SignoutRequestDto;
 import com.atoz.user.Authority;
 import com.atoz.security.token.TokenManager;
 import com.atoz.security.authentication.dto.request.TokenRequestDto;
@@ -15,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,8 +43,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     @Transactional
-    public void signout(SignoutRequestDto signoutRequestDto) {
-        refreshTokenMapper.deleteToken(signoutRequestDto.getUserId());
+    public void signout() {
+        refreshTokenMapper.deleteToken(loadUserIdFromContext());
     }
 
     @Override
@@ -87,5 +88,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         } else {
             refreshTokenMapper.updateToken(newRefreshTokenDto);
         }
+    }
+
+    private String loadUserIdFromContext() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userDetails.getUsername();
     }
 }

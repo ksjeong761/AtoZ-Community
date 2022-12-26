@@ -1,7 +1,6 @@
 package com.atoz.post;
 
 import com.atoz.post.dto.request.AddPostRequestDto;
-import com.atoz.post.dto.PostDto;
 import com.atoz.post.helper.SpyPostMapper;
 import com.atoz.security.authentication.helper.CustomWithMockUser;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,7 @@ public class PostServiceTest {
     private static final String USER_ID = "testUserId";
 
     @Test
-    @CustomWithMockUser
+    @CustomWithMockUser(username = USER_ID)
     void addPost_게시글을_추가한_사용자_아이디가_저장된다() {
         AddPostRequestDto addPostRequestDto = AddPostRequestDto.builder()
                 .title("testTitle")
@@ -32,8 +31,6 @@ public class PostServiceTest {
         sut.addPost(addPostRequestDto);
 
 
-        PostDto receivedPostDto = postMapper.receivedPostDto;
-        assertNotNull(receivedPostDto);
-        assertEquals(USER_ID, receivedPostDto.getUserId());
+        assertEquals(USER_ID, postMapper.receivedUserId);
     }
 }

@@ -13,5 +13,5 @@ public interface UserService {
 
     void changePassword(ChangePasswordRequestDto changePasswordRequestDto);
 
-    void delete(String userId);
+    void delete();
 }

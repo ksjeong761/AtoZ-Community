@@ -4,7 +4,7 @@ import com.atoz.post.dto.request.AddPostRequestDto;
 import com.atoz.post.dto.request.DeletePostRequestDto;
 import com.atoz.post.dto.request.OpenPostRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
-import com.atoz.post.dto.response.PostResponseDto;
+import com.atoz.post.dto.response.OpenPostResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -23,13 +23,13 @@ public class PostController {
         postService.addPost(addPostRequestDto);
     }
 
-    @PreAuthorize("hasRole('USER') && @ownerAuthorizationProvider.isOwner(#updatePostRequestDto.getUserId())")
+    @PreAuthorize("hasRole('USER')")
     @PatchMapping
     public void updatePost(@Validated @RequestBody UpdatePostRequestDto updatePostRequestDto) {
         postService.updatePost(updatePostRequestDto);
     }
 
-    @PreAuthorize("hasRole('USER') && @ownerAuthorizationProvider.isOwner(#deletePostRequestDto.getUserId())")
+    @PreAuthorize("hasRole('USER')")
     @DeleteMapping
     public void deletePost(@Validated @RequestBody DeletePostRequestDto deletePostRequestDto) {
         postService.deletePost(deletePostRequestDto);
@@ -37,7 +37,7 @@ public class PostController {
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping
-    public PostResponseDto openPost(@Validated @RequestBody OpenPostRequestDto openPostRequestDto) {
+    public OpenPostResponseDto openPost(@Validated @RequestBody OpenPostRequestDto openPostRequestDto) {
         return postService.findById(openPostRequestDto);
     }
 }

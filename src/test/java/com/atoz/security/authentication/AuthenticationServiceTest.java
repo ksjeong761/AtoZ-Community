@@ -1,6 +1,5 @@
 package com.atoz.security.authentication;
 
-import com.atoz.security.authentication.dto.request.SignoutRequestDto;
 import com.atoz.security.authentication.helper.StubAuthenticationManager;
 import com.atoz.security.token.helper.MockRefreshTokenMapper;
 import com.atoz.security.token.helper.StubTokenManager;
@@ -81,18 +80,10 @@ class AuthenticationServiceTest {
 
     @Test
     void signout_로그아웃하면_리프레시토큰이_삭제되어야한다() {
-        SigninRequestDto signinRequestDto = SigninRequestDto.builder()
-                .userId(signedUpUser.getUserId())
-                .password(signedUpUser.getPassword())
-                .build();
-        sut.signin(signinRequestDto);
-
-        SignoutRequestDto signoutRequestDto = SignoutRequestDto.builder()
-                .userId(signedUpUser.getUserId())
-                .build();
+        signin();
 
 
-        sut.signout(signoutRequestDto);
+        sut.signout();
 
 
         Optional<RefreshTokenDto> foundToken = refreshTokenMapper.findTokenByKey(signedUpUser.getUserId());
@@ -101,11 +92,7 @@ class AuthenticationServiceTest {
 
     @Test
     void refresh_토큰을_재발급_받을수있다() {
-        SigninRequestDto signinRequestDto = SigninRequestDto.builder()
-                .userId(signedUpUser.getUserId())
-                .password(signedUpUser.getPassword())
-                .build();
-        TokenResponseDto tokens = sut.signin(signinRequestDto);
+        TokenResponseDto tokens = signin();
         TokenRequestDto refreshRequest = new TokenRequestDto(tokens.getAccessToken(), tokens.getRefreshToken());
 
 
@@ -115,5 +102,13 @@ class AuthenticationServiceTest {
         assertNotNull(reissuedToken);
         assertThat(reissuedToken.getAccessToken()).isNotBlank();
         assertThat(reissuedToken.getRefreshToken()).isNotBlank();
+    }
+
+    private TokenResponseDto signin() {
+        SigninRequestDto signinRequestDto = SigninRequestDto.builder()
+                .userId(signedUpUser.getUserId())
+                .password(signedUpUser.getPassword())
+                .build();
+        return sut.signin(signinRequestDto);
     }
 }

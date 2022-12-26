@@ -1,7 +1,6 @@
 package com.atoz.user;
 
 import com.atoz.user.dto.request.ChangePasswordRequestDto;
-import com.atoz.user.dto.request.DeleteUserRequestDto;
 import com.atoz.user.dto.request.SignupRequestDto;
 import com.atoz.user.dto.request.UpdateUserRequestDto;
 import com.atoz.user.dto.response.UserResponseDto;
@@ -35,26 +34,25 @@ public class UserController {
         return userService.signup(userDto);
     }
 
-    @PreAuthorize("hasRole('USER') && @ownerAuthorizationProvider.isOwner(#updateUserRequestDto.getUserId())")
+    @PreAuthorize("hasRole('USER')")
     @PatchMapping
     public void update(@Validated @RequestBody UpdateUserRequestDto updateUserRequestDto) {
         userService.update(updateUserRequestDto);
     }
 
-    @PreAuthorize("hasRole('USER') && @ownerAuthorizationProvider.isOwner(#changePasswordRequestDto.getUserId())")
+    @PreAuthorize("hasRole('USER')")
     @PatchMapping("/password")
     public void changePassword(@Validated @RequestBody ChangePasswordRequestDto changePasswordRequestDto) {
-        ChangePasswordRequestDto encodedPassword = changePasswordRequestDto.builder()
-                .userId(changePasswordRequestDto.getUserId())
+        ChangePasswordRequestDto encodedPasswordDto = changePasswordRequestDto.builder()
                 .password(passwordEncoder.encode(changePasswordRequestDto.getPassword()))
                 .build();
 
-        userService.changePassword(encodedPassword);
+        userService.changePassword(encodedPasswordDto);
     }
 
-    @PreAuthorize("hasRole('USER') && @ownerAuthorizationProvider.isOwner(#deleteUserRequestDto.getUserId())")
+    @PreAuthorize("hasRole('USER')")
     @DeleteMapping
-    public void delete(@Validated @RequestBody DeleteUserRequestDto deleteUserRequestDto) {
-        userService.delete(deleteUserRequestDto.getUserId());
+    public void delete() {
+        userService.delete();
     }
 }

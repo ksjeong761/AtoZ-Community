@@ -6,6 +6,7 @@ import com.atoz.user.dto.response.UserResponseDto;
 import com.atoz.user.dto.request.UpdateUserRequestDto;
 import com.atoz.user.dto.UserDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -33,23 +34,23 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void update(UpdateUserRequestDto updateUserRequestDto) {
-        userMapper.updateUser(updateUserRequestDto);
+        userMapper.updateUser(updateUserRequestDto, loadUserIdFromContext());
     }
 
     @Override
     @Transactional
     public void changePassword(ChangePasswordRequestDto changePasswordRequestDto) {
-        userMapper.changePassword(changePasswordRequestDto);
+        userMapper.changePassword(changePasswordRequestDto, loadUserIdFromContext());
 
-        refreshTokenMapper.deleteToken(changePasswordRequestDto.getUserId());
+        refreshTokenMapper.deleteToken(loadUserIdFromContext());
     }
 
     @Override
     @Transactional
-    public void delete(String userId) {
-        userMapper.deleteUser(userId);
+    public void delete() {
+        userMapper.deleteUser(loadUserIdFromContext());
 
-        refreshTokenMapper.deleteToken(userId);
+        refreshTokenMapper.deleteToken(loadUserIdFromContext());
     }
 
     @Override
@@ -61,5 +62,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 
         return userDto.get().toUserDetails();
+    }
+
+    private String loadUserIdFromContext() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userDetails.getUsername();
     }
 }

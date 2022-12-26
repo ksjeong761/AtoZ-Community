@@ -28,7 +28,7 @@ public class SpyUserService implements UserService {
     }
 
     @Override
-    public void delete(String userId) {
+    public void delete() {
 
     }
 }

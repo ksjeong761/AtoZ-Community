@@ -2,7 +2,6 @@ package com.atoz.user;
 
 import com.atoz.error.GlobalExceptionAdvice;
 import com.atoz.user.dto.request.ChangePasswordRequestDto;
-import com.atoz.user.dto.request.DeleteUserRequestDto;
 import com.atoz.user.dto.request.SignupRequestDto;
 import com.atoz.user.dto.request.UpdateUserRequestDto;
 import com.atoz.user.helper.SpyUserService;
@@ -17,8 +16,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -223,7 +220,6 @@ class UserControllerTest {
     @Test
     void update_사용자_정보_변경_요청에_성공한다() throws Exception {
         UpdateUserRequestDto updateUserRequestDto = UpdateUserRequestDto.builder()
-                .userId("testUserId")
                 .nickname("testNickname")
                 .email("test@test.com")
                 .build();
@@ -240,7 +236,6 @@ class UserControllerTest {
     @Test
     void changePassword_비밀번호_변경_요청시_비밀번호가_인코딩된다() throws Exception {
         ChangePasswordRequestDto changePasswordRequestDto = ChangePasswordRequestDto.builder()
-                .userId("testUserId")
                 .password("testPassword")
                 .build();
 
@@ -257,14 +252,12 @@ class UserControllerTest {
 
     @Test
     void delete_회원탈퇴_요청에_성공한다() throws Exception {
-        DeleteUserRequestDto deleteUserRequestDto = DeleteUserRequestDto.builder()
-                .userId("testUserId")
-                .build();
+        String userId = "testUserId";
 
 
         ResultActions resultActions = sut.perform(delete("/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(deleteUserRequestDto)));
+                .content(objectMapper.writeValueAsString(userId)));
 
 
         resultActions.andExpect(status().isOk());

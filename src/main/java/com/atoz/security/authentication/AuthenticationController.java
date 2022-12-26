@@ -1,7 +1,6 @@
 package com.atoz.security.authentication;
 
 import com.atoz.security.authentication.dto.request.SigninRequestDto;
-import com.atoz.security.authentication.dto.request.SignoutRequestDto;
 import com.atoz.security.authentication.dto.request.TokenRequestDto;
 import com.atoz.security.authentication.dto.response.AuthResponseDto;
 import com.atoz.security.authentication.dto.response.TokenResponseDto;
@@ -24,10 +23,10 @@ public class AuthenticationController {
         return authenticationService.signin(signinRequestDto);
     }
 
-    @PreAuthorize("hasRole('USER') && @ownerAuthorizationProvider.isOwner(#signoutRequestDto.getUserId())")
+    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/signout")
-    public AuthResponseDto signout(@Validated @RequestBody SignoutRequestDto signoutRequestDto) {
-        authenticationService.signout(signoutRequestDto);
+    public AuthResponseDto signout() {
+        authenticationService.signout();
 
         return new AuthResponseDto("로그아웃 되었습니다.");
     }
