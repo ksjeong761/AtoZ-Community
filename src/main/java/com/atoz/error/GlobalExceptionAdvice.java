@@ -40,7 +40,6 @@ public class GlobalExceptionAdvice {
                 .body(new ErrorResponseDto(ex.getMessage()));
     }
 
-    // 패스워드가 불일치할 때 401 응답
     @ExceptionHandler
     public ResponseEntity<ErrorResponseDto> handleIncorrectPassword(BadCredentialsException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -55,7 +54,7 @@ public class GlobalExceptionAdvice {
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponseDto> handleUnauthorized(UnauthorizedException ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorResponseDto(ex.getMessage()));
     }
 

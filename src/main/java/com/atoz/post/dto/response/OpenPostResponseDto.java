@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostResponseDto {
+public class OpenPostResponseDto {
     private int postId;
     private String userId;
 

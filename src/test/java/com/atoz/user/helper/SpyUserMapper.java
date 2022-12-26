@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.util.*;
 
 public class SpyUserMapper implements UserMapper {
-    public int callCount_findById = 0;
+    public int callCountFindById = 0;
 
     private final Map<String, UserDto> users = new HashMap<>();
     private final Map<String, Set<Authority>> authorities = new HashMap<>();
@@ -27,7 +27,7 @@ public class SpyUserMapper implements UserMapper {
 
     @Override
     public Optional<UserDto> findById(String targetUserId) {
-        callCount_findById++;
+        callCountFindById++;
 
         var user = users.getOrDefault(targetUserId, null);
         Optional<UserDto> foundUser = Optional.ofNullable(user);
@@ -39,29 +39,27 @@ public class SpyUserMapper implements UserMapper {
     }
 
     @Override
-    public void updateUser(UpdateUserRequestDto updateUserRequestDto) {
-        UserDto before = findById(updateUserRequestDto.getUserId()).get();
+    public void updateUser(UpdateUserRequestDto updateUserRequestDto, String userId) {
+        UserDto before = findById(userId).get();
         UserDto after = UserDto.builder()
-                .userId(updateUserRequestDto.getUserId())
                 .password(before.getPassword())
                 .nickname(updateUserRequestDto.getNickname())
                 .authorities(before.getAuthorities())
                 .build();
 
-        users.put(updateUserRequestDto.getUserId(), after);
+        users.put(userId, after);
     }
 
     @Override
-    public void changePassword(ChangePasswordRequestDto changePasswordRequestDto) {
-        UserDto before = findById(changePasswordRequestDto.getUserId()).get();
+    public void changePassword(ChangePasswordRequestDto changePasswordRequestDto, String userId) {
+        UserDto before = findById(userId).get();
         UserDto after = UserDto.builder()
-                .userId(changePasswordRequestDto.getUserId())
                 .password(before.getPassword())
                 .nickname(before.getNickname())
                 .authorities(before.getAuthorities())
                 .build();
 
-        users.put(changePasswordRequestDto.getUserId(), after);
+        users.put(userId, after);
     }
 
     @Override
