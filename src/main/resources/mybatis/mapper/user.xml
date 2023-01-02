@@ -33,7 +33,7 @@
         WHERE user_id = #{user_id}
     </select>
 
-    <select id="findById" resultMap="UserDtoResultMap" parameterType="java.lang.String">
+    <select id="findUserByUserId" resultMap="UserDtoResultMap" parameterType="java.lang.String">
         SELECT
             user_id,
             password,
@@ -46,15 +46,15 @@
     <update id="updateUser" parameterType="com.atoz.user.dto.request.UpdateUserRequestDto">
         UPDATE users
         SET
-        nickname = #{nickname},
-        email = #{email}
+            nickname = #{nickname},
+            email = #{email}
         WHERE user_id = #{userId}
     </update>
 
     <update id="changePassword" parameterType="com.atoz.user.dto.request.ChangePasswordRequestDto">
         UPDATE users
         SET
-        password = #{password}
+            password = #{password}
         WHERE user_id = #{userId}
     </update>
 

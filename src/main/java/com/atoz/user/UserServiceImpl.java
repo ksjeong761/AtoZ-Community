@@ -2,6 +2,7 @@ package com.atoz.user;
 
 import com.atoz.security.token.RefreshTokenMapper;
 import com.atoz.user.dto.request.ChangePasswordRequestDto;
+import com.atoz.user.dto.request.DeleteUserRequestDto;
 import com.atoz.user.dto.response.UserResponseDto;
 import com.atoz.user.dto.request.UpdateUserRequestDto;
 import com.atoz.user.dto.UserDto;
@@ -46,16 +47,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public void delete(String userId) {
-        userMapper.deleteUser(userId);
+    public void delete(DeleteUserRequestDto deleteUserRequestDto) {
+        userMapper.deleteUser(deleteUserRequestDto.getUserId());
 
-        refreshTokenMapper.deleteToken(userId);
+        refreshTokenMapper.deleteToken(deleteUserRequestDto.getUserId());
     }
 
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        Optional<UserDto> userDto = userMapper.findById(userId);
+        Optional<UserDto> userDto = userMapper.findUserByUserId(userId);
         if (userDto.isEmpty()) {
             throw new UsernameNotFoundException("해당 유저가 존재하지 않습니다.");
         }

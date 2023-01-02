@@ -1,6 +1,10 @@
 package com.atoz.post;
 
-import com.atoz.post.dto.PostDto;
+import com.atoz.post.dto.request.AddPostRequestDto;
+import com.atoz.post.dto.request.DeletePostRequestDto;
+import com.atoz.post.dto.request.OpenPostRequestDto;
+import com.atoz.post.dto.request.UpdatePostRequestDto;
+import com.atoz.post.dto.response.OpenPostResponseDto;
 import com.atoz.user.Authority;
 import com.atoz.user.UserMapper;
 import com.atoz.user.dto.UserDto;
@@ -12,12 +16,12 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestPropertySource(locations = "/application-test.yaml")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @MybatisTest
 public class PostMapperTest {
 
@@ -44,128 +48,128 @@ public class PostMapperTest {
 
     @Test
     void addPost_게시글이_저장된다() {
-        PostDto addPostDto = PostDto.builder()
-                .postId(1)
-                .userId(signedUpUser.getUserId())
+        AddPostRequestDto addPostRequestDto = AddPostRequestDto.builder()
                 .title("testTitle")
                 .content("testContent")
                 .build();
 
 
-        sut.addPost(addPostDto);
+        sut.addPost(addPostRequestDto, signedUpUser.getUserId());
 
 
-        PostDto addResult = sut.findById(addPostDto);
-        assertNotNull(addResult);
-        assertEquals(addPostDto.getTitle(), addResult.getTitle());
-        assertEquals(addPostDto.getContent(), addResult.getContent());
+        Optional<OpenPostResponseDto> result = openPost(addPostRequestDto.getPostId());
+        assertTrue(result.isPresent());
+        assertEquals(addPostRequestDto.getTitle(), result.get().getTitle());
+        assertEquals(addPostRequestDto.getContent(), result.get().getContent());
     }
 
     @Test
     void addPost_게시글을_추가한_시각이_저장된다() {
-        PostDto addPostDto = PostDto.builder()
-                .postId(1)
-                .userId(signedUpUser.getUserId())
+        AddPostRequestDto addPostRequestDto = AddPostRequestDto.builder()
                 .title("testTitle")
                 .content("testContent")
                 .build();
 
 
-        sut.addPost(addPostDto);
+        sut.addPost(addPostRequestDto, signedUpUser.getUserId());
 
 
-        PostDto addResult = sut.findById(addPostDto);
+        Optional<OpenPostResponseDto> result = openPost(addPostRequestDto.getPostId());
         LocalDateTime now = LocalDateTime.now();
-        assertEquals(now.getDayOfMonth(), addResult.getCreatedAt().getDayOfMonth());
-        assertEquals(now.getHour(), addResult.getCreatedAt().getHour());
-        assertEquals(now.getMinute(), addResult.getCreatedAt().getMinute());
+        assertEquals(now.getDayOfMonth(), result.get().getCreatedAt().getDayOfMonth());
+        assertEquals(now.getHour(), result.get().getCreatedAt().getHour());
+        assertEquals(now.getMinute(), result.get().getCreatedAt().getMinute());
     }
 
     @Test
     void updatePost_게시글이_수정된다() {
-        addPost();
+        int postId = addPost();
 
-        PostDto updatePostDto = PostDto.builder()
-                .postId(1)
+        UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
+                .postId(postId)
                 .userId(signedUpUser.getUserId())
                 .title("newTitle")
                 .content("newContent")
                 .build();
 
 
-        sut.updatePost(updatePostDto);
+        sut.updatePost(updatePostRequestDto);
 
 
-        PostDto updateResult = sut.findById(updatePostDto);
-        assertNotNull(updateResult);
-        assertEquals(updatePostDto.getTitle(), updateResult.getTitle());
-        assertEquals(updatePostDto.getContent(), updateResult.getContent());
+        Optional<OpenPostResponseDto> result = openPost(updatePostRequestDto.getPostId());
+        assertEquals(updatePostRequestDto.getTitle(), result.get().getTitle());
+        assertEquals(updatePostRequestDto.getContent(), result.get().getContent());
     }
 
     @Test
     void updatePost_게시글을_수정한_시각이_저장된다() {
-        addPost();
+        int postId = addPost();
 
-        PostDto updatePostDto = PostDto.builder()
-                .postId(1)
+        UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
+                .postId(postId)
                 .userId(signedUpUser.getUserId())
                 .title("newTitle")
                 .content("newContent")
                 .build();
 
 
-        sut.updatePost(updatePostDto);
+        sut.updatePost(updatePostRequestDto);
 
 
-        PostDto updateResult = sut.findById(updatePostDto);
+        Optional<OpenPostResponseDto> result = openPost(updatePostRequestDto.getPostId());
         LocalDateTime now = LocalDateTime.now();
-        assertEquals(now.getDayOfMonth(), updateResult.getUpdatedAt().getDayOfMonth());
-        assertEquals(now.getHour(), updateResult.getUpdatedAt().getHour());
-        assertEquals(now.getMinute(), updateResult.getUpdatedAt().getMinute());
+        assertEquals(now.getDayOfMonth(), result.get().getUpdatedAt().getDayOfMonth());
+        assertEquals(now.getHour(), result.get().getUpdatedAt().getHour());
+        assertEquals(now.getMinute(), result.get().getUpdatedAt().getMinute());
     }
 
     @Test
     void deletePost_게시글이_삭제된다() {
-        addPost();
+        int postId = addPost();
 
-        PostDto deletePostDto = PostDto.builder()
-                .postId(1)
+        DeletePostRequestDto deletePostRequestDto = DeletePostRequestDto.builder()
+                .postId(postId)
                 .userId(signedUpUser.getUserId())
                 .build();
 
 
-        sut.deletePost(deletePostDto);
+        sut.deletePost(deletePostRequestDto);
 
 
-        PostDto deleteResult = sut.findById(deletePostDto);
-        assertNull(deleteResult);
+        Optional<OpenPostResponseDto> result = openPost(deletePostRequestDto.getPostId());
+        assertTrue(result.isEmpty());
     }
 
     @Test
     void findById_게시글이_조회된다() {
-        addPost();
+        int postId = addPost();
 
-        PostDto findPostDto = PostDto.builder()
-                .postId(1)
-                .userId(signedUpUser.getUserId())
+        OpenPostRequestDto openPostRequestDto = OpenPostRequestDto.builder()
+                .postId(postId)
                 .build();
 
 
-        PostDto findResult = sut.findById(findPostDto);
+        Optional<OpenPostResponseDto> result = sut.findPostByPostId(openPostRequestDto.getPostId());
 
 
-        assertNotNull(findResult);
-        assertEquals(findPostDto.getPostId(), findResult.getPostId());
-        assertEquals(findPostDto.getUserId(), findResult.getUserId());
+        assertTrue(result.isPresent());
+        assertEquals(openPostRequestDto.getPostId(), result.get().getPostId());
     }
 
-    private void addPost() {
-        PostDto addPostDto = PostDto.builder()
-                .userId(signedUpUser.getUserId())
+    private int addPost() {
+        AddPostRequestDto addPostRequestDto = AddPostRequestDto.builder()
                 .title("testTitle")
                 .content("testContent")
                 .build();
+        sut.addPost(addPostRequestDto, signedUpUser.getUserId());
 
-        sut.addPost(addPostDto);
+        return addPostRequestDto.getPostId();
+    }
+
+    private Optional<OpenPostResponseDto> openPost(int postId) {
+        OpenPostRequestDto openPostRequestDto = OpenPostRequestDto.builder()
+                .postId(postId)
+                .build();
+        return sut.findPostByPostId(openPostRequestDto.getPostId());
     }
 }

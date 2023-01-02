@@ -2,7 +2,6 @@ package com.atoz.user;
 
 import com.atoz.error.GlobalExceptionAdvice;
 import com.atoz.user.dto.request.ChangePasswordRequestDto;
-import com.atoz.user.dto.request.DeleteUserRequestDto;
 import com.atoz.user.dto.request.SignupRequestDto;
 import com.atoz.user.dto.request.UpdateUserRequestDto;
 import com.atoz.user.helper.SpyUserService;
@@ -17,8 +16,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -257,14 +254,12 @@ class UserControllerTest {
 
     @Test
     void delete_회원탈퇴_요청에_성공한다() throws Exception {
-        DeleteUserRequestDto deleteUserRequestDto = DeleteUserRequestDto.builder()
-                .userId("testUserId")
-                .build();
+        String userId = "testUserId";
 
 
         ResultActions resultActions = sut.perform(delete("/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(deleteUserRequestDto)));
+                .content(objectMapper.writeValueAsString(userId)));
 
 
         resultActions.andExpect(status().isOk());

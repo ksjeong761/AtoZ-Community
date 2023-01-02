@@ -13,6 +13,4 @@ public interface TokenManager {
     void validateToken(String token);
 
     String parseUserId(String token);
-
-    Collection<? extends GrantedAuthority> parseGrantedAuthorities(String token);
 }

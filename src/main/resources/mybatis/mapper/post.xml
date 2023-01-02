@@ -5,12 +5,16 @@
 
 <mapper namespace="com.atoz.post.PostMapper">
 
-    <insert id="addPost" parameterType="com.atoz.post.dto.PostDto">
+    <insert id="addPost"
+            parameterType="com.atoz.post.dto.request.AddPostRequestDto"
+            useGeneratedKeys="true"
+            keyColumn="post_id"
+            keyProperty="addPostRequestDto.postId">
         INSERT INTO posts (user_id, title, content)
-        VALUES (#{userId}, #{title}, #{content})
+        VALUES (#{userId}, #{addPostRequestDto.title}, #{addPostRequestDto.content})
     </insert>
 
-    <select id="findById" resultType="com.atoz.post.dto.PostDto" parameterType="com.atoz.post.dto.request.OpenPostRequestDto">
+    <select id="findPostByPostId" resultType="com.atoz.post.dto.response.OpenPostResponseDto">
         SELECT
             post_id AS postId,
             user_id AS userId,
@@ -22,10 +26,10 @@
             created_at AS createdAt,
             updated_at AS updatedAt
         FROM posts
-        WHERE post_id = #{postId} AND user_id = #{userId}
+        WHERE post_id = #{postId}
     </select>
 
-    <update id="updatePost" parameterType="com.atoz.post.dto.PostDto">
+    <update id="updatePost" parameterType="com.atoz.post.dto.request.UpdatePostRequestDto">
         UPDATE posts
         SET
             title = #{title},
@@ -33,7 +37,7 @@
         WHERE post_id = #{postId} AND user_id = #{userId}
     </update>
 
-    <delete id="deletePost" parameterType="com.atoz.post.dto.PostDto">
+    <delete id="deletePost" parameterType="com.atoz.post.dto.request.DeletePostRequestDto">
         DELETE FROM posts
         WHERE post_id = #{postId} AND user_id = #{userId}
     </delete>

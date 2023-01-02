@@ -1,6 +1,6 @@
 package com.atoz.security.token;
 
-import com.atoz.error.exception.InvalidTokenException;
+import com.atoz.error.exception.JwtAuthenticationException;
 import com.atoz.user.Authority;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -9,16 +9,11 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.security.Key;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import static com.atoz.security.SecurityConstants.AUTHORITIES_KEY;
 
@@ -75,34 +70,16 @@ public class TokenManagerImpl implements TokenManager {
                     .parseClaimsJws(jwt)
                     .getBody();
         } catch (ExpiredJwtException ex) {
-            throw new InvalidTokenException("만료된 토큰입니다.");
+            throw new JwtAuthenticationException("만료된 토큰입니다.");
         } catch (IllegalArgumentException ex) {
-            throw new InvalidTokenException("토큰 값이 비었습니다.");
+            throw new JwtAuthenticationException("토큰 값이 비었습니다.");
         } catch (Exception ex) {
-            throw new InvalidTokenException("잘못된 토큰입니다.");
+            throw new JwtAuthenticationException("잘못된 토큰입니다.");
         }
     }
 
     @Override
     public String parseUserId(String jwt) {
         return parseClaims(jwt).getSubject();
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> parseGrantedAuthorities(String jwt) {
-        Claims claims = parseClaims(jwt);
-        Object authorities = claims.get(AUTHORITIES_KEY);
-
-        if (authorities == null) {
-            throw new RuntimeException("토큰에 권한 정보가 존재하지 않습니다.");
-        }
-        if (!StringUtils.hasText(authorities.toString())) {
-            throw new RuntimeException("사용자가 가진 권한이 없습니다.");
-        }
-
-        return Stream.of(authorities)
-                .map(String::valueOf)
-                .map(SimpleGrantedAuthority::new)
-                .toList();
     }
 }

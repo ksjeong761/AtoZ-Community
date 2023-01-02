@@ -1,8 +1,8 @@
 package com.atoz.security;
 
-import com.atoz.security.authorization.JwtAccessDeniedHandler;
-import com.atoz.security.authorization.JwtAuthenticationEntryPoint;
-import com.atoz.security.authorization.JwtAuthorizationFilter;
+import com.atoz.security.handler.DefaultAccessDeniedHandler;
+import com.atoz.security.handler.DefaultAuthenticationEntryPoint;
+import com.atoz.security.authentication.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -21,13 +22,14 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
 
-    private final JwtAuthorizationFilter jwtAuthorizationFilter;
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final DefaultAuthenticationEntryPoint defaultAuthenticationEntryPoint;
+    private final DefaultAccessDeniedHandler defaultAccessDeniedHandler;
     private final UserDetailsService userDetailsService;
 
     @Bean
@@ -61,17 +63,17 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .exceptionHandling()
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .accessDeniedHandler(jwtAccessDeniedHandler)
+                .authenticationEntryPoint(defaultAuthenticationEntryPoint)
+                .accessDeniedHandler(defaultAccessDeniedHandler)
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeRequests()
-                .antMatchers("/auth/signin", "/user/signup").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(authorize -> authorize
+                        .mvcMatchers("/auth/signin", "/user/signup").permitAll()
+                        .anyRequest().authenticated());
+
         return http.build();
     }
 }

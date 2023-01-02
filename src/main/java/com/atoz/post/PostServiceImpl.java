@@ -1,16 +1,16 @@
 package com.atoz.post;
 
-import com.atoz.post.dto.PostDto;
 import com.atoz.post.dto.request.AddPostRequestDto;
 import com.atoz.post.dto.request.DeletePostRequestDto;
 import com.atoz.post.dto.request.OpenPostRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
-import com.atoz.post.dto.response.PostResponseDto;
+import com.atoz.post.dto.response.OpenPostResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import java.util.NoSuchElementException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -20,50 +20,23 @@ public class PostServiceImpl implements PostService {
     private final PostMapper postMapper;
 
     @Override
-    public void addPost(AddPostRequestDto addPostRequestDto) {
-        PostDto post = PostDto.builder()
-                .userId(loadUserIdFromContext())
-                .title(addPostRequestDto.getTitle())
-                .content(addPostRequestDto.getContent())
-                .build();
-
-        postMapper.addPost(post);
+    public void addPost(AddPostRequestDto addPostRequestDto, UserDetails userDetails) {
+        postMapper.addPost(addPostRequestDto, userDetails.getUsername());
     }
 
     @Override
     public void updatePost(UpdatePostRequestDto updatePostRequestDto) {
-        PostDto post = PostDto.builder()
-                .postId(updatePostRequestDto.getPostId())
-                .userId(loadUserIdFromContext())
-                .title(updatePostRequestDto.getTitle())
-                .content(updatePostRequestDto.getContent())
-                .build();
-
-        postMapper.updatePost(post);
+        postMapper.updatePost(updatePostRequestDto);
     }
 
     @Override
     public void deletePost(DeletePostRequestDto deletePostRequestDto) {
-        PostDto post = PostDto.builder()
-                .postId(deletePostRequestDto.getPostId())
-                .userId(loadUserIdFromContext())
-                .build();
-
-        postMapper.deletePost(post);
+        postMapper.deletePost(deletePostRequestDto);
     }
 
     @Override
-    public PostResponseDto findById(OpenPostRequestDto openPostRequestDto) {
-        PostDto post = PostDto.builder()
-                .postId(openPostRequestDto.getPostId())
-                .userId(loadUserIdFromContext())
-                .build();
-
-        return postMapper.findById(post).toPostResponseDto();
-    }
-
-    private String loadUserIdFromContext() {
-        UserDetails userDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userDetails.getUsername();
+    public OpenPostResponseDto openPost(OpenPostRequestDto openPostRequestDto) {
+        return postMapper.findPostByPostId(openPostRequestDto.getPostId())
+                .orElseThrow(() -> new NoSuchElementException("게시글이 존재하지 않습니다."));
     }
 }

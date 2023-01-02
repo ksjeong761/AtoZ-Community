@@ -4,6 +4,7 @@ import com.atoz.user.dto.request.ChangePasswordRequestDto;
 import com.atoz.user.dto.request.UpdateUserRequestDto;
 import com.atoz.user.dto.UserDto;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Optional;
 
@@ -14,7 +15,7 @@ public interface UserMapper {
 
     void addAuthority(UserDto userDto);
 
-    Optional<UserDto> findById(String userId);
+    Optional<UserDto> findUserByUserId(String userId);
 
     void updateUser(UpdateUserRequestDto updateUserRequestDto);
 

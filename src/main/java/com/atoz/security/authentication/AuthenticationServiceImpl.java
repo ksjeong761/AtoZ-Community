@@ -71,7 +71,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     private UserDto findUserById(String userId) {
-        return userMapper.findById(userId)
+        return userMapper.findUserByUserId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("해당 유저가 존재하지 않습니다."));
     }
 

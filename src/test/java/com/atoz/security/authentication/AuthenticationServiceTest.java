@@ -26,11 +26,7 @@ class AuthenticationServiceTest {
 
     private final UserMapper userMapper = new SpyUserMapper();
     private final RefreshTokenMapper refreshTokenMapper = new MockRefreshTokenMapper();
-    private final AuthenticationService sut = new AuthenticationServiceImpl(
-            new StubAuthenticationManager(),
-            userMapper,
-            refreshTokenMapper,
-            new StubTokenManager());
+    private AuthenticationService sut;
 
     private UserDto signedUpUser;
 
@@ -44,6 +40,12 @@ class AuthenticationServiceTest {
                 .authorities(Set.of(Authority.ROLE_USER))
                 .build();
         userMapper.addUser(signedUpUser);
+
+        sut = new AuthenticationServiceImpl(
+                new StubAuthenticationManager(),
+                userMapper,
+                refreshTokenMapper,
+                new StubTokenManager(signedUpUser.getUserId()));
     }
 
     @Test
@@ -79,12 +81,7 @@ class AuthenticationServiceTest {
 
     @Test
     void signout_로그아웃하면_리프레시토큰이_삭제되어야한다() {
-        SigninRequestDto signinRequestDto = SigninRequestDto.builder()
-                .userId(signedUpUser.getUserId())
-                .password(signedUpUser.getPassword())
-                .build();
-        sut.signin(signinRequestDto);
-
+        signin();
         SignoutRequestDto signoutRequestDto = SignoutRequestDto.builder()
                 .userId(signedUpUser.getUserId())
                 .build();
@@ -99,11 +96,7 @@ class AuthenticationServiceTest {
 
     @Test
     void refresh_토큰을_재발급_받을수있다() {
-        SigninRequestDto signinRequestDto = SigninRequestDto.builder()
-                .userId(signedUpUser.getUserId())
-                .password(signedUpUser.getPassword())
-                .build();
-        TokenResponseDto tokens = sut.signin(signinRequestDto);
+        TokenResponseDto tokens = signin();
         TokenRequestDto refreshRequest = new TokenRequestDto(tokens.getAccessToken(), tokens.getRefreshToken());
 
 
@@ -113,5 +106,13 @@ class AuthenticationServiceTest {
         assertNotNull(reissuedToken);
         assertThat(reissuedToken.getAccessToken()).isNotBlank();
         assertThat(reissuedToken.getRefreshToken()).isNotBlank();
+    }
+
+    private TokenResponseDto signin() {
+        SigninRequestDto signinRequestDto = SigninRequestDto.builder()
+                .userId(signedUpUser.getUserId())
+                .password(signedUpUser.getPassword())
+                .build();
+        return sut.signin(signinRequestDto);
     }
 }

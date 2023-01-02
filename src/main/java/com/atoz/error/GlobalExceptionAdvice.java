@@ -2,7 +2,7 @@ package com.atoz.error;
 
 import com.atoz.error.dto.ErrorResponseDto;
 import com.atoz.error.dto.MultipleErrorResponseDto;
-import com.atoz.error.exception.InvalidTokenException;
+import com.atoz.error.exception.JwtAuthenticationException;
 import com.atoz.error.exception.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -40,7 +40,6 @@ public class GlobalExceptionAdvice {
                 .body(new ErrorResponseDto(ex.getMessage()));
     }
 
-    // 패스워드가 불일치할 때 401 응답
     @ExceptionHandler
     public ResponseEntity<ErrorResponseDto> handleIncorrectPassword(BadCredentialsException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -48,14 +47,14 @@ public class GlobalExceptionAdvice {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponseDto> handleInvalidToken(InvalidTokenException ex) {
+    public ResponseEntity<ErrorResponseDto> handleInvalidToken(JwtAuthenticationException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorResponseDto(ex.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponseDto> handleUnauthorized(UnauthorizedException ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorResponseDto(ex.getMessage()));
     }
 

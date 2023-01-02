@@ -25,6 +25,8 @@ class UserMapperTest {
     @Autowired
     private UserMapper sut;
 
+    private final String TEST_USER_ID = "testUserId";
+
     @Test
     void addUser_사용자_정보가_저장된다() {
         UserDto userDto = UserDto.builder()
@@ -40,7 +42,7 @@ class UserMapperTest {
         sut.addAuthority(userDto);
 
 
-        Optional<UserDto> addedUser = sut.findById(userDto.getUserId());
+        Optional<UserDto> addedUser = sut.findUserByUserId(userDto.getUserId());
         assertThat(addedUser.isPresent()).isTrue();
         assertEquals(userDto.getUserId(), addedUser.get().getUserId());
     }
@@ -68,15 +70,14 @@ class UserMapperTest {
 
     @Test
     void findById_사용자_정보가_조회된다() {
-        String userId = "testUserId";
-        addUser(userId);
+        addUser(TEST_USER_ID);
 
 
-        Optional<UserDto> foundUser = sut.findById(userId);
+        Optional<UserDto> foundUser = sut.findUserByUserId(TEST_USER_ID);
 
 
         assertTrue(foundUser.isPresent());
-        assertEquals(userId, foundUser.get().getUserId());
+        assertEquals(TEST_USER_ID, foundUser.get().getUserId());
     }
 
     @Test
@@ -84,7 +85,7 @@ class UserMapperTest {
         String targetUserId = "wrongUserId";
 
 
-        Optional<UserDto> foundUser = sut.findById(targetUserId);
+        Optional<UserDto> foundUser = sut.findUserByUserId(targetUserId);
 
 
         assertTrue(foundUser.isEmpty());
@@ -92,11 +93,9 @@ class UserMapperTest {
 
     @Test
     void changePassword_비밀번호가_변경된다() {
-        String userId = "testUserId";
-        addUser(userId);
-
+        addUser(TEST_USER_ID);
         ChangePasswordRequestDto changePasswordRequestDto = ChangePasswordRequestDto.builder()
-                .userId(userId)
+                .userId(TEST_USER_ID)
                 .password("changedPassword")
                 .build();
 
@@ -104,18 +103,16 @@ class UserMapperTest {
         sut.changePassword(changePasswordRequestDto);
 
 
-        Optional<UserDto> updatedUser = sut.findById(userId);
+        Optional<UserDto> updatedUser = sut.findUserByUserId(TEST_USER_ID);
         assertTrue(updatedUser.isPresent());
         assertEquals(changePasswordRequestDto.getPassword(), updatedUser.get().getPassword());
     }
 
     @Test
     void updateUser_닉네임이_변경된다() {
-        String userId = "testUserId";
-        addUser(userId);
-
+        addUser(TEST_USER_ID);
         UpdateUserRequestDto updateUserRequestDto = UpdateUserRequestDto.builder()
-                .userId(userId)
+                .userId(TEST_USER_ID)
                 .nickname("updatedNickname")
                 .email("")
                 .build();
@@ -124,18 +121,16 @@ class UserMapperTest {
         sut.updateUser(updateUserRequestDto);
 
 
-        Optional<UserDto> updatedUser = sut.findById(userId);
+        Optional<UserDto> updatedUser = sut.findUserByUserId(TEST_USER_ID);
         assertTrue(updatedUser.isPresent());
         assertEquals(updateUserRequestDto.getNickname(), updatedUser.get().getNickname());
     }
 
     @Test
     void updateUser_이메일이_변경된다() {
-        String userId = "testUserId";
-        addUser(userId);
-
+        addUser(TEST_USER_ID);
         UpdateUserRequestDto updateUserRequestDto = UpdateUserRequestDto.builder()
-                .userId(userId)
+                .userId(TEST_USER_ID)
                 .nickname("")
                 .email("updated@test.com")
                 .build();
@@ -144,21 +139,20 @@ class UserMapperTest {
         sut.updateUser(updateUserRequestDto);
 
 
-        Optional<UserDto> updatedUser = sut.findById(userId);
+        Optional<UserDto> updatedUser = sut.findUserByUserId(TEST_USER_ID);
         assertTrue(updatedUser.isPresent());
         assertEquals(updateUserRequestDto.getEmail(), updatedUser.get().getEmail());
     }
 
     @Test
     void deleteUser_사용자_정보가_삭제된다() {
-        String userId = "testUserId";
-        addUser(userId);
+        addUser(TEST_USER_ID);
 
 
-        sut.deleteUser(userId);
+        sut.deleteUser(TEST_USER_ID);
 
 
-        Optional<UserDto> foundUser = sut.findById(userId);
+        Optional<UserDto> foundUser = sut.findUserByUserId(TEST_USER_ID);
         assertTrue(foundUser.isEmpty());
     }
 

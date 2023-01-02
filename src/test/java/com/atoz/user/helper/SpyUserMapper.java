@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.util.*;
 
 public class SpyUserMapper implements UserMapper {
-    public int callCount_findById = 0;
+    public int callCountFindById = 0;
 
     private final Map<String, UserDto> users = new HashMap<>();
     private final Map<String, Set<Authority>> authorities = new HashMap<>();
@@ -26,8 +26,8 @@ public class SpyUserMapper implements UserMapper {
     }
 
     @Override
-    public Optional<UserDto> findById(String targetUserId) {
-        callCount_findById++;
+    public Optional<UserDto> findUserByUserId(String targetUserId) {
+        callCountFindById++;
 
         var user = users.getOrDefault(targetUserId, null);
         Optional<UserDto> foundUser = Optional.ofNullable(user);
@@ -40,11 +40,12 @@ public class SpyUserMapper implements UserMapper {
 
     @Override
     public void updateUser(UpdateUserRequestDto updateUserRequestDto) {
-        UserDto before = findById(updateUserRequestDto.getUserId()).get();
+        UserDto before = findUserByUserId(updateUserRequestDto.getUserId()).get();
         UserDto after = UserDto.builder()
                 .userId(updateUserRequestDto.getUserId())
                 .password(before.getPassword())
                 .nickname(updateUserRequestDto.getNickname())
+                .email(updateUserRequestDto.getEmail())
                 .authorities(before.getAuthorities())
                 .build();
 
@@ -53,10 +54,10 @@ public class SpyUserMapper implements UserMapper {
 
     @Override
     public void changePassword(ChangePasswordRequestDto changePasswordRequestDto) {
-        UserDto before = findById(changePasswordRequestDto.getUserId()).get();
+        UserDto before = findUserByUserId(changePasswordRequestDto.getUserId()).get();
         UserDto after = UserDto.builder()
                 .userId(changePasswordRequestDto.getUserId())
-                .password(before.getPassword())
+                .password(changePasswordRequestDto.getPassword())
                 .nickname(before.getNickname())
                 .authorities(before.getAuthorities())
                 .build();

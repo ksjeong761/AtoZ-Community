@@ -6,7 +6,7 @@ import com.atoz.security.token.dto.RefreshTokenDto;
 import java.util.*;
 
 public class MockRefreshTokenMapper implements RefreshTokenMapper {
-    private static final Map<String, RefreshTokenDto> tokens = new HashMap<>();
+    private final Map<String, RefreshTokenDto> tokens = new HashMap<>();
 
     @Override
     public void saveToken(RefreshTokenDto refreshTokenDto) {
