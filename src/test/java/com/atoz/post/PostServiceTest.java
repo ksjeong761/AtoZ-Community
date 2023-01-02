@@ -5,6 +5,8 @@ import com.atoz.post.helper.SpyPostMapper;
 import com.atoz.security.authentication.helper.CustomWithMockUser;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -26,9 +28,10 @@ public class PostServiceTest {
                 .title("testTitle")
                 .content("testContent")
                 .build();
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 
-        sut.addPost(addPostRequestDto);
+        sut.addPost(addPostRequestDto, userDetails);
 
 
         assertEquals(USER_ID, postMapper.receivedUserId);

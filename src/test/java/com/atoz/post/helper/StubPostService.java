@@ -6,10 +6,11 @@ import com.atoz.post.dto.request.DeletePostRequestDto;
 import com.atoz.post.dto.request.OpenPostRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
 import com.atoz.post.dto.response.OpenPostResponseDto;
+import org.springframework.security.core.userdetails.UserDetails;
 
 public class StubPostService implements PostService {
     @Override
-    public void addPost(AddPostRequestDto addPostRequestDto) {
+    public void addPost(AddPostRequestDto addPostRequestDto, UserDetails userDetails) {
 
     }
 

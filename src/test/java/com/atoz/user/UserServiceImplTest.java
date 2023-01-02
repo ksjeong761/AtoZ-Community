@@ -5,6 +5,7 @@ import com.atoz.security.token.dto.RefreshTokenDto;
 import com.atoz.security.token.RefreshTokenMapper;
 import com.atoz.security.token.helper.MockRefreshTokenMapper;
 import com.atoz.user.dto.request.ChangePasswordRequestDto;
+import com.atoz.user.dto.request.DeleteUserRequestDto;
 import com.atoz.user.dto.response.UserResponseDto;
 import com.atoz.user.dto.UserDto;
 import com.atoz.user.helper.SpyUserMapper;
@@ -69,6 +70,7 @@ class UserServiceImplTest {
         saveToken();
 
         ChangePasswordRequestDto changePasswordRequestDto = ChangePasswordRequestDto.builder()
+                .userId(TEST_USER_ID)
                 .password("newPassword")
                 .build();
 
@@ -85,8 +87,12 @@ class UserServiceImplTest {
     void delete_회원탈퇴하면_리프레시_토큰이_삭제된다() {
         saveToken();
 
+        DeleteUserRequestDto deleteUserRequestDto = DeleteUserRequestDto.builder()
+                .userId(TEST_USER_ID)
+                .build();
 
-        sut.delete();
+
+        sut.delete(deleteUserRequestDto);
 
 
         Optional<RefreshTokenDto> foundToken = refreshTokenMapper.findTokenByKey(TEST_USER_ID);

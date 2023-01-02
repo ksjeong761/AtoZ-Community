@@ -39,27 +39,30 @@ public class SpyUserMapper implements UserMapper {
     }
 
     @Override
-    public void updateUser(UpdateUserRequestDto updateUserRequestDto, String userId) {
-        UserDto before = findUserByUserId(userId).get();
+    public void updateUser(UpdateUserRequestDto updateUserRequestDto) {
+        UserDto before = findUserByUserId(updateUserRequestDto.getUserId()).get();
         UserDto after = UserDto.builder()
+                .userId(updateUserRequestDto.getUserId())
                 .password(before.getPassword())
                 .nickname(updateUserRequestDto.getNickname())
+                .email(updateUserRequestDto.getEmail())
                 .authorities(before.getAuthorities())
                 .build();
 
-        users.put(userId, after);
+        users.put(updateUserRequestDto.getUserId(), after);
     }
 
     @Override
-    public void changePassword(ChangePasswordRequestDto changePasswordRequestDto, String userId) {
-        UserDto before = findUserByUserId(userId).get();
+    public void changePassword(ChangePasswordRequestDto changePasswordRequestDto) {
+        UserDto before = findUserByUserId(changePasswordRequestDto.getUserId()).get();
         UserDto after = UserDto.builder()
-                .password(before.getPassword())
+                .userId(changePasswordRequestDto.getUserId())
+                .password(changePasswordRequestDto.getPassword())
                 .nickname(before.getNickname())
                 .authorities(before.getAuthorities())
                 .build();
 
-        users.put(userId, after);
+        users.put(changePasswordRequestDto.getUserId(), after);
     }
 
     @Override

@@ -7,8 +7,11 @@ import com.atoz.post.dto.request.UpdatePostRequestDto;
 import com.atoz.post.dto.response.OpenPostResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
@@ -19,25 +22,26 @@ public class PostController {
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping
-    public void addPost(@Validated @RequestBody AddPostRequestDto addPostRequestDto) {
-        postService.addPost(addPostRequestDto);
+    public void addPost(@Valid @RequestBody AddPostRequestDto addPostRequestDto,
+                        @AuthenticationPrincipal UserDetails userDetails) {
+        postService.addPost(addPostRequestDto, userDetails);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') and principal.username == #updatePostRequestDto.getUserId()")
     @PatchMapping
-    public void updatePost(@Validated @RequestBody UpdatePostRequestDto updatePostRequestDto) {
+    public void updatePost(@Valid @RequestBody UpdatePostRequestDto updatePostRequestDto) {
         postService.updatePost(updatePostRequestDto);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER') and principal.username == #deletePostRequestDto.getUserId()")
     @DeleteMapping
-    public void deletePost(@Validated @RequestBody DeletePostRequestDto deletePostRequestDto) {
+    public void deletePost(@Valid @RequestBody DeletePostRequestDto deletePostRequestDto) {
         postService.deletePost(deletePostRequestDto);
     }
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping
-    public OpenPostResponseDto openPost(@Validated @RequestBody OpenPostRequestDto openPostRequestDto) {
+    public OpenPostResponseDto openPost(@Valid @RequestBody OpenPostRequestDto openPostRequestDto) {
         return postService.openPost(openPostRequestDto);
     }
 }

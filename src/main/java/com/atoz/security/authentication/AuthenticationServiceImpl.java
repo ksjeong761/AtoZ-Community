@@ -1,5 +1,6 @@
 package com.atoz.security.authentication;
 
+import com.atoz.security.authentication.dto.request.SignoutRequestDto;
 import com.atoz.user.Authority;
 import com.atoz.security.token.TokenManager;
 import com.atoz.security.authentication.dto.request.TokenRequestDto;
@@ -19,8 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
-
-import static com.atoz.security.SecurityUtils.loadUserIdFromContext;
 
 @Slf4j
 @Service
@@ -43,8 +42,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     @Transactional
-    public void signout() {
-        refreshTokenMapper.deleteToken(loadUserIdFromContext());
+    public void signout(SignoutRequestDto signoutRequestDto) {
+        refreshTokenMapper.deleteToken(signoutRequestDto.getUserId());
     }
 
     @Override

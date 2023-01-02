@@ -2,6 +2,7 @@ package com.atoz.user.helper;
 
 import com.atoz.user.UserService;
 import com.atoz.user.dto.request.ChangePasswordRequestDto;
+import com.atoz.user.dto.request.DeleteUserRequestDto;
 import com.atoz.user.dto.response.UserResponseDto;
 import com.atoz.user.dto.request.UpdateUserRequestDto;
 import com.atoz.user.dto.UserDto;
@@ -28,7 +29,7 @@ public class SpyUserService implements UserService {
     }
 
     @Override
-    public void delete() {
+    public void delete(DeleteUserRequestDto deleteUserRequestDto) {
 
     }
 }

@@ -95,11 +95,12 @@ class UserMapperTest {
     void changePassword_비밀번호가_변경된다() {
         addUser(TEST_USER_ID);
         ChangePasswordRequestDto changePasswordRequestDto = ChangePasswordRequestDto.builder()
+                .userId(TEST_USER_ID)
                 .password("changedPassword")
                 .build();
 
 
-        sut.changePassword(changePasswordRequestDto, TEST_USER_ID);
+        sut.changePassword(changePasswordRequestDto);
 
 
         Optional<UserDto> updatedUser = sut.findUserByUserId(TEST_USER_ID);
@@ -111,12 +112,13 @@ class UserMapperTest {
     void updateUser_닉네임이_변경된다() {
         addUser(TEST_USER_ID);
         UpdateUserRequestDto updateUserRequestDto = UpdateUserRequestDto.builder()
+                .userId(TEST_USER_ID)
                 .nickname("updatedNickname")
                 .email("")
                 .build();
 
 
-        sut.updateUser(updateUserRequestDto, TEST_USER_ID);
+        sut.updateUser(updateUserRequestDto);
 
 
         Optional<UserDto> updatedUser = sut.findUserByUserId(TEST_USER_ID);
@@ -128,12 +130,13 @@ class UserMapperTest {
     void updateUser_이메일이_변경된다() {
         addUser(TEST_USER_ID);
         UpdateUserRequestDto updateUserRequestDto = UpdateUserRequestDto.builder()
+                .userId(TEST_USER_ID)
                 .nickname("")
                 .email("updated@test.com")
                 .build();
 
 
-        sut.updateUser(updateUserRequestDto, TEST_USER_ID);
+        sut.updateUser(updateUserRequestDto);
 
 
         Optional<UserDto> updatedUser = sut.findUserByUserId(TEST_USER_ID);

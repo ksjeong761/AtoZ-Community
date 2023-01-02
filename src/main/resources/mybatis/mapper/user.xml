@@ -46,15 +46,15 @@
     <update id="updateUser" parameterType="com.atoz.user.dto.request.UpdateUserRequestDto">
         UPDATE users
         SET
-            nickname = #{updateUserRequestDto.nickname},
-            email = #{updateUserRequestDto.email}
+            nickname = #{nickname},
+            email = #{email}
         WHERE user_id = #{userId}
     </update>
 
     <update id="changePassword" parameterType="com.atoz.user.dto.request.ChangePasswordRequestDto">
         UPDATE users
         SET
-            password = #{changePasswordRequestDto.password}
+            password = #{password}
         WHERE user_id = #{userId}
     </update>
 

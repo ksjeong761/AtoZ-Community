@@ -17,11 +17,9 @@ public interface UserMapper {
 
     Optional<UserDto> findUserByUserId(String userId);
 
-    void updateUser(@Param("updateUserRequestDto") UpdateUserRequestDto updateUserRequestDto,
-                    @Param("userId") String userId);
+    void updateUser(UpdateUserRequestDto updateUserRequestDto);
 
-    void changePassword(@Param("changePasswordRequestDto") ChangePasswordRequestDto changePasswordRequestDto,
-                        @Param("userId") String userId);
+    void changePassword(ChangePasswordRequestDto changePasswordRequestDto);
 
     void deleteUser(String userId);
 }

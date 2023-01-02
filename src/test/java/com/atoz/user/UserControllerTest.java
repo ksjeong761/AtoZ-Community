@@ -220,6 +220,7 @@ class UserControllerTest {
     @Test
     void update_사용자_정보_변경_요청에_성공한다() throws Exception {
         UpdateUserRequestDto updateUserRequestDto = UpdateUserRequestDto.builder()
+                .userId("testUserId")
                 .nickname("testNickname")
                 .email("test@test.com")
                 .build();
@@ -236,6 +237,7 @@ class UserControllerTest {
     @Test
     void changePassword_비밀번호_변경_요청시_비밀번호가_인코딩된다() throws Exception {
         ChangePasswordRequestDto changePasswordRequestDto = ChangePasswordRequestDto.builder()
+                .userId("testUserId")
                 .password("testPassword")
                 .build();
 

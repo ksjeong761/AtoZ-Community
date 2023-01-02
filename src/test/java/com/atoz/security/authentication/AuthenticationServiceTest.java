@@ -1,5 +1,6 @@
 package com.atoz.security.authentication;
 
+import com.atoz.security.authentication.dto.request.SignoutRequestDto;
 import com.atoz.security.authentication.helper.StubAuthenticationManager;
 import com.atoz.security.token.helper.MockRefreshTokenMapper;
 import com.atoz.security.token.helper.StubTokenManager;
@@ -81,9 +82,12 @@ class AuthenticationServiceTest {
     @Test
     void signout_로그아웃하면_리프레시토큰이_삭제되어야한다() {
         signin();
+        SignoutRequestDto signoutRequestDto = SignoutRequestDto.builder()
+                .userId(signedUpUser.getUserId())
+                .build();
 
 
-        sut.signout();
+        sut.signout(signoutRequestDto);
 
 
         Optional<RefreshTokenDto> foundToken = refreshTokenMapper.findTokenByKey(signedUpUser.getUserId());

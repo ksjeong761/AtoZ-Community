@@ -2,6 +2,7 @@ package com.atoz.user;
 
 import com.atoz.security.token.RefreshTokenMapper;
 import com.atoz.user.dto.request.ChangePasswordRequestDto;
+import com.atoz.user.dto.request.DeleteUserRequestDto;
 import com.atoz.user.dto.response.UserResponseDto;
 import com.atoz.user.dto.request.UpdateUserRequestDto;
 import com.atoz.user.dto.UserDto;
@@ -13,8 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-
-import static com.atoz.security.SecurityUtils.loadUserIdFromContext;
 
 @RequiredArgsConstructor
 @Service
@@ -35,23 +34,23 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void update(UpdateUserRequestDto updateUserRequestDto) {
-        userMapper.updateUser(updateUserRequestDto, loadUserIdFromContext());
+        userMapper.updateUser(updateUserRequestDto);
     }
 
     @Override
     @Transactional
     public void changePassword(ChangePasswordRequestDto changePasswordRequestDto) {
-        userMapper.changePassword(changePasswordRequestDto, loadUserIdFromContext());
+        userMapper.changePassword(changePasswordRequestDto);
 
-        refreshTokenMapper.deleteToken(loadUserIdFromContext());
+        refreshTokenMapper.deleteToken(changePasswordRequestDto.getUserId());
     }
 
     @Override
     @Transactional
-    public void delete() {
-        userMapper.deleteUser(loadUserIdFromContext());
+    public void delete(DeleteUserRequestDto deleteUserRequestDto) {
+        userMapper.deleteUser(deleteUserRequestDto.getUserId());
 
-        refreshTokenMapper.deleteToken(loadUserIdFromContext());
+        refreshTokenMapper.deleteToken(deleteUserRequestDto.getUserId());
     }
 
     @Override
