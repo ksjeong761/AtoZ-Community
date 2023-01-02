@@ -33,7 +33,7 @@
         WHERE user_id = #{user_id}
     </select>
 
-    <select id="findById" resultMap="UserDtoResultMap" parameterType="java.lang.String">
+    <select id="findUserByUserId" resultMap="UserDtoResultMap" parameterType="java.lang.String">
         SELECT
             user_id,
             password,

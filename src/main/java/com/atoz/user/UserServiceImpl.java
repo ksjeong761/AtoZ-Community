@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        Optional<UserDto> userDto = userMapper.findById(userId);
+        Optional<UserDto> userDto = userMapper.findUserByUserId(userId);
         if (userDto.isEmpty()) {
             throw new UsernameNotFoundException("해당 유저가 존재하지 않습니다.");
         }

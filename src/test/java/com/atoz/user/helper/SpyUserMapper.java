@@ -26,7 +26,7 @@ public class SpyUserMapper implements UserMapper {
     }
 
     @Override
-    public Optional<UserDto> findById(String targetUserId) {
+    public Optional<UserDto> findUserByUserId(String targetUserId) {
         callCountFindById++;
 
         var user = users.getOrDefault(targetUserId, null);
@@ -40,7 +40,7 @@ public class SpyUserMapper implements UserMapper {
 
     @Override
     public void updateUser(UpdateUserRequestDto updateUserRequestDto, String userId) {
-        UserDto before = findById(userId).get();
+        UserDto before = findUserByUserId(userId).get();
         UserDto after = UserDto.builder()
                 .password(before.getPassword())
                 .nickname(updateUserRequestDto.getNickname())
@@ -52,7 +52,7 @@ public class SpyUserMapper implements UserMapper {
 
     @Override
     public void changePassword(ChangePasswordRequestDto changePasswordRequestDto, String userId) {
-        UserDto before = findById(userId).get();
+        UserDto before = findUserByUserId(userId).get();
         UserDto after = UserDto.builder()
                 .password(before.getPassword())
                 .nickname(before.getNickname())

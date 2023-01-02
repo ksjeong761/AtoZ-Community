@@ -42,7 +42,7 @@ class UserMapperTest {
         sut.addAuthority(userDto);
 
 
-        Optional<UserDto> addedUser = sut.findById(userDto.getUserId());
+        Optional<UserDto> addedUser = sut.findUserByUserId(userDto.getUserId());
         assertThat(addedUser.isPresent()).isTrue();
         assertEquals(userDto.getUserId(), addedUser.get().getUserId());
     }
@@ -73,7 +73,7 @@ class UserMapperTest {
         addUser(TEST_USER_ID);
 
 
-        Optional<UserDto> foundUser = sut.findById(TEST_USER_ID);
+        Optional<UserDto> foundUser = sut.findUserByUserId(TEST_USER_ID);
 
 
         assertTrue(foundUser.isPresent());
@@ -85,7 +85,7 @@ class UserMapperTest {
         String targetUserId = "wrongUserId";
 
 
-        Optional<UserDto> foundUser = sut.findById(targetUserId);
+        Optional<UserDto> foundUser = sut.findUserByUserId(targetUserId);
 
 
         assertTrue(foundUser.isEmpty());
@@ -102,7 +102,7 @@ class UserMapperTest {
         sut.changePassword(changePasswordRequestDto, TEST_USER_ID);
 
 
-        Optional<UserDto> updatedUser = sut.findById(TEST_USER_ID);
+        Optional<UserDto> updatedUser = sut.findUserByUserId(TEST_USER_ID);
         assertTrue(updatedUser.isPresent());
         assertEquals(changePasswordRequestDto.getPassword(), updatedUser.get().getPassword());
     }
@@ -119,7 +119,7 @@ class UserMapperTest {
         sut.updateUser(updateUserRequestDto, TEST_USER_ID);
 
 
-        Optional<UserDto> updatedUser = sut.findById(TEST_USER_ID);
+        Optional<UserDto> updatedUser = sut.findUserByUserId(TEST_USER_ID);
         assertTrue(updatedUser.isPresent());
         assertEquals(updateUserRequestDto.getNickname(), updatedUser.get().getNickname());
     }
@@ -136,7 +136,7 @@ class UserMapperTest {
         sut.updateUser(updateUserRequestDto, TEST_USER_ID);
 
 
-        Optional<UserDto> updatedUser = sut.findById(TEST_USER_ID);
+        Optional<UserDto> updatedUser = sut.findUserByUserId(TEST_USER_ID);
         assertTrue(updatedUser.isPresent());
         assertEquals(updateUserRequestDto.getEmail(), updatedUser.get().getEmail());
     }
@@ -149,7 +149,7 @@ class UserMapperTest {
         sut.deleteUser(TEST_USER_ID);
 
 
-        Optional<UserDto> foundUser = sut.findById(TEST_USER_ID);
+        Optional<UserDto> foundUser = sut.findUserByUserId(TEST_USER_ID);
         assertTrue(foundUser.isEmpty());
     }
 

@@ -24,7 +24,7 @@ public class StubPostService implements PostService {
     }
 
     @Override
-    public OpenPostResponseDto findById(OpenPostRequestDto openPostRequestDto) {
+    public OpenPostResponseDto openPost(OpenPostRequestDto openPostRequestDto) {
         return null;
     }
 }

@@ -15,7 +15,7 @@ public interface UserMapper {
 
     void addAuthority(UserDto userDto);
 
-    Optional<UserDto> findById(String userId);
+    Optional<UserDto> findUserByUserId(String userId);
 
     void updateUser(@Param("updateUserRequestDto") UpdateUserRequestDto updateUserRequestDto,
                     @Param("userId") String userId);

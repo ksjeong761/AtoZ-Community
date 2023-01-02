@@ -42,8 +42,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public OpenPostResponseDto findById(OpenPostRequestDto openPostRequestDto) {
-        return postMapper.findById(openPostRequestDto)
+    public OpenPostResponseDto openPost(OpenPostRequestDto openPostRequestDto) {
+        return postMapper.findPostByPostId(openPostRequestDto.getPostId())
                 .orElseThrow(() -> new NoSuchElementException("게시글이 존재하지 않습니다."));
     }
 

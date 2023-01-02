@@ -38,6 +38,6 @@ public class PostController {
     @PreAuthorize("hasRole('USER')")
     @GetMapping
     public OpenPostResponseDto openPost(@Validated @RequestBody OpenPostRequestDto openPostRequestDto) {
-        return postService.findById(openPostRequestDto);
+        return postService.openPost(openPostRequestDto);
     }
 }

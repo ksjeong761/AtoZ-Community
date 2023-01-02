@@ -14,5 +14,5 @@ public interface PostService {
 
     void deletePost(DeletePostRequestDto deletePostRequestDto);
 
-    OpenPostResponseDto findById(OpenPostRequestDto openPostRequestDto);
+    OpenPostResponseDto openPost(OpenPostRequestDto openPostRequestDto);
 }

@@ -150,7 +150,7 @@ public class PostMapperTest {
                 .build();
 
 
-        Optional<OpenPostResponseDto> result = sut.findById(openPostRequestDto);
+        Optional<OpenPostResponseDto> result = sut.findPostByPostId(openPostRequestDto.getPostId());
 
 
         assertTrue(result.isPresent());
@@ -169,6 +169,6 @@ public class PostMapperTest {
         OpenPostRequestDto openPostRequestDto = OpenPostRequestDto.builder()
                 .postId(postId)
                 .build();
-        return sut.findById(openPostRequestDto);
+        return sut.findPostByPostId(openPostRequestDto.getPostId());
     }
 }

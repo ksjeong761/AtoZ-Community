@@ -10,9 +10,7 @@
         VALUES (#{userId}, #{addPostRequestDto.title}, #{addPostRequestDto.content})
     </insert>
 
-    <select id="findById"
-            resultType="com.atoz.post.dto.response.OpenPostResponseDto"
-            parameterType="com.atoz.post.dto.request.OpenPostRequestDto">
+    <select id="findPostByPostId" resultType="com.atoz.post.dto.response.OpenPostResponseDto">
         SELECT
             post_id AS postId,
             user_id AS userId,
