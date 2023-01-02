@@ -22,7 +22,6 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestPropertySource(locations = "/application-test.yaml")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @MybatisTest
 public class PostMapperTest {
 
@@ -58,7 +57,7 @@ public class PostMapperTest {
         sut.addPost(addPostRequestDto, signedUpUser.getUserId());
 
 
-        Optional<OpenPostResponseDto> result = openPost(1);
+        Optional<OpenPostResponseDto> result = openPost(addPostRequestDto.getPostId());
         assertTrue(result.isPresent());
         assertEquals(addPostRequestDto.getTitle(), result.get().getTitle());
         assertEquals(addPostRequestDto.getContent(), result.get().getContent());
@@ -75,7 +74,7 @@ public class PostMapperTest {
         sut.addPost(addPostRequestDto, signedUpUser.getUserId());
 
 
-        Optional<OpenPostResponseDto> result = openPost(1);
+        Optional<OpenPostResponseDto> result = openPost(addPostRequestDto.getPostId());
         LocalDateTime now = LocalDateTime.now();
         assertEquals(now.getDayOfMonth(), result.get().getCreatedAt().getDayOfMonth());
         assertEquals(now.getHour(), result.get().getCreatedAt().getHour());
@@ -84,10 +83,10 @@ public class PostMapperTest {
 
     @Test
     void updatePost_게시글이_수정된다() {
-        addPost();
+        int postId = addPost();
 
         UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
-                .postId(1)
+                .postId(postId)
                 .userId(signedUpUser.getUserId())
                 .title("newTitle")
                 .content("newContent")
@@ -104,10 +103,10 @@ public class PostMapperTest {
 
     @Test
     void updatePost_게시글을_수정한_시각이_저장된다() {
-        addPost();
+        int postId = addPost();
 
         UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
-                .postId(1)
+                .postId(postId)
                 .userId(signedUpUser.getUserId())
                 .title("newTitle")
                 .content("newContent")
@@ -126,10 +125,10 @@ public class PostMapperTest {
 
     @Test
     void deletePost_게시글이_삭제된다() {
-        addPost();
+        int postId = addPost();
 
         DeletePostRequestDto deletePostRequestDto = DeletePostRequestDto.builder()
-                .postId(1)
+                .postId(postId)
                 .userId(signedUpUser.getUserId())
                 .build();
 
@@ -143,10 +142,10 @@ public class PostMapperTest {
 
     @Test
     void findById_게시글이_조회된다() {
-        addPost();
+        int postId = addPost();
 
         OpenPostRequestDto openPostRequestDto = OpenPostRequestDto.builder()
-                .postId(1)
+                .postId(postId)
                 .build();
 
 
@@ -157,12 +156,14 @@ public class PostMapperTest {
         assertEquals(openPostRequestDto.getPostId(), result.get().getPostId());
     }
 
-    private void addPost() {
+    private int addPost() {
         AddPostRequestDto addPostRequestDto = AddPostRequestDto.builder()
                 .title("testTitle")
                 .content("testContent")
                 .build();
         sut.addPost(addPostRequestDto, signedUpUser.getUserId());
+
+        return addPostRequestDto.getPostId();
     }
 
     private Optional<OpenPostResponseDto> openPost(int postId) {

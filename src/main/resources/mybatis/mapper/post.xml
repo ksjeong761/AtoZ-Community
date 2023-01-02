@@ -5,7 +5,11 @@
 
 <mapper namespace="com.atoz.post.PostMapper">
 
-    <insert id="addPost" parameterType="com.atoz.post.dto.request.AddPostRequestDto">
+    <insert id="addPost"
+            parameterType="com.atoz.post.dto.request.AddPostRequestDto"
+            useGeneratedKeys="true"
+            keyColumn="post_id"
+            keyProperty="addPostRequestDto.postId">
         INSERT INTO posts (user_id, title, content)
         VALUES (#{userId}, #{addPostRequestDto.title}, #{addPostRequestDto.content})
     </insert>
