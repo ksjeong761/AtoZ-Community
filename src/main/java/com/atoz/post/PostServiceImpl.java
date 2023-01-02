@@ -8,12 +8,11 @@ import com.atoz.post.dto.response.OpenPostResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
-import java.util.Optional;
+
+import static com.atoz.security.SecurityUtils.loadUserIdFromContext;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -45,11 +44,6 @@ public class PostServiceImpl implements PostService {
     public OpenPostResponseDto openPost(OpenPostRequestDto openPostRequestDto) {
         return postMapper.findPostByPostId(openPostRequestDto.getPostId())
                 .orElseThrow(() -> new NoSuchElementException("게시글이 존재하지 않습니다."));
-    }
-
-    private String loadUserIdFromContext() {
-        UserDetails userDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userDetails.getUsername();
     }
 
     private void checkOwner(String postOwner) {

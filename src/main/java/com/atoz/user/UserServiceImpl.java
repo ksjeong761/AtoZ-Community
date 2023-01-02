@@ -6,7 +6,6 @@ import com.atoz.user.dto.response.UserResponseDto;
 import com.atoz.user.dto.request.UpdateUserRequestDto;
 import com.atoz.user.dto.UserDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+
+import static com.atoz.security.SecurityUtils.loadUserIdFromContext;
 
 @RequiredArgsConstructor
 @Service
@@ -62,10 +63,5 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 
         return userDto.get().toUserDetails();
-    }
-
-    private String loadUserIdFromContext() {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userDetails.getUsername();
     }
 }
