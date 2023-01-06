@@ -2,7 +2,6 @@ package com.atoz.post;
 
 import com.atoz.post.dto.request.AddPostRequestDto;
 import com.atoz.post.dto.request.DeletePostRequestDto;
-import com.atoz.post.dto.request.OpenPostRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
 import com.atoz.post.dto.response.OpenPostResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -12,10 +11,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/post")
+@RequestMapping("/posts")
 public class PostController {
 
     private final PostService postService;
@@ -28,20 +28,21 @@ public class PostController {
     }
 
     @PreAuthorize("hasRole('USER') and principal.username == #updatePostRequestDto.getUserId()")
-    @PatchMapping
-    public void updatePost(@Valid @RequestBody UpdatePostRequestDto updatePostRequestDto) {
-        postService.updatePost(updatePostRequestDto);
+    @PatchMapping("/{postId}")
+    public void updatePost(@PathVariable @Min(1) long postId,
+                           @Valid @RequestBody UpdatePostRequestDto updatePostRequestDto) {
+        postService.updatePost(postId, updatePostRequestDto);
     }
 
     @PreAuthorize("hasRole('USER') and principal.username == #deletePostRequestDto.getUserId()")
-    @DeleteMapping
-    public void deletePost(@Valid @RequestBody DeletePostRequestDto deletePostRequestDto) {
-        postService.deletePost(deletePostRequestDto);
+    @DeleteMapping("/{postId}")
+    public void deletePost(@PathVariable @Min(1) long postId,
+                           @Valid @RequestBody DeletePostRequestDto deletePostRequestDto) {
+        postService.deletePost(postId, deletePostRequestDto);
     }
 
-    @PreAuthorize("hasRole('USER')")
-    @GetMapping
-    public OpenPostResponseDto openPost(@Valid @RequestBody OpenPostRequestDto openPostRequestDto) {
-        return postService.openPost(openPostRequestDto);
+    @GetMapping("/{postId}")
+    public OpenPostResponseDto openPost(@PathVariable @Min(1) long postId) {
+        return postService.openPost(postId);
     }
 }

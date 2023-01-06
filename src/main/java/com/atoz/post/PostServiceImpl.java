@@ -2,7 +2,6 @@ package com.atoz.post;
 
 import com.atoz.post.dto.request.AddPostRequestDto;
 import com.atoz.post.dto.request.DeletePostRequestDto;
-import com.atoz.post.dto.request.OpenPostRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
 import com.atoz.post.dto.response.OpenPostResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -25,18 +24,18 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void updatePost(UpdatePostRequestDto updatePostRequestDto) {
-        postMapper.updatePost(updatePostRequestDto);
+    public void updatePost(long postId, UpdatePostRequestDto updatePostRequestDto) {
+        postMapper.updatePost(postId, updatePostRequestDto);
     }
 
     @Override
-    public void deletePost(DeletePostRequestDto deletePostRequestDto) {
-        postMapper.deletePost(deletePostRequestDto);
+    public void deletePost(long postId, DeletePostRequestDto deletePostRequestDto) {
+        postMapper.deletePost(postId, deletePostRequestDto);
     }
 
     @Override
-    public OpenPostResponseDto openPost(OpenPostRequestDto openPostRequestDto) {
-        return postMapper.findPostByPostId(openPostRequestDto.getPostId())
+    public OpenPostResponseDto openPost(long postId) {
+        return postMapper.findPostByPostId(postId)
                 .orElseThrow(() -> new NoSuchElementException("게시글이 존재하지 않습니다."));
     }
 }

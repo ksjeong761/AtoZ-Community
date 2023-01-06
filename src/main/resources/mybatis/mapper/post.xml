@@ -32,13 +32,15 @@
     <update id="updatePost" parameterType="com.atoz.post.dto.request.UpdatePostRequestDto">
         UPDATE posts
         SET
-            title = #{title},
-            content = #{content}
-        WHERE post_id = #{postId} AND user_id = #{userId}
+            title = #{updatePostRequestDto.title},
+            content = #{updatePostRequestDto.content}
+        WHERE post_id = #{postId}
+        AND user_id = #{updatePostRequestDto.userId}
     </update>
 
     <delete id="deletePost" parameterType="com.atoz.post.dto.request.DeletePostRequestDto">
         DELETE FROM posts
-        WHERE post_id = #{postId} AND user_id = #{userId}
+        WHERE post_id = #{postId}
+        AND user_id = #{deletePostRequestDto.userId}
     </delete>
 </mapper>
