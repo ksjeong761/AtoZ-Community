@@ -83,7 +83,7 @@ public class PostMapperTest {
 
     @Test
     void updatePost_게시글이_수정된다() {
-        int postId = addPost();
+        long postId = addPost();
 
         UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
                 .postId(postId)
@@ -103,7 +103,7 @@ public class PostMapperTest {
 
     @Test
     void updatePost_게시글을_수정한_시각이_저장된다() {
-        int postId = addPost();
+        long postId = addPost();
 
         UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
                 .postId(postId)
@@ -125,7 +125,7 @@ public class PostMapperTest {
 
     @Test
     void deletePost_게시글이_삭제된다() {
-        int postId = addPost();
+        long postId = addPost();
 
         DeletePostRequestDto deletePostRequestDto = DeletePostRequestDto.builder()
                 .postId(postId)
@@ -142,7 +142,7 @@ public class PostMapperTest {
 
     @Test
     void findById_게시글이_조회된다() {
-        int postId = addPost();
+        long postId = addPost();
 
         OpenPostRequestDto openPostRequestDto = OpenPostRequestDto.builder()
                 .postId(postId)
@@ -156,7 +156,7 @@ public class PostMapperTest {
         assertEquals(openPostRequestDto.getPostId(), result.get().getPostId());
     }
 
-    private int addPost() {
+    private long addPost() {
         AddPostRequestDto addPostRequestDto = AddPostRequestDto.builder()
                 .title("testTitle")
                 .content("testContent")
@@ -166,7 +166,7 @@ public class PostMapperTest {
         return addPostRequestDto.getPostId();
     }
 
-    private Optional<OpenPostResponseDto> openPost(int postId) {
+    private Optional<OpenPostResponseDto> openPost(long postId) {
         OpenPostRequestDto openPostRequestDto = OpenPostRequestDto.builder()
                 .postId(postId)
                 .build();

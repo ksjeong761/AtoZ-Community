@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeletePostRequestDto {
-    private int postId;
+    private long postId;
     private String userId;
 }

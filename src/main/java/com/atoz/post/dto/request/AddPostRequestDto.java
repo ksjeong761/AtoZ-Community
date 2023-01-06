@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class AddPostRequestDto {
     @Nullable
-    private int postId;
+    private long postId;
     private String title;
     private String content;
 }

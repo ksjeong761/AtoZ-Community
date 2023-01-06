@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OpenPostRequestDto {
-    private int postId;
+    private long postId;
 }

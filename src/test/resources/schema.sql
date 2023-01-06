@@ -28,7 +28,7 @@ CREATE TABLE refresh_token
 );
 
 CREATE TABLE posts (
-    post_id INT AUTO_INCREMENT,
+    post_id BIGINT AUTO_INCREMENT,
     user_id VARCHAR(20),
     title VARCHAR(128),
     content VARCHAR(4096),

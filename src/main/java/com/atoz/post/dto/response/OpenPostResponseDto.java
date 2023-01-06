@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OpenPostResponseDto {
-    private int postId;
+    private long postId;
     private String userId;
 
     private String title;

@@ -29,7 +29,7 @@ public class SpyPostMapper implements PostMapper {
     }
 
     @Override
-    public Optional<OpenPostResponseDto> findPostByPostId(int postId) {
+    public Optional<OpenPostResponseDto> findPostByPostId(long postId) {
         return null;
     }
 }

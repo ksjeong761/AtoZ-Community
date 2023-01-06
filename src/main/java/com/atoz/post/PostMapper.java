@@ -20,5 +20,5 @@ public interface PostMapper {
 
     void deletePost(DeletePostRequestDto deletePostRequestDto);
 
-    Optional<OpenPostResponseDto> findPostByPostId(int postId);
+    Optional<OpenPostResponseDto> findPostByPostId(long postId);
 }
