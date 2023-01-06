@@ -3,7 +3,6 @@ package com.atoz.post.helper;
 import com.atoz.post.PostMapper;
 import com.atoz.post.dto.request.AddPostRequestDto;
 import com.atoz.post.dto.request.DeletePostRequestDto;
-import com.atoz.post.dto.request.OpenPostRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
 import com.atoz.post.dto.response.OpenPostResponseDto;
 
@@ -19,12 +18,12 @@ public class SpyPostMapper implements PostMapper {
     }
 
     @Override
-    public void updatePost(UpdatePostRequestDto updatePostRequestDto) {
+    public void updatePost(long postId, UpdatePostRequestDto updatePostRequestDto) {
 
     }
 
     @Override
-    public void deletePost(DeletePostRequestDto deletePostRequestDto) {
+    public void deletePost(long postId, DeletePostRequestDto deletePostRequestDto) {
 
     }
 

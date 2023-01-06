@@ -2,7 +2,6 @@ package com.atoz.post;
 
 import com.atoz.post.dto.request.AddPostRequestDto;
 import com.atoz.post.dto.request.DeletePostRequestDto;
-import com.atoz.post.dto.request.OpenPostRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
 import com.atoz.post.dto.response.OpenPostResponseDto;
 import com.atoz.user.Authority;
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 
 import java.time.LocalDateTime;
@@ -86,17 +84,16 @@ public class PostMapperTest {
         long postId = addPost();
 
         UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
-                .postId(postId)
                 .userId(signedUpUser.getUserId())
                 .title("newTitle")
                 .content("newContent")
                 .build();
 
 
-        sut.updatePost(updatePostRequestDto);
+        sut.updatePost(postId, updatePostRequestDto);
 
 
-        Optional<OpenPostResponseDto> result = openPost(updatePostRequestDto.getPostId());
+        Optional<OpenPostResponseDto> result = openPost(postId);
         assertEquals(updatePostRequestDto.getTitle(), result.get().getTitle());
         assertEquals(updatePostRequestDto.getContent(), result.get().getContent());
     }
@@ -106,17 +103,16 @@ public class PostMapperTest {
         long postId = addPost();
 
         UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
-                .postId(postId)
                 .userId(signedUpUser.getUserId())
                 .title("newTitle")
                 .content("newContent")
                 .build();
 
 
-        sut.updatePost(updatePostRequestDto);
+        sut.updatePost(postId, updatePostRequestDto);
 
 
-        Optional<OpenPostResponseDto> result = openPost(updatePostRequestDto.getPostId());
+        Optional<OpenPostResponseDto> result = openPost(postId);
         LocalDateTime now = LocalDateTime.now();
         assertEquals(now.getDayOfMonth(), result.get().getUpdatedAt().getDayOfMonth());
         assertEquals(now.getHour(), result.get().getUpdatedAt().getHour());
@@ -128,15 +124,14 @@ public class PostMapperTest {
         long postId = addPost();
 
         DeletePostRequestDto deletePostRequestDto = DeletePostRequestDto.builder()
-                .postId(postId)
                 .userId(signedUpUser.getUserId())
                 .build();
 
 
-        sut.deletePost(deletePostRequestDto);
+        sut.deletePost(postId, deletePostRequestDto);
 
 
-        Optional<OpenPostResponseDto> result = openPost(deletePostRequestDto.getPostId());
+        Optional<OpenPostResponseDto> result = openPost(postId);
         assertTrue(result.isEmpty());
     }
 
@@ -144,16 +139,12 @@ public class PostMapperTest {
     void findById_게시글이_조회된다() {
         long postId = addPost();
 
-        OpenPostRequestDto openPostRequestDto = OpenPostRequestDto.builder()
-                .postId(postId)
-                .build();
 
-
-        Optional<OpenPostResponseDto> result = sut.findPostByPostId(openPostRequestDto.getPostId());
+        Optional<OpenPostResponseDto> result = sut.findPostByPostId(postId);
 
 
         assertTrue(result.isPresent());
-        assertEquals(openPostRequestDto.getPostId(), result.get().getPostId());
+        assertEquals(postId, result.get().getPostId());
     }
 
     private long addPost() {
@@ -167,9 +158,6 @@ public class PostMapperTest {
     }
 
     private Optional<OpenPostResponseDto> openPost(long postId) {
-        OpenPostRequestDto openPostRequestDto = OpenPostRequestDto.builder()
-                .postId(postId)
-                .build();
-        return sut.findPostByPostId(openPostRequestDto.getPostId());
+        return sut.findPostByPostId(postId);
     }
 }

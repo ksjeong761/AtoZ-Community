@@ -3,18 +3,13 @@ package com.atoz.post;
 import com.atoz.error.GlobalExceptionAdvice;
 import com.atoz.post.dto.request.AddPostRequestDto;
 import com.atoz.post.dto.request.DeletePostRequestDto;
-import com.atoz.post.dto.request.OpenPostRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
 import com.atoz.post.helper.StubPostService;
-import com.atoz.security.authentication.helper.CustomWithMockUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -47,7 +42,7 @@ public class PostControllerTest {
                 .build();
 
 
-        ResultActions resultActions = sut.perform(post("/post")
+        ResultActions resultActions = sut.perform(post("/posts")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(addPostRequestDto)));
 
@@ -57,15 +52,15 @@ public class PostControllerTest {
 
     @Test
     void updatePost_게시글_수정_요청에_성공한다() throws Exception {
+        long postId = 1;
         UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
-                .postId(1)
                 .userId("testUserId")
                 .title("newTitle")
                 .content("newContent")
                 .build();
 
 
-        ResultActions resultActions = sut.perform(patch("/post")
+        ResultActions resultActions = sut.perform(patch("/posts/{postId}", postId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updatePostRequestDto)));
 
@@ -75,13 +70,13 @@ public class PostControllerTest {
 
     @Test
     void deletePost_게시글_삭제_요청에_성공한다() throws Exception {
+        long postId = 1;
         DeletePostRequestDto deletePostRequestDto = DeletePostRequestDto.builder()
-                .postId(1)
                 .userId("testUserId")
                 .build();
 
 
-        ResultActions resultActions = sut.perform(delete("/post")
+        ResultActions resultActions = sut.perform(delete("/posts/{postId}", postId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(deletePostRequestDto)));
 
@@ -91,14 +86,11 @@ public class PostControllerTest {
 
     @Test
     void openPost_게시글_열기_요청에_성공한다() throws Exception {
-        OpenPostRequestDto openPostRequestDto = OpenPostRequestDto.builder()
-                .postId(1)
-                .build();
+        long postId = 1;
 
 
-        ResultActions resultActions = sut.perform(get("/post")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(openPostRequestDto)));
+        ResultActions resultActions = sut.perform(get("/posts/{postId}", postId)
+                .contentType(MediaType.APPLICATION_JSON));
 
 
         resultActions.andExpect(status().isOk());
