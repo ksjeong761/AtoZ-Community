@@ -3,7 +3,9 @@ package com.atoz.post.helper;
 import com.atoz.post.PostService;
 import com.atoz.post.dto.request.AddPostRequestDto;
 import com.atoz.post.dto.request.DeletePostRequestDto;
+import com.atoz.post.dto.request.LoadPostsRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
+import com.atoz.post.dto.response.LoadPostsResponseDto;
 import com.atoz.post.dto.response.OpenPostResponseDto;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -25,6 +27,11 @@ public class StubPostService implements PostService {
 
     @Override
     public OpenPostResponseDto openPost(long postId) {
+        return null;
+    }
+
+    @Override
+    public LoadPostsResponseDto loadPosts(LoadPostsRequestDto loadPostsRequestDto) {
         return null;
     }
 }

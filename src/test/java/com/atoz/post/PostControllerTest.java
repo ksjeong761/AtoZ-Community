@@ -3,6 +3,7 @@ package com.atoz.post;
 import com.atoz.error.GlobalExceptionAdvice;
 import com.atoz.post.dto.request.AddPostRequestDto;
 import com.atoz.post.dto.request.DeletePostRequestDto;
+import com.atoz.post.dto.request.LoadPostsRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
 import com.atoz.post.helper.StubPostService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,6 +33,25 @@ public class PostControllerTest {
                 .setCustomArgumentResolvers(new AuthenticationPrincipalArgumentResolver())
                 .setControllerAdvice(GlobalExceptionAdvice.class)
                 .build();
+    }
+
+    @Test
+    void loadPosts_게시글_목록_가져오기_요청에_성공한다() throws Exception {
+        LoadPostsRequestDto loadPostsRequestDto = LoadPostsRequestDto.builder()
+                .offset(0)
+                .limit(10)
+                .build();
+
+
+        ResultActions resultActions = sut.perform(
+                get("/posts?offset={offset}&limit={limit}",
+                    loadPostsRequestDto.getOffset(),
+                    loadPostsRequestDto.getLimit()
+                )
+        );
+
+
+        resultActions.andExpect(status().isOk());
     }
 
     @Test

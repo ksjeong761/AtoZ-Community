@@ -1,7 +1,9 @@
 package com.atoz.post;
 
+import com.atoz.post.dto.domain.PostSummary;
 import com.atoz.post.dto.request.AddPostRequestDto;
 import com.atoz.post.dto.request.DeletePostRequestDto;
+import com.atoz.post.dto.request.LoadPostsRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
 import com.atoz.post.dto.response.OpenPostResponseDto;
 import com.atoz.user.Authority;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.TestPropertySource;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -42,6 +45,41 @@ public class PostMapperTest {
                 .build();
         userMapper.addUser(signedUpUser);
         userMapper.addAuthority(signedUpUser);
+    }
+
+    @Test
+    void loadPosts_게시글_목록을_불러온다() {
+        this.addPosts(10);
+        LoadPostsRequestDto loadPostsRequestDto = LoadPostsRequestDto.builder()
+                .offset(0)
+                .limit(10)
+                .build();
+
+
+        List<PostSummary> result = sut.loadPosts(loadPostsRequestDto);
+
+
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(loadPostsRequestDto.getLimit(), result.size());
+    }
+
+    @Test
+    void loadPosts_게시글_수보다_많은_목록을_불러오면_게시글_목록이_모두_조회된다() {
+        long listSize = 7;
+        this.addPosts(listSize);
+        LoadPostsRequestDto loadPostsRequestDto = LoadPostsRequestDto.builder()
+                .offset(0)
+                .limit(10)
+                .build();
+
+
+        List<PostSummary> result = sut.loadPosts(loadPostsRequestDto);
+
+
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(listSize, result.size());
     }
 
     @Test
@@ -81,7 +119,7 @@ public class PostMapperTest {
 
     @Test
     void updatePost_게시글이_수정된다() {
-        long postId = addPost();
+        long postId = this.addPost();
 
         UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
                 .userId(signedUpUser.getUserId())
@@ -100,7 +138,7 @@ public class PostMapperTest {
 
     @Test
     void updatePost_게시글을_수정한_시각이_저장된다() {
-        long postId = addPost();
+        long postId = this.addPost();
 
         UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
                 .userId(signedUpUser.getUserId())
@@ -121,7 +159,7 @@ public class PostMapperTest {
 
     @Test
     void deletePost_게시글이_삭제된다() {
-        long postId = addPost();
+        long postId = this.addPost();
 
         DeletePostRequestDto deletePostRequestDto = DeletePostRequestDto.builder()
                 .userId(signedUpUser.getUserId())
@@ -137,7 +175,7 @@ public class PostMapperTest {
 
     @Test
     void findById_게시글이_조회된다() {
-        long postId = addPost();
+        long postId = this.addPost();
 
 
         Optional<OpenPostResponseDto> result = sut.findPostByPostId(postId);
@@ -145,6 +183,12 @@ public class PostMapperTest {
 
         assertTrue(result.isPresent());
         assertEquals(postId, result.get().getPostId());
+    }
+
+    private void addPosts(long listSize) {
+        for (long i = 0; i < listSize; i++) {
+            this.addPost();
+        }
     }
 
     private long addPost() {
