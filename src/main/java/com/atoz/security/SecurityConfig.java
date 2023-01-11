@@ -6,6 +6,7 @@ import com.atoz.security.authentication.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -71,7 +72,10 @@ public class SecurityConfig {
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorize -> authorize
-                        .mvcMatchers("/auth/signin", "/user/signup").permitAll()
+                        .mvcMatchers(HttpMethod.POST, "/auth/signin").permitAll()
+                        .mvcMatchers(HttpMethod.POST,"/user/signup").permitAll()
+                        .mvcMatchers(HttpMethod.GET,"/posts").permitAll()
+                        .mvcMatchers(HttpMethod.GET,"/posts/{postId}").permitAll()
                         .anyRequest().authenticated());
 
         return http.build();

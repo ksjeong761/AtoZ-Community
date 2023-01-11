@@ -5,6 +5,21 @@
 
 <mapper namespace="com.atoz.post.PostMapper">
 
+    <select id="loadPosts"
+            parameterType="com.atoz.post.dto.request.LoadPostsRequestDto"
+            resultType="com.atoz.post.dto.domain.PostSummary">
+        SELECT
+            post_id AS postId,
+            user_id AS userId,
+            title,
+            like_count AS likeCount,
+            view_count AS viewCount,
+            created_at AS createdAt
+        FROM posts
+        ORDER BY created_at DESC, post_id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
     <insert id="addPost"
             parameterType="com.atoz.post.dto.request.AddPostRequestDto"
             useGeneratedKeys="true"
