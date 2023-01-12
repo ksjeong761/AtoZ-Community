@@ -1,11 +1,11 @@
 package com.atoz.post;
 
+import com.atoz.post.dto.domain.Post;
 import com.atoz.post.dto.domain.PostSummary;
 import com.atoz.post.dto.request.AddPostRequestDto;
 import com.atoz.post.dto.request.DeletePostRequestDto;
 import com.atoz.post.dto.request.LoadPostsRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
-import com.atoz.post.dto.response.OpenPostResponseDto;
 import com.atoz.user.Authority;
 import com.atoz.user.UserMapper;
 import com.atoz.user.dto.UserDto;
@@ -93,10 +93,10 @@ public class PostMapperTest {
         sut.addPost(addPostRequestDto, signedUpUser.getUserId());
 
 
-        Optional<OpenPostResponseDto> result = openPost(addPostRequestDto.getPostId());
-        assertTrue(result.isPresent());
-        assertEquals(addPostRequestDto.getTitle(), result.get().getTitle());
-        assertEquals(addPostRequestDto.getContent(), result.get().getContent());
+        Optional<Post> result = openPost(addPostRequestDto.getPostId());
+        Post post = result.get();
+        assertEquals(addPostRequestDto.getTitle(), post.getTitle());
+        assertEquals(addPostRequestDto.getContent(), post.getContent());
     }
 
     @Test
@@ -110,11 +110,12 @@ public class PostMapperTest {
         sut.addPost(addPostRequestDto, signedUpUser.getUserId());
 
 
-        Optional<OpenPostResponseDto> result = openPost(addPostRequestDto.getPostId());
+        Optional<Post> result = openPost(addPostRequestDto.getPostId());
+        Post post = result.get();
         LocalDateTime now = LocalDateTime.now();
-        assertEquals(now.getDayOfMonth(), result.get().getCreatedAt().getDayOfMonth());
-        assertEquals(now.getHour(), result.get().getCreatedAt().getHour());
-        assertEquals(now.getMinute(), result.get().getCreatedAt().getMinute());
+        assertEquals(now.getDayOfMonth(), post.getCreatedAt().getDayOfMonth());
+        assertEquals(now.getHour(), post.getCreatedAt().getHour());
+        assertEquals(now.getMinute(), post.getCreatedAt().getMinute());
     }
 
     @Test
@@ -131,9 +132,10 @@ public class PostMapperTest {
         sut.updatePost(postId, updatePostRequestDto);
 
 
-        Optional<OpenPostResponseDto> result = openPost(postId);
-        assertEquals(updatePostRequestDto.getTitle(), result.get().getTitle());
-        assertEquals(updatePostRequestDto.getContent(), result.get().getContent());
+        Optional<Post> result = openPost(postId);
+        Post post = result.get();
+        assertEquals(updatePostRequestDto.getTitle(), post.getTitle());
+        assertEquals(updatePostRequestDto.getContent(), post.getContent());
     }
 
     @Test
@@ -150,11 +152,12 @@ public class PostMapperTest {
         sut.updatePost(postId, updatePostRequestDto);
 
 
-        Optional<OpenPostResponseDto> result = openPost(postId);
+        Optional<Post> result = openPost(postId);
+        Post post = result.get();
         LocalDateTime now = LocalDateTime.now();
-        assertEquals(now.getDayOfMonth(), result.get().getUpdatedAt().getDayOfMonth());
-        assertEquals(now.getHour(), result.get().getUpdatedAt().getHour());
-        assertEquals(now.getMinute(), result.get().getUpdatedAt().getMinute());
+        assertEquals(now.getDayOfMonth(), post.getUpdatedAt().getDayOfMonth());
+        assertEquals(now.getHour(), post.getUpdatedAt().getHour());
+        assertEquals(now.getMinute(), post.getUpdatedAt().getMinute());
     }
 
     @Test
@@ -169,7 +172,7 @@ public class PostMapperTest {
         sut.deletePost(postId, deletePostRequestDto);
 
 
-        Optional<OpenPostResponseDto> result = openPost(postId);
+        Optional<Post> result = openPost(postId);
         assertTrue(result.isEmpty());
     }
 
@@ -178,7 +181,7 @@ public class PostMapperTest {
         long postId = this.addPost();
 
 
-        Optional<OpenPostResponseDto> result = sut.findPostByPostId(postId);
+        Optional<Post> result = sut.findPostByPostId(postId);
 
 
         assertTrue(result.isPresent());
@@ -201,7 +204,7 @@ public class PostMapperTest {
         return addPostRequestDto.getPostId();
     }
 
-    private Optional<OpenPostResponseDto> openPost(long postId) {
+    private Optional<Post> openPost(long postId) {
         return sut.findPostByPostId(postId);
     }
 }

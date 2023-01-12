@@ -29,7 +29,7 @@
         VALUES (#{userId}, #{addPostRequestDto.title}, #{addPostRequestDto.content})
     </insert>
 
-    <select id="findPostByPostId" resultType="com.atoz.post.dto.response.OpenPostResponseDto">
+    <select id="findPostByPostId" resultType="com.atoz.post.dto.domain.Post">
         SELECT
             post_id AS postId,
             user_id AS userId,

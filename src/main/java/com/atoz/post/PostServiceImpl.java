@@ -1,5 +1,6 @@
 package com.atoz.post;
 
+import com.atoz.post.dto.domain.Post;
 import com.atoz.post.dto.domain.PostSummary;
 import com.atoz.post.dto.request.AddPostRequestDto;
 import com.atoz.post.dto.request.DeletePostRequestDto;
@@ -39,8 +40,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public OpenPostResponseDto openPost(long postId) {
-        return postMapper.findPostByPostId(postId)
+        Post post = postMapper.findPostByPostId(postId)
                 .orElseThrow(() -> new NoSuchElementException("게시글이 존재하지 않습니다."));
+        return OpenPostResponseDto.builder()
+                .post(post)
+                .build();
     }
 
     @Override

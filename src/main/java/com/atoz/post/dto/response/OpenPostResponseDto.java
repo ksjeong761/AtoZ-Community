@@ -1,5 +1,6 @@
 package com.atoz.post.dto.response;
 
+import com.atoz.post.dto.domain.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,17 +13,5 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OpenPostResponseDto {
-    private long postId;
-    private String userId;
-
-    private String title;
-    private String content;
-
-    private int likeCount;
-    private int viewCount;
-
-    private String comments;
-
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Post post;
 }
