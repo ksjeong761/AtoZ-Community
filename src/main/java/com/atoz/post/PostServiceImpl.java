@@ -12,12 +12,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class PostServiceImpl implements PostService {
 
@@ -34,12 +36,19 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public void increaseLikeCount(long postId) {
+        postMapper.increaseLikeCount(postId);
+    }
+
+    @Override
     public void deletePost(long postId, DeletePostRequestDto deletePostRequestDto) {
         postMapper.deletePost(postId, deletePostRequestDto);
     }
 
     @Override
     public OpenPostResponseDto openPost(long postId) {
+        postMapper.increaseViewCount(postId);
+
         Post post = postMapper.findPostByPostId(postId)
                 .orElseThrow(() -> new NoSuchElementException("게시글이 존재하지 않습니다."));
         return OpenPostResponseDto.builder()

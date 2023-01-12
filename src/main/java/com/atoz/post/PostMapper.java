@@ -22,6 +22,10 @@ public interface PostMapper {
     void updatePost(@Param("postId") long postId,
                     @Param("updatePostRequestDto") UpdatePostRequestDto updatePostRequestDto);
 
+    void increaseViewCount(long postId);
+
+    void increaseLikeCount(long postId);
+
     void deletePost(@Param("postId") long postId,
                     @Param("deletePostRequestDto") DeletePostRequestDto deletePostRequestDto);
 

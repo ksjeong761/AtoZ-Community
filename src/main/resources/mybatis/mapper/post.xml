@@ -57,6 +57,18 @@
         AND user_id = #{updatePostRequestDto.userId}
     </update>
 
+    <update id="increaseViewCount">
+        UPDATE posts
+        SET view_count = view_count + 1
+        WHERE post_id = #{postId}
+    </update>
+
+    <update id="increaseLikeCount">
+        UPDATE posts
+        SET like_count = like_count + 1
+        WHERE post_id = #{postId}
+    </update>
+
     <delete id="deletePost" parameterType="com.atoz.post.dto.request.DeletePostRequestDto">
         DELETE FROM posts
         WHERE post_id = #{postId}

@@ -36,6 +36,12 @@ public class PostController {
         postService.updatePost(postId, updatePostRequestDto);
     }
 
+    @PreAuthorize("hasRole('USER')")
+    @PatchMapping("/{postId}/likeCount")
+    public void increaseLikeCount(@PathVariable @Min(1) long postId) {
+        postService.increaseLikeCount(postId);
+    }
+
     @PreAuthorize("hasRole('USER') and principal.username == #deletePostRequestDto.getUserId()")
     @DeleteMapping("/{postId}")
     public void deletePost(@PathVariable @Min(1) long postId,

@@ -14,6 +14,8 @@ public interface PostService {
 
     void updatePost(long postId, UpdatePostRequestDto updatePostRequestDto);
 
+    void increaseLikeCount(long postId);
+
     void deletePost(long postId, DeletePostRequestDto deletePostRequestDto);
 
     OpenPostResponseDto openPost(long postId);

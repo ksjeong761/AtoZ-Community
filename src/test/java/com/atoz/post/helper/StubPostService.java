@@ -21,6 +21,11 @@ public class StubPostService implements PostService {
     }
 
     @Override
+    public void increaseLikeCount(long postId) {
+        
+    }
+
+    @Override
     public void deletePost(long postId, DeletePostRequestDto deletePostRequestDto) {
 
     }

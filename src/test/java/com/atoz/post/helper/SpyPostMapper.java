@@ -26,6 +26,16 @@ public class SpyPostMapper implements PostMapper {
     }
 
     @Override
+    public void increaseViewCount(long postId) {
+
+    }
+
+    @Override
+    public void increaseLikeCount(long postId) {
+
+    }
+
+    @Override
     public void deletePost(long postId, DeletePostRequestDto deletePostRequestDto) {
 
     }
