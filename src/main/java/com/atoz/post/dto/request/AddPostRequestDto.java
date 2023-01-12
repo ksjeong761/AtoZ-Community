@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Getter
 @Builder
@@ -15,6 +16,13 @@ import javax.validation.constraints.NotNull;
 public class AddPostRequestDto {
     @Nullable
     private long postId;
+
     private String title;
     private String content;
+
+    @Size(max = 127)
+    private String hashtags;
+
+    @Size(max = 127)
+    private String categories;
 }

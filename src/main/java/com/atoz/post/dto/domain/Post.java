@@ -17,6 +17,8 @@ public class Post {
 
     private String title;
     private String content;
+    private String hashtags;
+    private String categories;
 
     private int likeCount;
     private int viewCount;

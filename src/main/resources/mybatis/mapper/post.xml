@@ -12,6 +12,8 @@
             post_id AS postId,
             user_id AS userId,
             title,
+            hashtags,
+            categories,
             like_count AS likeCount,
             view_count AS viewCount,
             created_at AS createdAt
@@ -35,6 +37,8 @@
             user_id AS userId,
             title,
             content,
+            hashtags,
+            categories,
             like_count AS likeCount,
             view_count AS viewCount,
             comments,

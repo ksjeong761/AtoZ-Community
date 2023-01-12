@@ -7,6 +7,8 @@ public class PostSummary {
     private String userId;
 
     private String title;
+    private String hashtags;
+    private String categories;
 
     private int likeCount;
     private int viewCount;
