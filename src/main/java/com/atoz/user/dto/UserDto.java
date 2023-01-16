@@ -27,6 +27,8 @@ public class UserDto {
 
     private String email;
 
+    private int age;
+
     private Set<Authority> authorities;
 
     public UserDetails toUserDetails() {

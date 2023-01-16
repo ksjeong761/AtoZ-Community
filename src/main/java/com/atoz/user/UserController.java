@@ -29,6 +29,7 @@ public class UserController {
                 .password(passwordEncoder.encode(signupRequestDto.getPassword()))
                 .email(signupRequestDto.getEmail())
                 .nickname(signupRequestDto.getNickname())
+                .age(signupRequestDto.getAge())
                 .authorities(Set.of(Authority.ROLE_USER))
                 .build();
 

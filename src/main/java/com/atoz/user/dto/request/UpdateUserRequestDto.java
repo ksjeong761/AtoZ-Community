@@ -5,10 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @Getter
 @Builder
@@ -27,4 +24,9 @@ public class UpdateUserRequestDto {
     @NotBlank(message = "이메일을 반드시 입력해주세요.")
     @Email(message = "이메일 형식이 잘못되었습니다.")
     private String email;
+
+    @NotNull(message = "나이를 반드시 입력해주세요.")
+    @Min(value = 1, message = "1 이상의 나이를 입력해주세요.")
+    @Max(value = 200, message = "200 이하의 나이를 입력해주세요.")
+    private int age;
 }

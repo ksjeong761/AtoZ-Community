@@ -46,6 +46,7 @@ class UserControllerTest {
                 .password("testPassword")
                 .nickname("testNickname")
                 .email("test@test.com")
+                .age(33)
                 .build();
 
 
@@ -64,6 +65,7 @@ class UserControllerTest {
                 .password("testPassword")
                 .nickname("testNickname")
                 .email("test@test.com")
+                .age(33)
                 .build();
 
 
@@ -83,6 +85,7 @@ class UserControllerTest {
                 .password("testPassword")
                 .nickname("testNickname")
                 .email("test@test.com")
+                .age(33)
                 .build();
 
 
@@ -100,6 +103,7 @@ class UserControllerTest {
                 .userId("testUserId")
                 .password("testPassword")
                 .email("test@test.com")
+                .age(33)
                 .build();
 
 
@@ -117,6 +121,7 @@ class UserControllerTest {
                 .userId("testUserId")
                 .nickname("testNickname")
                 .email("test@test.com")
+                .age(33)
                 .build();
 
 
@@ -134,6 +139,7 @@ class UserControllerTest {
                 .userId("testUserId")
                 .password("testPassword")
                 .nickname("testNickname")
+                .age(33)
                 .build();
 
 
@@ -152,6 +158,7 @@ class UserControllerTest {
                 .password("testPassword")
                 .nickname("testNickname")
                 .email("test@test.com")
+                .age(33)
                 .build();
 
 
@@ -170,6 +177,7 @@ class UserControllerTest {
                 .password("testPassword")
                 .nickname("")
                 .email("test@test.com")
+                .age(33)
                 .build();
 
 
@@ -188,6 +196,7 @@ class UserControllerTest {
                 .password("")
                 .nickname("testNickname")
                 .email("test@test.com")
+                .age(33)
                 .build();
 
 
@@ -206,6 +215,7 @@ class UserControllerTest {
                 .password("testPassword")
                 .nickname("testNickname")
                 .email("not email")
+                .age(33)
                 .build();
 
 
@@ -223,6 +233,7 @@ class UserControllerTest {
                 .userId("testUserId")
                 .nickname("testNickname")
                 .email("test@test.com")
+                .age(77)
                 .build();
 
 

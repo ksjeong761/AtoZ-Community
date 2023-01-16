@@ -3,9 +3,10 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.atoz.user.UserMapper">
+
     <insert id="addUser" parameterType="com.atoz.user.dto.UserDto">
-        INSERT INTO users (user_id, password, nickname, email)
-        VALUES (#{userId}, #{password}, #{nickname}, #{email});
+        INSERT INTO users (user_id, password, nickname, email, age)
+        VALUES (#{userId}, #{password}, #{nickname}, #{email}, #{age});
     </insert>
 
     <insert id="addAuthority" parameterType="com.atoz.user.dto.UserDto">
@@ -24,6 +25,7 @@
         <result property="password" column="password"/>
         <result property="nickname" column="nickname"/>
         <result property="email" column="email"/>
+        <result property="age" column="age"/>
         <collection property="authorities" column="user_id" select="AuthorityResultMap"/>
     </resultMap>
 
@@ -38,7 +40,8 @@
             user_id,
             password,
             nickname,
-            email
+            email,
+            age
         FROM users
         WHERE user_id = #{user_id}
     </select>
@@ -47,7 +50,8 @@
         UPDATE users
         SET
             nickname = #{nickname},
-            email = #{email}
+            email = #{email},
+            age = #{age}
         WHERE user_id = #{userId}
     </update>
 

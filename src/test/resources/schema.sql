@@ -3,7 +3,8 @@ CREATE TABLE users (
     user_id VARCHAR(20) UNIQUE NOT NULL,
     password VARCHAR(256) NOT NULL,
     nickname VARCHAR(20) NOT NULL,
-    email VARCHAR(320) NOT NULL
+    email VARCHAR(320) NOT NULL,
+    age INT NOT NULL
 );
 
 CREATE TABLE authority (
