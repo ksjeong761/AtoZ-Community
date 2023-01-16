@@ -30,11 +30,11 @@ CREATE TABLE refresh_token
 
 CREATE TABLE posts (
     post_id BIGINT AUTO_INCREMENT,
-    user_id VARCHAR(20),
-    title VARCHAR(128),
-    content VARCHAR(4096),
-    hashtags VARCHAR(128),
-    categories VARCHAR(128),
+    user_id VARCHAR(20) NOT NULL,
+    title VARCHAR(128) NOT NULL,
+    content VARCHAR(4096) NOT NULL,
+    hashtags VARCHAR(128) DEFAULT '',
+    categories VARCHAR(128) DEFAULT '',
     like_count INT DEFAULT 0,
     view_count INT DEFAULT 0,
     comments VARCHAR(512) DEFAULT '',

@@ -48,11 +48,12 @@ public class PostMapperTest {
     }
 
     @Test
-    void loadPosts_게시글_목록을_불러온다() {
-        this.addPosts(10);
+    void loadPosts_원하는_갯수만큼의_게시글_목록을_불러온다() {
+        long limit = 10;
+        this.addPosts(20);
         LoadPostsRequestDto loadPostsRequestDto = LoadPostsRequestDto.builder()
                 .offset(0)
-                .limit(10)
+                .limit(limit)
                 .build();
 
 
@@ -61,11 +62,11 @@ public class PostMapperTest {
 
         assertNotNull(result);
         assertFalse(result.isEmpty());
-        assertEquals(loadPostsRequestDto.getLimit(), result.size());
+        assertEquals(limit, result.size());
     }
 
     @Test
-    void loadPosts_게시글_수보다_많은_목록을_불러오면_게시글_목록이_모두_조회된다() {
+    void loadPosts_게시글_수보다_많은_갯수를_지정하면_모든_게시글_목록을_불러온다() {
         long listSize = 7;
         this.addPosts(listSize);
         LoadPostsRequestDto loadPostsRequestDto = LoadPostsRequestDto.builder()
@@ -80,6 +81,42 @@ public class PostMapperTest {
         assertNotNull(result);
         assertFalse(result.isEmpty());
         assertEquals(listSize, result.size());
+    }
+
+    @Test
+    void loadPosts_등록된_순서의_내림차순으로_정렬된_게시글_목록을_불러온다() {
+        long limit = 10;
+        long lastAddedPostId = this.addPosts(20);
+        LoadPostsRequestDto loadPostsRequestDto = LoadPostsRequestDto.builder()
+                .offset(0)
+                .limit(limit)
+                .build();
+
+
+        List<PostSummary> result = sut.loadPosts(loadPostsRequestDto);
+
+
+        long startPostId = lastAddedPostId;
+        long endPostId = lastAddedPostId - limit + 1;
+        assertEquals(startPostId, result.get(0).getPostId());
+        assertEquals(endPostId, result.get(9).getPostId());
+    }
+
+    @Test
+    void loadPosts_지정된_오프셋에서_시작하는_게시글_목록을_불러온다() {
+        long offset = 5;
+        long lastAddedPostId = this.addPosts(30);
+        LoadPostsRequestDto loadPostsRequestDto = LoadPostsRequestDto.builder()
+                .offset(offset)
+                .limit(10)
+                .build();
+
+
+        List<PostSummary> result = sut.loadPosts(loadPostsRequestDto);
+
+
+        long startPostId = lastAddedPostId - offset;
+        assertEquals(startPostId, result.get(0).getPostId());
     }
 
     @Test
@@ -188,10 +225,13 @@ public class PostMapperTest {
         assertEquals(postId, result.get().getPostId());
     }
 
-    private void addPosts(long listSize) {
+    private long addPosts(long listSize) {
+        long lastPostId = -1;
         for (long i = 0; i < listSize; i++) {
-            this.addPost();
+            lastPostId = this.addPost();
         }
+
+        return lastPostId;
     }
 
     private long addPost() {

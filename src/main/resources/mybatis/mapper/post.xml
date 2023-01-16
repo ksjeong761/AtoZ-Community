@@ -9,15 +9,18 @@
             parameterType="com.atoz.post.dto.request.LoadPostsRequestDto"
             resultType="com.atoz.post.dto.domain.PostSummary">
         SELECT
-            post_id AS postId,
-            user_id AS userId,
-            title,
-            hashtags,
-            categories,
-            like_count AS likeCount,
-            view_count AS viewCount,
-            created_at AS createdAt
-        FROM posts
+            p.post_id AS postId,
+            p.user_id AS userId,
+            u.age AS writerAge,
+            p.title,
+            p.hashtags,
+            p.categories,
+            p.like_count AS likeCount,
+            p.view_count AS viewCount,
+            p.created_at AS createdAt
+        FROM posts p INNER JOIN users u
+        WHERE p.user_id = u.user_id
+            AND u.age BETWEEN #{writerAgeMin} AND #{writerAgeMax}
         ORDER BY created_at DESC, post_id DESC
         LIMIT #{limit} OFFSET #{offset}
     </select>

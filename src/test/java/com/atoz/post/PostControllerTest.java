@@ -5,7 +5,7 @@ import com.atoz.post.dto.request.AddPostRequestDto;
 import com.atoz.post.dto.request.DeletePostRequestDto;
 import com.atoz.post.dto.request.LoadPostsRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
-import com.atoz.post.helper.StubPostService;
+import com.atoz.post.helper.SpyPostService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,18 +17,20 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.nio.charset.StandardCharsets;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class PostControllerTest {
 
     private MockMvc sut;
+    private SpyPostService postService = new SpyPostService();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     void setUp() {
         sut = MockMvcBuilders
-                .standaloneSetup(new PostController(new StubPostService()))
+                .standaloneSetup(new PostController(postService))
                 .defaultResponseCharacterEncoding(StandardCharsets.UTF_8)
                 .setCustomArgumentResolvers(new AuthenticationPrincipalArgumentResolver())
                 .setControllerAdvice(GlobalExceptionAdvice.class)
@@ -40,18 +42,39 @@ public class PostControllerTest {
         LoadPostsRequestDto loadPostsRequestDto = LoadPostsRequestDto.builder()
                 .offset(0)
                 .limit(10)
+                .writerAgeMin(30)
+                .writerAgeMax(50)
                 .build();
 
 
         ResultActions resultActions = sut.perform(
-                get("/posts?offset={offset}&limit={limit}",
-                    loadPostsRequestDto.getOffset(),
-                    loadPostsRequestDto.getLimit()
+                get("/posts?offset={offset}&limit={limit}" +
+                                "&writerAgeMin={writerAgeMin}&writerAgeMax={writerAgeMax}",
+                        loadPostsRequestDto.getOffset(),
+                        loadPostsRequestDto.getLimit(),
+                        loadPostsRequestDto.getWriterAgeMin(),
+                        loadPostsRequestDto.getWriterAgeMax()
                 )
         );
 
 
         resultActions.andExpect(status().isOk());
+    }
+
+    @Test
+    void loadPosts_요청_패러미터가_누락되면_기본값이_사용된다() throws Exception {
+        ResultActions resultActions = sut.perform(
+                get("/posts")
+        );
+
+
+        LoadPostsRequestDto defaultValues = new LoadPostsRequestDto();
+        LoadPostsRequestDto capturedParameters = postService.capturedParameters;
+        resultActions.andExpect(status().isOk());
+        assertEquals(defaultValues.getOffset(), capturedParameters.getOffset());
+        assertEquals(defaultValues.getLimit(), capturedParameters.getLimit());
+        assertEquals(defaultValues.getWriterAgeMin(), capturedParameters.getWriterAgeMin());
+        assertEquals(defaultValues.getWriterAgeMax(), capturedParameters.getWriterAgeMax());
     }
 
     @Test
