@@ -1,12 +1,20 @@
 package com.atoz.comment;
 
+import com.atoz.comment.dto.request.AddCommentRequestDto;
+import com.atoz.comment.dto.request.DeleteCommentRequestDto;
+import com.atoz.comment.dto.request.LoadCommentsRequestDto;
+import com.atoz.comment.dto.request.UpdateCommentRequestDto;
+import com.atoz.comment.dto.response.LoadCommentsResponseDto;
+
 public interface CommentService {
 
-    void loadComments();
+    LoadCommentsResponseDto loadComments(LoadCommentsRequestDto loadCommentsRequestDto);
 
-    void addComment();
+    void addComment(AddCommentRequestDto addCommentRequestDto);
 
-    void updateComment();
+    void updateComment(UpdateCommentRequestDto updateCommentRequestDto);
 
-    void deleteComment();
+    void increaseLikeCount(long commentId);
+
+    void deleteComment(DeleteCommentRequestDto deleteCommentRequestDto);
 }
