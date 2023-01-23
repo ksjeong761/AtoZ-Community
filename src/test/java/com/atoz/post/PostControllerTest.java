@@ -112,6 +112,17 @@ public class PostControllerTest {
     }
 
     @Test
+    void increaseLikeCount_좋아요_요청에_성공한다() throws Exception {
+        long postId = 1;
+
+
+        ResultActions resultActions = sut.perform(patch("/posts/{postId}/like_count", postId));
+
+
+        resultActions.andExpect(status().isOk());
+    }
+
+    @Test
     void deletePost_게시글_삭제_요청에_성공한다() throws Exception {
         long postId = 1;
         DeletePostRequestDto deletePostRequestDto = DeletePostRequestDto.builder()

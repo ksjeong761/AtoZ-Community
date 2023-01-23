@@ -44,7 +44,6 @@
             categories,
             like_count AS likeCount,
             view_count AS viewCount,
-            comments,
             created_at AS createdAt,
             updated_at AS updatedAt
         FROM posts
