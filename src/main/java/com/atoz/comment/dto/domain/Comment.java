@@ -4,11 +4,11 @@ import java.time.LocalDateTime;
 
 public class Comment {
     private long commentId;
-
-    private long postId;
     private long parentCommentId;
     private int depth;
 
+    private long postId;
+    private String userId;
     private String writerUserId;
 
     private String content;

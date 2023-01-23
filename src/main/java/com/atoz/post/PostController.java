@@ -37,7 +37,7 @@ public class PostController {
     }
 
     @PreAuthorize("hasRole('USER')")
-    @PatchMapping("/{postId}/likeCount")
+    @PatchMapping("/{postId}/like_count")
     public void increaseLikeCount(@PathVariable @Min(1) long postId) {
         postService.increaseLikeCount(postId);
     }

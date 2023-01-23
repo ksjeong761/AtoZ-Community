@@ -12,9 +12,9 @@ public interface CommentService {
 
     void addComment(AddCommentRequestDto addCommentRequestDto);
 
-    void updateComment(UpdateCommentRequestDto updateCommentRequestDto);
+    void updateComment(long commentId, UpdateCommentRequestDto updateCommentRequestDto);
 
     void increaseLikeCount(long commentId);
 
-    void deleteComment(DeleteCommentRequestDto deleteCommentRequestDto);
+    void deleteComment(long commentId, DeleteCommentRequestDto deleteCommentRequestDto);
 }

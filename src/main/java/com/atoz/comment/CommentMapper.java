@@ -6,6 +6,7 @@ import com.atoz.comment.dto.request.DeleteCommentRequestDto;
 import com.atoz.comment.dto.request.LoadCommentsRequestDto;
 import com.atoz.comment.dto.request.UpdateCommentRequestDto;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -16,9 +17,11 @@ public interface CommentMapper {
 
     void addComment(AddCommentRequestDto addCommentRequestDto);
 
-    void updateComment(UpdateCommentRequestDto updateCommentRequestDto);
+    void updateComment(@Param("commentId") long commentId,
+                       @Param("updateCommentRequestDto") UpdateCommentRequestDto updateCommentRequestDto);
 
     void increaseLikeCount(long commentId);
 
-    void deleteComment(DeleteCommentRequestDto deleteCommentRequestDto);
+    void deleteComment(@Param("commentId") long commentId,
+                       @Param("deleteCommentRequestDto") DeleteCommentRequestDto deleteCommentRequestDto);
 }
