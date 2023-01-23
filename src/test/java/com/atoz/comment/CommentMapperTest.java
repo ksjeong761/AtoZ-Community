@@ -14,12 +14,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
 import java.util.Set;
 
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 @TestPropertySource(locations = "/application-test.yaml")
 @MybatisTest
@@ -33,7 +36,7 @@ class CommentMapperTest {
     @Autowired
     private UserMapper userMapper;
 
-    private long postId = -1;
+    private long addedPostId = -1;
 
     @BeforeEach
     void setUp() {
@@ -54,7 +57,7 @@ class CommentMapperTest {
                 .content("testContent")
                 .build();
         postMapper.addPost(addPostRequestDto, signedUpUser.getUserId());
-        this.postId = addPostRequestDto.getPostId();
+        this.addedPostId = addPostRequestDto.getPostId();
     }
 
     @Test
@@ -62,7 +65,7 @@ class CommentMapperTest {
         int size = 10;
         long lastAddedCommentId = this.addSampleComments(size);
         LoadCommentsRequestDto loadCommentsRequestDto = LoadCommentsRequestDto.builder()
-                .postId(postId)
+                .postId(addedPostId)
                 .build();
 
 
@@ -71,7 +74,7 @@ class CommentMapperTest {
 
         assertEquals(size, result.size());
         assertEquals(lastAddedCommentId, result.get(9).getCommentId());
-        assertEquals(postId, result.get(9).getPostId());
+        assertEquals(addedPostId, result.get(9).getPostId());
         assertEquals("sample content", result.get(9).getContent());
         assertEquals("testUserId", result.get(9).getUserId());
     }
@@ -80,33 +83,86 @@ class CommentMapperTest {
     void addComment_댓글이_저장된다() {
         AddCommentRequestDto addCommentRequestDto = AddCommentRequestDto.builder()
                 .parentCommentId(0)
-                .postId(postId)
+                .postId(addedPostId)
                 .content("sample content")
                 .build();
 
 
-        sut.addComment(addCommentRequestDto, "testUserId");
+        int affectedRowCount = sut.addComment(addCommentRequestDto, "testUserId");
 
 
         List<Comment> result = this.loadAddedComments();
         assertEquals(addCommentRequestDto.getContent(), result.get(0).getContent());
+        assertEquals(1, affectedRowCount);
+    }
+
+    @Test
+    void addComment_존재하지_않는_게시글에_댓글을_저장하면_무결성_위반_예외가_발생한다() {
+        long nonexistentPostId = 99999;
+        AddCommentRequestDto addCommentRequestDto = AddCommentRequestDto.builder()
+                .parentCommentId(0)
+                .postId(nonexistentPostId)
+                .content("sample content")
+                .build();
+
+
+        Throwable thrown = catchThrowable(() -> {
+            sut.addComment(addCommentRequestDto, "testUserId");
+        });
+
+
+        assertInstanceOf(DataIntegrityViolationException.class, thrown);
     }
 
     @Test
     void updateComment_댓글_내용이_수정된다() {
         long commentId = this.addSampleComments(1);
         UpdateCommentRequestDto updateCommentRequestDto = UpdateCommentRequestDto.builder()
-                .postId(postId)
+                .postId(addedPostId)
                 .userId("testUserId")
                 .content("updated content")
                 .build();
 
 
-        sut.updateComment(commentId, updateCommentRequestDto);
+        int affectedRowCount = sut.updateComment(commentId, updateCommentRequestDto);
 
 
         Comment result = this.loadAddedComments().get(0);
         assertEquals(updateCommentRequestDto.getContent(), result.getContent());
+        assertEquals(1, affectedRowCount);
+    }
+
+    @Test
+    void updateComment_댓글이_존재하지_않으면_댓글이_수정되지_않는다() {
+        long commentId = 99999;
+        UpdateCommentRequestDto updateCommentRequestDto = UpdateCommentRequestDto.builder()
+                .postId(addedPostId)
+                .userId("testUserId")
+                .content("updated content")
+                .build();
+
+
+        int affectedRowCount = sut.updateComment(commentId, updateCommentRequestDto);
+
+
+        assertEquals(0, affectedRowCount);
+    }
+
+    @Test
+    void updateComment_게시글_번호가_존재하지_않으면_댓글이_수정되지_않는다() {
+        long nonexistentPostId = 99999;
+        long commentId = this.addSampleComments(1);
+        UpdateCommentRequestDto updateCommentRequestDto = UpdateCommentRequestDto.builder()
+                .postId(nonexistentPostId)
+                .userId("testUserId")
+                .content("updated content")
+                .build();
+
+
+        int affectedRowCount = sut.updateComment(commentId, updateCommentRequestDto);
+
+
+        assertEquals(0, affectedRowCount);
     }
 
     @Test
@@ -114,11 +170,23 @@ class CommentMapperTest {
         long commentId = this.addSampleComments(1);
 
 
-        sut.increaseLikeCount(commentId);
+        int affectedRowCount = sut.increaseLikeCount(commentId);
 
 
         Comment result = this.loadAddedComments().get(0);
         assertEquals(1, result.getLikeCount());
+        assertEquals(1, affectedRowCount);
+    }
+
+    @Test
+    void increaseLikeCount_게시글_번호가_존재하지_않으면_좋아요_갯수가_증가하지_않는다() {
+        long nonexistentCommentId = 99999;
+
+
+        int affectedRowCount = sut.increaseLikeCount(nonexistentCommentId);
+
+
+        assertEquals(0, affectedRowCount);
     }
 
     @Test
@@ -130,17 +198,33 @@ class CommentMapperTest {
                 .build();
 
 
-        sut.deleteComment(commentId, deleteCommentRequestDto);
+        int affectedRowCount = sut.deleteComment(commentId, deleteCommentRequestDto);
 
 
+        int lastIndex = size - 1;
         List<Comment> result = this.loadAddedComments();
-        assertEquals(size - 1, result.size());
+        assertEquals(lastIndex, result.size());
+        assertEquals(1, affectedRowCount);
+    }
+
+    @Test
+    void deleteComment_댓글이_존재하지_않으면_댓글이_삭제되지_않는다() {
+        long commentId = 99999;
+        DeleteCommentRequestDto deleteCommentRequestDto = DeleteCommentRequestDto.builder()
+                .userId("testUserId")
+                .build();
+
+
+        int affectedRowCount = sut.deleteComment(commentId, deleteCommentRequestDto);
+
+
+        assertEquals(0, affectedRowCount);
     }
 
     private long addSampleComments(int size) {
         AddCommentRequestDto addCommentRequestDto = AddCommentRequestDto.builder()
                 .parentCommentId(0)
-                .postId(postId)
+                .postId(addedPostId)
                 .content("sample content")
                 .build();
 
@@ -156,7 +240,7 @@ class CommentMapperTest {
 
     private List<Comment> loadAddedComments() {
         LoadCommentsRequestDto loadCommentsRequestDto = LoadCommentsRequestDto.builder()
-                .postId(postId)
+                .postId(addedPostId)
                 .build();
         return sut.loadComments(loadCommentsRequestDto);
     }

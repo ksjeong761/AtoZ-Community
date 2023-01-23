@@ -15,14 +15,14 @@ public interface CommentMapper {
 
     List<Comment> loadComments(LoadCommentsRequestDto loadCommentsRequestDto);
 
-    void addComment(@Param("addCommentRequestDto") AddCommentRequestDto addCommentRequestDto,
+    int addComment(@Param("addCommentRequestDto") AddCommentRequestDto addCommentRequestDto,
                     @Param("userId") String userId);
 
-    void updateComment(@Param("commentId") long commentId,
+    int updateComment(@Param("commentId") long commentId,
                        @Param("updateCommentRequestDto") UpdateCommentRequestDto updateCommentRequestDto);
 
-    void increaseLikeCount(long commentId);
+    int increaseLikeCount(long commentId);
 
-    void deleteComment(@Param("commentId") long commentId,
+    int deleteComment(@Param("commentId") long commentId,
                        @Param("deleteCommentRequestDto") DeleteCommentRequestDto deleteCommentRequestDto);
 }
