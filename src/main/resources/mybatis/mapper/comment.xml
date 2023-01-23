@@ -9,15 +9,15 @@
             parameterType="com.atoz.comment.dto.request.LoadCommentsRequestDto"
             resultType="com.atoz.comment.dto.domain.Comment">
         SELECT
-            comment_id,
-            parent_comment_id,
+            comment_id AS commentId,
+            parent_comment_id AS parentCommentId,
             depth,
-            post_id,
-            user_id,
+            post_id AS postId,
+            user_id AS userId,
             content,
-            like_count,
-            created_at,
-            updated_at
+            like_count AS likeCount,
+            created_at AS createdAt,
+            updated_at AS updatedAt
         FROM comments
         WHERE post_id = #{postId};
     </select>
@@ -48,6 +48,6 @@
     <delete id="deleteComment" parameterType="com.atoz.comment.dto.request.DeleteCommentRequestDto">
         DELETE FROM comments
         WHERE comment_id = #{commentId}
-        AND _user_id = #{deleteCommentRequestDto.userId}
+        AND user_id = #{deleteCommentRequestDto.userId}
     </delete>
 </mapper>
