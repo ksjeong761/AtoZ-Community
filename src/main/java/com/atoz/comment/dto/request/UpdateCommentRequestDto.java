@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -16,12 +15,10 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class UpdateCommentRequestDto {
 
-    @NotNull
-    private long commentId;
+    @Min(0)
+    private long commentId = -1;
 
-    @NotNull
     @Min(1)
-    @Max(Long.MAX_VALUE)
     private long postId;
 
     @NotNull(message = "아이디를 반드시 입력해주세요.")
