@@ -7,6 +7,7 @@ import com.atoz.comment.dto.request.LoadCommentsRequestDto;
 import com.atoz.comment.dto.request.UpdateCommentRequestDto;
 import com.atoz.comment.dto.response.LoadCommentsResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +28,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void addComment(AddCommentRequestDto addCommentRequestDto) {
-        commentMapper.addComment(addCommentRequestDto);
+    public void addComment(AddCommentRequestDto addCommentRequestDto, UserDetails userDetails) {
+        commentMapper.addComment(addCommentRequestDto, userDetails.getUsername());
     }
 
     @Override

@@ -76,6 +76,8 @@ public class SecurityConfig {
                         .mvcMatchers(HttpMethod.POST,"/user/signup").permitAll()
                         .mvcMatchers(HttpMethod.GET,"/posts").permitAll()
                         .mvcMatchers(HttpMethod.GET,"/posts/{postId}").permitAll()
+                        .mvcMatchers(HttpMethod.GET,"/comments").permitAll()
+                        .mvcMatchers(HttpMethod.GET,"/comments/{commentId}").permitAll()
                         .anyRequest().authenticated());
 
         return http.build();

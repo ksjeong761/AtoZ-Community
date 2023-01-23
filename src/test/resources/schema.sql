@@ -45,3 +45,19 @@ CREATE TABLE posts (
     FOREIGN KEY (user_id)
         REFERENCES users(user_id)
 );
+
+CREATE TABLE comments (
+    comment_id BIGINT AUTO_INCREMENT,
+    parent_comment_id BIGINT NOT NULL,
+    depth INT DEFAULT 0,
+    post_id BIGINT NOT NULL,
+    user_id VARCHAR(20) NOT NULL,
+    content VARCHAR(512) NOT NULL,
+    like_count INT DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    PRIMARY KEY (comment_id),
+    FOREIGN KEY (post_id)
+        REFERENCES posts(post_id)
+);

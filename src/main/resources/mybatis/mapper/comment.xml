@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.atoz.comment.CommentMapper">
+
+    <select id="loadComments"
+            parameterType="com.atoz.comment.dto.request.LoadCommentsRequestDto"
+            resultType="com.atoz.comment.dto.domain.Comment">
+        SELECT
+            comment_id,
+            parent_comment_id,
+            depth,
+            post_id,
+            user_id,
+            content,
+            like_count,
+            created_at,
+            updated_at
+        FROM comments
+        WHERE post_id = #{postId};
+    </select>
+
+    <insert id="addComment"
+            parameterType="com.atoz.comment.dto.request.AddCommentRequestDto"
+            useGeneratedKeys="true"
+            keyColumn="comment_id"
+            keyProperty="addCommentRequestDto.commentId">
+        INSERT INTO comments (post_id, parent_comment_id, user_id, content)
+        VALUES (#{addCommentRequestDto.postId}, #{addCommentRequestDto.parentCommentId}, #{userId}, #{addCommentRequestDto.content})
+    </insert>
+
+    <update id="updateComment" parameterType="com.atoz.comment.dto.request.UpdateCommentRequestDto">
+        UPDATE comments
+        SET content = #{updateCommentRequestDto.content}
+        WHERE comment_id = #{commentId}
+            AND post_id = #{updateCommentRequestDto.postId}
+            AND user_id = #{updateCommentRequestDto.userId}
+    </update>
+
+    <update id="increaseLikeCount">
+        UPDATE comments
+        SET like_count = like_count + 1
+        WHERE comment_id = #{commentId}
+    </update>
+
+    <delete id="deleteComment" parameterType="com.atoz.comment.dto.request.DeleteCommentRequestDto">
+        DELETE FROM comments
+        WHERE comment_id = #{commentId}
+        AND _user_id = #{deleteCommentRequestDto.userId}
+    </delete>
+</mapper>

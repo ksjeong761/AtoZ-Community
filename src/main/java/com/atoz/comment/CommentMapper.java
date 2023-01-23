@@ -15,7 +15,8 @@ public interface CommentMapper {
 
     List<Comment> loadComments(LoadCommentsRequestDto loadCommentsRequestDto);
 
-    void addComment(AddCommentRequestDto addCommentRequestDto);
+    void addComment(@Param("addCommentRequestDto") AddCommentRequestDto addCommentRequestDto,
+                    @Param("userId") String userId);
 
     void updateComment(@Param("commentId") long commentId,
                        @Param("updateCommentRequestDto") UpdateCommentRequestDto updateCommentRequestDto);
