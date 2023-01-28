@@ -56,7 +56,7 @@ public class SpyCommentService implements CommentService {
             Comment comment = Comment.builder()
                     .commentId(i)
                     .parentCommentId(0)
-                    .depth(0)
+                    .depth(1)
                     .postId(1)
                     .userId("testUserId" + i)
                     .content("testComment" + i)

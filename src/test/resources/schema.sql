@@ -48,7 +48,7 @@ CREATE TABLE posts (
 CREATE TABLE comments (
     comment_id BIGINT AUTO_INCREMENT,
     parent_comment_id BIGINT NOT NULL,
-    depth INT DEFAULT 0,
+    depth INT DEFAULT 1,
     post_id BIGINT NOT NULL,
     user_id VARCHAR(20) NOT NULL,
     content VARCHAR(512) NOT NULL,

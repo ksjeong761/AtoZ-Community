@@ -9,14 +9,14 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 public interface CommentMapper {
 
     List<Comment> loadComments(LoadCommentsRequestDto loadCommentsRequestDto);
 
-    int addComment(@Param("addCommentRequestDto") AddCommentRequestDto addCommentRequestDto,
-                    @Param("userId") String userId);
+    int addComment(Comment comment);
 
     int updateComment(@Param("commentId") long commentId,
                        @Param("updateCommentRequestDto") UpdateCommentRequestDto updateCommentRequestDto);
@@ -25,4 +25,6 @@ public interface CommentMapper {
 
     int deleteComment(@Param("commentId") long commentId,
                        @Param("deleteCommentRequestDto") DeleteCommentRequestDto deleteCommentRequestDto);
+
+    Optional<Comment> findCommentByCommentId(long commentId);
 }

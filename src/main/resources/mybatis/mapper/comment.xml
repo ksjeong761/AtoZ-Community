@@ -22,13 +22,29 @@
         WHERE post_id = #{postId};
     </select>
 
+    <select id="findCommentByCommentId"
+            resultType="com.atoz.comment.dto.domain.Comment">
+        SELECT
+            comment_id AS commentId,
+            parent_comment_id AS parentCommentId,
+            depth,
+            post_id AS postId,
+            user_id AS userId,
+            content,
+            like_count AS likeCount,
+            created_at AS createdAt,
+            updated_at AS updatedAt
+        FROM comments
+        WHERE comment_id = #{commentId};
+    </select>
+
     <insert id="addComment"
-            parameterType="com.atoz.comment.dto.request.AddCommentRequestDto"
+            parameterType="com.atoz.comment.dto.domain.Comment"
             useGeneratedKeys="true"
             keyColumn="comment_id"
-            keyProperty="addCommentRequestDto.commentId">
-        INSERT INTO comments (post_id, parent_comment_id, user_id, content)
-        VALUES (#{addCommentRequestDto.postId}, #{addCommentRequestDto.parentCommentId}, #{userId}, #{addCommentRequestDto.content})
+            keyProperty="commentId">
+        INSERT INTO comments (post_id, parent_comment_id, depth, user_id, content)
+        VALUES (#{postId}, #{parentCommentId}, #{depth}, #{userId}, #{content})
     </insert>
 
     <update id="updateComment" parameterType="com.atoz.comment.dto.request.UpdateCommentRequestDto">

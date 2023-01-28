@@ -1,7 +1,6 @@
 package com.atoz.comment;
 
 import com.atoz.comment.dto.domain.Comment;
-import com.atoz.comment.dto.request.AddCommentRequestDto;
 import com.atoz.comment.dto.request.DeleteCommentRequestDto;
 import com.atoz.comment.dto.request.LoadCommentsRequestDto;
 import com.atoz.comment.dto.request.UpdateCommentRequestDto;
@@ -17,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.TestPropertySource;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -81,33 +81,43 @@ class CommentMapperTest {
 
     @Test
     void addComment_댓글이_저장된다() {
-        AddCommentRequestDto addCommentRequestDto = AddCommentRequestDto.builder()
+        Comment comment = Comment.builder()
                 .parentCommentId(0)
+                .depth(1)
                 .postId(addedPostId)
+                .userId("testUserId")
                 .content("sample content")
+                .likeCount(0)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .build();
 
 
-        int affectedRowCount = sut.addComment(addCommentRequestDto, "testUserId");
+        int affectedRowCount = sut.addComment(comment);
 
 
         List<Comment> result = this.loadAddedComments();
-        assertEquals(addCommentRequestDto.getContent(), result.get(0).getContent());
+        assertEquals(comment.getContent(), result.get(0).getContent());
         assertEquals(1, affectedRowCount);
     }
 
     @Test
     void addComment_존재하지_않는_게시글에_댓글을_저장하면_무결성_위반_예외가_발생한다() {
         long nonexistentPostId = 99999;
-        AddCommentRequestDto addCommentRequestDto = AddCommentRequestDto.builder()
+        Comment comment = Comment.builder()
                 .parentCommentId(0)
+                .depth(1)
                 .postId(nonexistentPostId)
+                .userId("testUserId")
                 .content("sample content")
+                .likeCount(0)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .build();
 
 
         Throwable thrown = catchThrowable(() -> {
-            sut.addComment(addCommentRequestDto, "testUserId");
+            sut.addComment(comment);
         });
 
 
@@ -116,7 +126,7 @@ class CommentMapperTest {
 
     @Test
     void updateComment_댓글_내용이_수정된다() {
-        long commentId = this.addSampleComments(1);
+        long commentId = this.addSampleComment().getCommentId();
         UpdateCommentRequestDto updateCommentRequestDto = UpdateCommentRequestDto.builder()
                 .postId(addedPostId)
                 .userId("testUserId")
@@ -151,7 +161,7 @@ class CommentMapperTest {
     @Test
     void updateComment_게시글_번호가_존재하지_않으면_댓글이_수정되지_않는다() {
         long nonexistentPostId = 99999;
-        long commentId = this.addSampleComments(1);
+        long commentId = this.addSampleComment().getCommentId();
         UpdateCommentRequestDto updateCommentRequestDto = UpdateCommentRequestDto.builder()
                 .postId(nonexistentPostId)
                 .userId("testUserId")
@@ -167,7 +177,7 @@ class CommentMapperTest {
 
     @Test
     void increaseLikeCount_좋아요_갯수가_증가한다() {
-        long commentId = this.addSampleComments(1);
+        long commentId = this.addSampleComment().getCommentId();
 
 
         int affectedRowCount = sut.increaseLikeCount(commentId);
@@ -201,9 +211,8 @@ class CommentMapperTest {
         int affectedRowCount = sut.deleteComment(commentId, deleteCommentRequestDto);
 
 
-        int lastIndex = size - 1;
         List<Comment> result = this.loadAddedComments();
-        assertEquals(lastIndex, result.size());
+        assertEquals(9, result.size());
         assertEquals(1, affectedRowCount);
     }
 
@@ -221,18 +230,27 @@ class CommentMapperTest {
         assertEquals(0, affectedRowCount);
     }
 
-    private long addSampleComments(int size) {
-        AddCommentRequestDto addCommentRequestDto = AddCommentRequestDto.builder()
+    private Comment addSampleComment() {
+        Comment sampleComment = Comment.builder()
                 .parentCommentId(0)
+                .depth(1)
                 .postId(addedPostId)
+                .userId("testUserId")
                 .content("sample content")
+                .likeCount(0)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
                 .build();
 
+        sut.addComment(sampleComment);
+
+        return sampleComment;
+    }
+
+    private long addSampleComments(int size) {
         long lastCommentId = -1;
         for (int i = 0; i < size; i++) {
-            sut.addComment(addCommentRequestDto, "testUserId");
-
-            lastCommentId = addCommentRequestDto.getCommentId();
+            lastCommentId = this.addSampleComment().getCommentId();
         }
 
         return lastCommentId;
