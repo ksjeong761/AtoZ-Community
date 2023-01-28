@@ -6,12 +6,14 @@ import com.atoz.comment.dto.request.DeleteCommentRequestDto;
 import com.atoz.comment.dto.request.LoadCommentsRequestDto;
 import com.atoz.comment.dto.request.UpdateCommentRequestDto;
 import com.atoz.comment.dto.response.LoadCommentsResponseDto;
+import com.atoz.error.exception.NoRowsFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Transactional
@@ -30,11 +32,12 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void addComment(AddCommentRequestDto addCommentRequestDto, UserDetails userDetails) {
+        int depth = determineCommentDepth(addCommentRequestDto.getParentCommentId());
         Comment comment = Comment.builder()
                 .postId(addCommentRequestDto.getPostId())
                 .parentCommentId(addCommentRequestDto.getParentCommentId())
                 .userId(userDetails.getUsername())
-                .depth(determineCommentDepth(addCommentRequestDto.getParentCommentId()))
+                .depth(depth)
                 .content(addCommentRequestDto.getContent())
                 .build();
 
@@ -57,8 +60,15 @@ public class CommentServiceImpl implements CommentService {
     }
 
     private int determineCommentDepth(long parentCommentId) {
-        return commentMapper.findCommentByCommentId(parentCommentId)
-                .map(parentComment -> parentComment.getDepth() + 1)
-                .orElse(1);
+        if (parentCommentId == 0) {
+            return 1;
+        }
+
+        Optional<Comment> parentComment = commentMapper.findCommentByCommentId(parentCommentId);
+        if (parentComment.isEmpty()) {
+            throw new NoRowsFoundException("존재하지 않는 댓글에 대댓글을 작성할 수 없습니다.");
+        }
+
+        return parentComment.get().getDepth() + 1;
     }
 }

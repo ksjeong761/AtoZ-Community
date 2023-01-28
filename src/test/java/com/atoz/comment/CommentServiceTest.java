@@ -3,6 +3,7 @@ package com.atoz.comment;
 import com.atoz.comment.dto.domain.Comment;
 import com.atoz.comment.dto.request.AddCommentRequestDto;
 import com.atoz.comment.helper.SpyCommentMapper;
+import com.atoz.error.exception.NoRowsFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,7 +12,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 class CommentServiceTest {
 
@@ -44,6 +47,28 @@ class CommentServiceTest {
 
         Comment childComment = commentMapper.cloneAndFlushCapturedComment();
         assertEquals(parentComment.getDepth() + 1, childComment.getDepth());
+    }
+
+    @Test
+    void addComment_존재하지_않는_부모_댓글에_대댓글을_추가하면_예외가_발생한다() {
+        AddCommentRequestDto childCommentRequestDto = AddCommentRequestDto.builder()
+                .parentCommentId(99999)
+                .postId(1)
+                .content("child content")
+                .build();
+        UserDetails principal = User.builder()
+                .username("testUserId")
+                .password("testPassword")
+                .authorities(List.of(new SimpleGrantedAuthority("ROLE_FAKE")))
+                .build();
+
+
+        Throwable thrown = catchThrowable(() -> {
+            sut.addComment(childCommentRequestDto, principal);
+        });
+
+
+        assertInstanceOf(NoRowsFoundException.class, thrown);
     }
 
     private Comment addParentComment() {
