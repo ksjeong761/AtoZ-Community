@@ -11,7 +11,7 @@ public interface CommentService {
 
     LoadCommentsResponseDto loadComments(LoadCommentsRequestDto loadCommentsRequestDto);
 
-    void addComment(AddCommentRequestDto addCommentRequestDto, UserDetails userDetails);
+    void addComment(AddCommentRequestDto addCommentRequestDto, String userId);
 
     void updateComment(long commentId, UpdateCommentRequestDto updateCommentRequestDto);
 

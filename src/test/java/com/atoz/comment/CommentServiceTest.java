@@ -35,14 +35,9 @@ class CommentServiceTest {
                 .postId(parentComment.getPostId())
                 .content("child content")
                 .build();
-        UserDetails principal = User.builder()
-                .username("testUserId")
-                .password("testPassword")
-                .authorities(List.of(new SimpleGrantedAuthority("ROLE_FAKE")))
-                .build();
 
 
-        sut.addComment(childCommentRequestDto, principal);
+        sut.addComment(childCommentRequestDto, "testUserId");
 
 
         Comment childComment = commentMapper.cloneAndFlushCapturedComment();
@@ -56,15 +51,10 @@ class CommentServiceTest {
                 .postId(1)
                 .content("child content")
                 .build();
-        UserDetails principal = User.builder()
-                .username("testUserId")
-                .password("testPassword")
-                .authorities(List.of(new SimpleGrantedAuthority("ROLE_FAKE")))
-                .build();
 
 
         Throwable thrown = catchThrowable(() -> {
-            sut.addComment(childCommentRequestDto, principal);
+            sut.addComment(childCommentRequestDto, "testUserId");
         });
 
 
@@ -77,12 +67,7 @@ class CommentServiceTest {
                 .postId(1)
                 .content("parent content")
                 .build();
-        UserDetails principal = User.builder()
-                .username("testUserId")
-                .password("testPassword")
-                .authorities(List.of(new SimpleGrantedAuthority("ROLE_FAKE")))
-                .build();
-        sut.addComment(addCommentRequestDto, principal);
+        sut.addComment(addCommentRequestDto, "testUserId");
 
         return commentMapper.cloneAndFlushCapturedComment();
     }

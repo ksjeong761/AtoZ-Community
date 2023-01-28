@@ -32,7 +32,7 @@ public class CommentController {
     @PostMapping
     public void addComment(@Valid @RequestBody AddCommentRequestDto addCommentRequestDto,
                            @AuthenticationPrincipal UserDetails userDetails) {
-        commentService.addComment(addCommentRequestDto, userDetails);
+        commentService.addComment(addCommentRequestDto, userDetails.getUsername());
     }
 
     @PreAuthorize("hasRole('USER') and principal.username == #updateCommentRequestDto.getUserId()")

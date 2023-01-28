@@ -31,12 +31,12 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void addComment(AddCommentRequestDto addCommentRequestDto, UserDetails userDetails) {
+    public void addComment(AddCommentRequestDto addCommentRequestDto, String userId) {
         int depth = determineCommentDepth(addCommentRequestDto.getParentCommentId());
         Comment comment = Comment.builder()
                 .postId(addCommentRequestDto.getPostId())
                 .parentCommentId(addCommentRequestDto.getParentCommentId())
-                .userId(userDetails.getUsername())
+                .userId(userId)
                 .depth(depth)
                 .content(addCommentRequestDto.getContent())
                 .build();

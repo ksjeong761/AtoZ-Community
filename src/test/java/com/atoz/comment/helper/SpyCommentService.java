@@ -7,7 +7,6 @@ import com.atoz.comment.dto.request.DeleteCommentRequestDto;
 import com.atoz.comment.dto.request.LoadCommentsRequestDto;
 import com.atoz.comment.dto.request.UpdateCommentRequestDto;
 import com.atoz.comment.dto.response.LoadCommentsResponseDto;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ public class SpyCommentService implements CommentService {
 
     public LoadCommentsRequestDto capturedLoadCommentsRequestDto = null;
     public AddCommentRequestDto capturedAddCommentRequestDto = null;
-    public UserDetails capturedUserDetails = null;
+    public String capturedUserId = null;
 
     @Override
     public LoadCommentsResponseDto loadComments(LoadCommentsRequestDto loadCommentsRequestDto) {
@@ -29,9 +28,9 @@ public class SpyCommentService implements CommentService {
     }
 
     @Override
-    public void addComment(AddCommentRequestDto addCommentRequestDto, UserDetails userDetails) {
+    public void addComment(AddCommentRequestDto addCommentRequestDto, String userId) {
         this.capturedAddCommentRequestDto = addCommentRequestDto;
-        this.capturedUserDetails = userDetails;
+        this.capturedUserId = userId;
     }
 
     @Override
