@@ -1,5 +1,6 @@
 package com.atoz.post;
 
+import com.atoz.error.exception.NoRowsFoundException;
 import com.atoz.post.dto.domain.Post;
 import com.atoz.post.dto.domain.PostSummary;
 import com.atoz.post.dto.request.AddPostRequestDto;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -46,12 +48,17 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public OpenPostResponseDto openPost(long postId) {
-        postMapper.increaseViewCount(postId);
+        long affectedRows = postMapper.increaseViewCount(postId);
+        if (affectedRows == 0) {
+            throw new NoRowsFoundException("게시글이 존재하지 않습니다.");
+        }
 
-        Post post = postMapper.findPostByPostId(postId)
-                .orElseThrow(() -> new NoSuchElementException("게시글이 존재하지 않습니다."));
+        Optional<Post> post = postMapper.findPostByPostId(postId);
+        if (post.isEmpty()) {
+            throw new NoRowsFoundException("게시글이 존재하지 않습니다.");
+        }
         return OpenPostResponseDto.builder()
-                .post(post)
+                .post(post.get())
                 .build();
     }
 

@@ -16,17 +16,17 @@ import java.util.Optional;
 @Mapper
 public interface PostMapper {
 
-    void addPost(@Param("addPostRequestDto") AddPostRequestDto addPostRequestDto,
+    int addPost(@Param("addPostRequestDto") AddPostRequestDto addPostRequestDto,
                  @Param("userId") String userId);
 
-    void updatePost(@Param("postId") long postId,
+    int updatePost(@Param("postId") long postId,
                     @Param("updatePostRequestDto") UpdatePostRequestDto updatePostRequestDto);
 
-    void increaseViewCount(long postId);
+    int increaseViewCount(long postId);
 
-    void increaseLikeCount(long postId);
+    int increaseLikeCount(long postId);
 
-    void deletePost(@Param("postId") long postId,
+    int deletePost(@Param("postId") long postId,
                     @Param("deletePostRequestDto") DeletePostRequestDto deletePostRequestDto);
 
     Optional<Post> findPostByPostId(long postId);

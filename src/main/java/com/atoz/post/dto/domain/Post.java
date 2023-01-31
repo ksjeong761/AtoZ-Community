@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class Post {
     private long postId;
     private String userId;
+    private int writerAge;
 
     private String title;
     private String content;
