@@ -10,7 +10,6 @@ import com.atoz.post.dto.response.LoadPostsResponseDto;
 import com.atoz.post.dto.response.OpenPostResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,8 +25,8 @@ public class PostServiceImpl implements PostService {
     private final PostMapper postMapper;
 
     @Override
-    public void addPost(AddPostRequestDto addPostRequestDto, UserDetails userDetails) {
-        postMapper.addPost(addPostRequestDto, userDetails.getUsername());
+    public void addPost(AddPostRequestDto addPostRequestDto, String userId) {
+        postMapper.addPost(addPostRequestDto, userId);
     }
 
     @Override

@@ -6,11 +6,15 @@ import com.atoz.post.dto.request.DeletePostRequestDto;
 import com.atoz.post.dto.request.LoadPostsRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
 import com.atoz.post.helper.SpyPostService;
+import com.atoz.security.authentication.helper.CustomWithMockUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -21,11 +25,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration
 public class PostControllerTest {
 
     private MockMvc sut;
     private SpyPostService postService = new SpyPostService();
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private static final String USER_ID = "testUserId";
 
     @BeforeEach
     void setUp() {
@@ -69,14 +77,15 @@ public class PostControllerTest {
 
 
         LoadPostsRequestDto defaultValues = new LoadPostsRequestDto();
-        LoadPostsRequestDto capturedParameters = postService.capturedParameters;
+        LoadPostsRequestDto capturedParameters = postService.capturedLoadPostsRequestDto;
         resultActions.andExpect(status().isOk());
         assertEquals(defaultValues.getOffset(), capturedParameters.getOffset());
         assertEquals(defaultValues.getLimit(), capturedParameters.getLimit());
         assertEquals(defaultValues.getWriterAgeMin(), capturedParameters.getWriterAgeMin());
         assertEquals(defaultValues.getWriterAgeMax(), capturedParameters.getWriterAgeMax());
     }
-
+    
+    @CustomWithMockUser(username = USER_ID)
     @Test
     void addPost_게시글_추가_요청에_성공한다() throws Exception {
         AddPostRequestDto addPostRequestDto = AddPostRequestDto.builder()
@@ -91,6 +100,23 @@ public class PostControllerTest {
 
 
         resultActions.andExpect(status().isOk());
+    }
+
+    @CustomWithMockUser(username = USER_ID)
+    @Test
+    void addPost_게시글_추가_요청을_보낸_사용자_아이디를_SecurityContextHolder에서_가져온다() throws Exception {
+        AddPostRequestDto addPostRequestDto = AddPostRequestDto.builder()
+                .title("testTitle")
+                .content("testContent")
+                .build();
+
+
+        sut.perform(post("/posts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(addPostRequestDto)));
+
+
+        assertEquals(USER_ID, postService.capturedUserId);
     }
 
     @Test

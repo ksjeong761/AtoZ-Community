@@ -28,7 +28,7 @@ public class PostController {
     @PostMapping
     public void addPost(@Valid @RequestBody AddPostRequestDto addPostRequestDto,
                         @AuthenticationPrincipal UserDetails userDetails) {
-        postService.addPost(addPostRequestDto, userDetails);
+        postService.addPost(addPostRequestDto, userDetails.getUsername());
     }
 
     @PreAuthorize("hasRole('USER') and principal.username == #updatePostRequestDto.getUserId()")

@@ -7,21 +7,21 @@ import com.atoz.post.dto.request.LoadPostsRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
 import com.atoz.post.dto.response.LoadPostsResponseDto;
 import com.atoz.post.dto.response.OpenPostResponseDto;
-import org.springframework.security.core.userdetails.UserDetails;
 
 public class SpyPostService implements PostService {
 
-    public LoadPostsRequestDto capturedParameters = null;
+    public LoadPostsRequestDto capturedLoadPostsRequestDto = null;
+    public String capturedUserId = null;
 
     @Override
     public LoadPostsResponseDto loadPosts(LoadPostsRequestDto loadPostsRequestDto) {
-        this.capturedParameters = loadPostsRequestDto;
+        this.capturedLoadPostsRequestDto = loadPostsRequestDto;
         return null;
     }
 
     @Override
-    public void addPost(AddPostRequestDto addPostRequestDto, UserDetails userDetails) {
-
+    public void addPost(AddPostRequestDto addPostRequestDto, String userId) {
+        this.capturedUserId = userId;
     }
 
     @Override

@@ -6,11 +6,10 @@ import com.atoz.post.dto.request.LoadPostsRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
 import com.atoz.post.dto.response.LoadPostsResponseDto;
 import com.atoz.post.dto.response.OpenPostResponseDto;
-import org.springframework.security.core.userdetails.UserDetails;
 
 public interface PostService {
 
-    void addPost(AddPostRequestDto addPostRequestDto, UserDetails userDetails);
+    void addPost(AddPostRequestDto addPostRequestDto, String userId);
 
     void updatePost(long postId, UpdatePostRequestDto updatePostRequestDto);
 
