@@ -5,8 +5,8 @@
 
 <mapper namespace="com.atoz.post.PostMapper">
 
-    <select id="loadPosts"
-            parameterType="com.atoz.post.dto.request.LoadPostsRequestDto"
+    <select id="loadPostSummaries"
+            parameterType="com.atoz.post.dto.request.LoadPostSummariesRequestDto"
             resultType="com.atoz.post.dto.domain.PostSummary">
         SELECT
             p.post_id AS postId,

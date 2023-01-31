@@ -12,7 +12,7 @@ import javax.validation.constraints.Min;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoadPostsRequestDto {
+public class LoadPostSummariesRequestDto {
 
     @Min(0)
     @Max(Long.MAX_VALUE)

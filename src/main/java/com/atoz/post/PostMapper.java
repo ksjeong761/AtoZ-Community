@@ -4,7 +4,7 @@ import com.atoz.post.dto.domain.Post;
 import com.atoz.post.dto.domain.PostSummary;
 import com.atoz.post.dto.request.AddPostRequestDto;
 import com.atoz.post.dto.request.DeletePostRequestDto;
-import com.atoz.post.dto.request.LoadPostsRequestDto;
+import com.atoz.post.dto.request.LoadPostSummariesRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
 import com.atoz.post.dto.response.OpenPostResponseDto;
 import org.apache.ibatis.annotations.Mapper;
@@ -31,5 +31,5 @@ public interface PostMapper {
 
     Optional<Post> findPostByPostId(long postId);
 
-    List<PostSummary> loadPosts(LoadPostsRequestDto loadPostsRequestDto);
+    List<PostSummary> loadPostSummaries(LoadPostSummariesRequestDto loadPostSummariesRequestDto);
 }

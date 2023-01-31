@@ -2,9 +2,9 @@ package com.atoz.post;
 
 import com.atoz.post.dto.request.AddPostRequestDto;
 import com.atoz.post.dto.request.DeletePostRequestDto;
-import com.atoz.post.dto.request.LoadPostsRequestDto;
+import com.atoz.post.dto.request.LoadPostSummariesRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
-import com.atoz.post.dto.response.LoadPostsResponseDto;
+import com.atoz.post.dto.response.LoadPostSummariesResponseDto;
 import com.atoz.post.dto.response.OpenPostResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -57,7 +57,7 @@ public class PostController {
     }
 
     @GetMapping
-    public LoadPostsResponseDto loadPosts(@Valid @ModelAttribute LoadPostsRequestDto loadPostsRequestDto) {
-        return postService.loadPosts(loadPostsRequestDto);
+    public LoadPostSummariesResponseDto loadPostSummaries(@Valid @ModelAttribute LoadPostSummariesRequestDto loadPostSummariesRequestDto) {
+        return postService.loadPostSummaries(loadPostSummariesRequestDto);
     }
 }

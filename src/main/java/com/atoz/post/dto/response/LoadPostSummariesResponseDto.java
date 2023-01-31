@@ -12,6 +12,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoadPostsResponseDto {
+public class LoadPostSummariesResponseDto {
     private List<PostSummary> postSummaries;
 }

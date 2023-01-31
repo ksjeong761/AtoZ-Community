@@ -4,9 +4,9 @@ import com.atoz.post.dto.domain.Post;
 import com.atoz.post.dto.domain.PostSummary;
 import com.atoz.post.dto.request.AddPostRequestDto;
 import com.atoz.post.dto.request.DeletePostRequestDto;
-import com.atoz.post.dto.request.LoadPostsRequestDto;
+import com.atoz.post.dto.request.LoadPostSummariesRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
-import com.atoz.post.dto.response.LoadPostsResponseDto;
+import com.atoz.post.dto.response.LoadPostSummariesResponseDto;
 import com.atoz.post.dto.response.OpenPostResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,9 +56,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public LoadPostsResponseDto loadPosts(LoadPostsRequestDto loadPostsRequestDto) {
-        List<PostSummary> postSummaries = postMapper.loadPosts(loadPostsRequestDto);
-        return LoadPostsResponseDto.builder()
+    public LoadPostSummariesResponseDto loadPostSummaries(LoadPostSummariesRequestDto loadPostSummariesRequestDto) {
+        List<PostSummary> postSummaries = postMapper.loadPostSummaries(loadPostSummariesRequestDto);
+        return LoadPostSummariesResponseDto.builder()
                 .postSummaries(postSummaries)
                 .build();
     }

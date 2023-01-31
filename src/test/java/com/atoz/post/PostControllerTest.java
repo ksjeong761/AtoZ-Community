@@ -3,7 +3,7 @@ package com.atoz.post;
 import com.atoz.error.GlobalExceptionAdvice;
 import com.atoz.post.dto.request.AddPostRequestDto;
 import com.atoz.post.dto.request.DeletePostRequestDto;
-import com.atoz.post.dto.request.LoadPostsRequestDto;
+import com.atoz.post.dto.request.LoadPostSummariesRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
 import com.atoz.post.helper.SpyPostService;
 import com.atoz.security.authentication.helper.CustomWithMockUser;
@@ -46,8 +46,8 @@ public class PostControllerTest {
     }
 
     @Test
-    void loadPosts_게시글_목록_가져오기_요청에_성공한다() throws Exception {
-        LoadPostsRequestDto loadPostsRequestDto = LoadPostsRequestDto.builder()
+    void loadPostSummaries_게시글_목록_가져오기_요청에_성공한다() throws Exception {
+        LoadPostSummariesRequestDto loadPostSummariesRequestDto = LoadPostSummariesRequestDto.builder()
                 .offset(0)
                 .limit(10)
                 .writerAgeMin(30)
@@ -58,10 +58,10 @@ public class PostControllerTest {
         ResultActions resultActions = sut.perform(
                 get("/posts?offset={offset}&limit={limit}" +
                                 "&writerAgeMin={writerAgeMin}&writerAgeMax={writerAgeMax}",
-                        loadPostsRequestDto.getOffset(),
-                        loadPostsRequestDto.getLimit(),
-                        loadPostsRequestDto.getWriterAgeMin(),
-                        loadPostsRequestDto.getWriterAgeMax()
+                        loadPostSummariesRequestDto.getOffset(),
+                        loadPostSummariesRequestDto.getLimit(),
+                        loadPostSummariesRequestDto.getWriterAgeMin(),
+                        loadPostSummariesRequestDto.getWriterAgeMax()
                 )
         );
 
@@ -70,14 +70,14 @@ public class PostControllerTest {
     }
 
     @Test
-    void loadPosts_요청_패러미터가_누락되면_기본값이_사용된다() throws Exception {
+    void loadPostSummaries_요청_패러미터가_누락되면_기본값이_사용된다() throws Exception {
         ResultActions resultActions = sut.perform(
                 get("/posts")
         );
 
 
-        LoadPostsRequestDto defaultValues = new LoadPostsRequestDto();
-        LoadPostsRequestDto capturedParameters = postService.capturedLoadPostsRequestDto;
+        LoadPostSummariesRequestDto defaultValues = new LoadPostSummariesRequestDto();
+        LoadPostSummariesRequestDto capturedParameters = postService.capturedLoadPostSummariesRequestDto;
         resultActions.andExpect(status().isOk());
         assertEquals(defaultValues.getOffset(), capturedParameters.getOffset());
         assertEquals(defaultValues.getLimit(), capturedParameters.getLimit());

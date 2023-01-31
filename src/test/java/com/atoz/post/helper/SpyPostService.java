@@ -3,19 +3,19 @@ package com.atoz.post.helper;
 import com.atoz.post.PostService;
 import com.atoz.post.dto.request.AddPostRequestDto;
 import com.atoz.post.dto.request.DeletePostRequestDto;
-import com.atoz.post.dto.request.LoadPostsRequestDto;
+import com.atoz.post.dto.request.LoadPostSummariesRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
-import com.atoz.post.dto.response.LoadPostsResponseDto;
+import com.atoz.post.dto.response.LoadPostSummariesResponseDto;
 import com.atoz.post.dto.response.OpenPostResponseDto;
 
 public class SpyPostService implements PostService {
 
-    public LoadPostsRequestDto capturedLoadPostsRequestDto = null;
+    public LoadPostSummariesRequestDto capturedLoadPostSummariesRequestDto = null;
     public String capturedUserId = null;
 
     @Override
-    public LoadPostsResponseDto loadPosts(LoadPostsRequestDto loadPostsRequestDto) {
-        this.capturedLoadPostsRequestDto = loadPostsRequestDto;
+    public LoadPostSummariesResponseDto loadPostSummaries(LoadPostSummariesRequestDto loadPostSummariesRequestDto) {
+        this.capturedLoadPostSummariesRequestDto = loadPostSummariesRequestDto;
         return null;
     }
 

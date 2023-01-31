@@ -2,9 +2,9 @@ package com.atoz.post;
 
 import com.atoz.post.dto.request.AddPostRequestDto;
 import com.atoz.post.dto.request.DeletePostRequestDto;
-import com.atoz.post.dto.request.LoadPostsRequestDto;
+import com.atoz.post.dto.request.LoadPostSummariesRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
-import com.atoz.post.dto.response.LoadPostsResponseDto;
+import com.atoz.post.dto.response.LoadPostSummariesResponseDto;
 import com.atoz.post.dto.response.OpenPostResponseDto;
 
 public interface PostService {
@@ -19,5 +19,5 @@ public interface PostService {
 
     OpenPostResponseDto openPost(long postId);
 
-    LoadPostsResponseDto loadPosts(LoadPostsRequestDto loadPostsRequestDto);
+    LoadPostSummariesResponseDto loadPostSummaries(LoadPostSummariesRequestDto loadPostSummariesRequestDto);
 }

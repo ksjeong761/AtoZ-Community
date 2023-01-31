@@ -5,7 +5,7 @@ import com.atoz.post.dto.domain.Post;
 import com.atoz.post.dto.domain.PostSummary;
 import com.atoz.post.dto.request.AddPostRequestDto;
 import com.atoz.post.dto.request.DeletePostRequestDto;
-import com.atoz.post.dto.request.LoadPostsRequestDto;
+import com.atoz.post.dto.request.LoadPostSummariesRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
 
 import java.util.List;
@@ -46,7 +46,7 @@ public class SpyPostMapper implements PostMapper {
     }
 
     @Override
-    public List<PostSummary> loadPosts(LoadPostsRequestDto loadPostsRequestDto) {
+    public List<PostSummary> loadPostSummaries(LoadPostSummariesRequestDto loadPostSummariesRequestDto) {
         return null;
     }
 }

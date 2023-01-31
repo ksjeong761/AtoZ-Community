@@ -4,7 +4,7 @@ import com.atoz.post.dto.domain.Post;
 import com.atoz.post.dto.domain.PostSummary;
 import com.atoz.post.dto.request.AddPostRequestDto;
 import com.atoz.post.dto.request.DeletePostRequestDto;
-import com.atoz.post.dto.request.LoadPostsRequestDto;
+import com.atoz.post.dto.request.LoadPostSummariesRequestDto;
 import com.atoz.post.dto.request.UpdatePostRequestDto;
 import com.atoz.user.Authority;
 import com.atoz.user.UserMapper;
@@ -48,16 +48,16 @@ public class PostMapperTest {
     }
 
     @Test
-    void loadPosts_원하는_갯수만큼의_게시글_목록을_불러온다() {
+    void loadPostSummaries_원하는_갯수만큼의_게시글_목록을_불러온다() {
         long limit = 10;
         this.addPosts(20);
-        LoadPostsRequestDto loadPostsRequestDto = LoadPostsRequestDto.builder()
+        LoadPostSummariesRequestDto loadPostSummariesRequestDto = LoadPostSummariesRequestDto.builder()
                 .offset(0)
                 .limit(limit)
                 .build();
 
 
-        List<PostSummary> result = sut.loadPosts(loadPostsRequestDto);
+        List<PostSummary> result = sut.loadPostSummaries(loadPostSummariesRequestDto);
 
 
         assertNotNull(result);
@@ -66,16 +66,16 @@ public class PostMapperTest {
     }
 
     @Test
-    void loadPosts_게시글_수보다_많은_갯수를_지정하면_모든_게시글_목록을_불러온다() {
+    void loadPostSummaries_게시글_수보다_많은_갯수를_지정하면_모든_게시글_목록을_불러온다() {
         long listSize = 7;
         this.addPosts(listSize);
-        LoadPostsRequestDto loadPostsRequestDto = LoadPostsRequestDto.builder()
+        LoadPostSummariesRequestDto loadPostSummariesRequestDto = LoadPostSummariesRequestDto.builder()
                 .offset(0)
                 .limit(10)
                 .build();
 
 
-        List<PostSummary> result = sut.loadPosts(loadPostsRequestDto);
+        List<PostSummary> result = sut.loadPostSummaries(loadPostSummariesRequestDto);
 
 
         assertNotNull(result);
@@ -84,16 +84,16 @@ public class PostMapperTest {
     }
 
     @Test
-    void loadPosts_등록된_순서의_내림차순으로_정렬된_게시글_목록을_불러온다() {
+    void loadPostSummaries_등록된_순서의_내림차순으로_정렬된_게시글_목록을_불러온다() {
         long limit = 10;
         long lastAddedPostId = this.addPosts(20);
-        LoadPostsRequestDto loadPostsRequestDto = LoadPostsRequestDto.builder()
+        LoadPostSummariesRequestDto loadPostSummariesRequestDto = LoadPostSummariesRequestDto.builder()
                 .offset(0)
                 .limit(limit)
                 .build();
 
 
-        List<PostSummary> result = sut.loadPosts(loadPostsRequestDto);
+        List<PostSummary> result = sut.loadPostSummaries(loadPostSummariesRequestDto);
 
 
         long startPostId = lastAddedPostId;
@@ -103,16 +103,16 @@ public class PostMapperTest {
     }
 
     @Test
-    void loadPosts_지정된_오프셋에서_시작하는_게시글_목록을_불러온다() {
+    void loadPostSummaries_지정된_오프셋에서_시작하는_게시글_목록을_불러온다() {
         long offset = 5;
         long lastAddedPostId = this.addPosts(30);
-        LoadPostsRequestDto loadPostsRequestDto = LoadPostsRequestDto.builder()
+        LoadPostSummariesRequestDto loadPostSummariesRequestDto = LoadPostSummariesRequestDto.builder()
                 .offset(offset)
                 .limit(10)
                 .build();
 
 
-        List<PostSummary> result = sut.loadPosts(loadPostsRequestDto);
+        List<PostSummary> result = sut.loadPostSummaries(loadPostSummariesRequestDto);
 
 
         long startPostId = lastAddedPostId - offset;
